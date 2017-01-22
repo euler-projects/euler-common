@@ -1,4 +1,4 @@
-package net.eulerframework.common.util;
+package net.eulerframework.common.util.exception;
 
 @SuppressWarnings("serial")
 public class PropertyReadException extends Exception {

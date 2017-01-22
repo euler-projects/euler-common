@@ -1,4 +1,4 @@
-package net.eulerframework.common.util;
+package net.eulerframework.common.util.exception;
 
 public class NullValueException extends Exception {
     private static final long serialVersionUID = -3749594067077482264L;

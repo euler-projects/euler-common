@@ -10,6 +10,8 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.eulerframework.common.util.exception.NullValueException;
+
 public class PropertySource {
 
     protected final Logger logger = LogManager.getLogger();

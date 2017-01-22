@@ -1,7 +1,7 @@
 package net.eulerframework.common.email;
 
 import net.eulerframework.common.util.PropertyReader;
-import net.eulerframework.common.util.PropertyReadException;
+import net.eulerframework.common.util.exception.PropertyReadException;
 
 /**
  * 
