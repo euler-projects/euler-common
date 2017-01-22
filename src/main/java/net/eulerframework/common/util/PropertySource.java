@@ -17,13 +17,14 @@ public class PropertySource {
     private Properties props;
 
     /**
-     * 
-     * @param configFile {@link Class#getResource}
+     * 新建Properties文件数据源
+     * @param configFile Properties文件路径，具体搜索规则参考{@link Class#getResource}
+     * @param callerClass 调用者的Class，用来确定搜索位置
      * @throws IOException config file cannot be found
      */
-    public PropertySource(String configFile) throws IOException {
+    public PropertySource(String configFile, Class<?> callerClass) throws IOException {
         try {
-            URL url = this.getClass().getResource(configFile);
+            URL url = callerClass.getResource(configFile);
             InputStream inputStream = url.openStream();
             this.logger.info("Load property file: " + url.toString());
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -31,16 +32,6 @@ public class PropertySource {
             this.props.load(bufferedReader);
         } catch (NullPointerException e) {
             throw new IOException("Property file \"" + configFile + "\" read error. Does this file exist?", e);
-        }
-    }
-
-    public PropertySource(InputStream inputStream) throws IOException {
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            this.props = new Properties();
-            this.props.load(bufferedReader);
-        } catch (NullPointerException e) {
-            throw new IOException("Property file \"" + "\" read error. Does this file exist?", e);
         }
     }
 

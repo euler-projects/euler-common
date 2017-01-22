@@ -11,19 +11,41 @@ public class PropertyReader {
 
     private PropertySource propertySource;
     
-    private String configFile = "/config.properties";
+    private String configFile;
+    private Class<?> callerClass;
     
+    /**
+     * 初始化读取器，使用classpath根目录作为搜索位置，config.properties作为文件名
+     */
     public PropertyReader() {
+        this("/config.properties");
         this.logger.warn("No config file path defined, use '"+ this.configFile +"' for default.");
+    }
+
+    /**
+     * 初始化读取器，使用classpath根目录作为搜索位置，configFile必须以/开头，搜索顺序为项目classes目录、euler-common的classpath、调用代码所在包的classpath
+     * @param configFile Properties文件路径，具体搜索规则参考{@link Class#getResource}
+     */
+    public PropertyReader(String configFile) {
+        this.logger.info("No config file path defined, search at root classpath path");
+        
+        if(!configFile.startsWith("/")) {
+            throw new RuntimeException("configFile must start with '/' if caller class is not defined");
+        }
+        
+        this.configFile = configFile;
+        this.callerClass = this.getClass();
         this.loadData();
     }
     
     /**
-     * 
-     * @param configFile {@link Class#getResource}
+     * 初始化读取器
+     * @param configFile Properties文件路径，具体搜索规则参考{@link Class#getResource}
+     * @param callerClass 调用者的Class，用来确定搜索位置
      */
-    public PropertyReader(String configFile) {
+    public PropertyReader(String configFile, Class<?> callerClass) {
         this.configFile = configFile;
+        this.callerClass = callerClass;
         this.loadData();
     }
 
@@ -34,7 +56,7 @@ public class PropertyReader {
     
     private void loadData() {
         try {
-            propertySource = new PropertySource(this.configFile);
+            propertySource = new PropertySource(this.configFile, this.callerClass);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
