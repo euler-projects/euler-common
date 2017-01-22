@@ -1,7 +1,7 @@
 package net.eulerframework.common.email;
 
-import net.eulerframework.common.util.GlobalProperties;
-import net.eulerframework.common.util.GlobalPropertyReadException;
+import net.eulerframework.common.util.PropertyReader;
+import net.eulerframework.common.util.PropertyReadException;
 
 /**
  * 
@@ -25,48 +25,48 @@ public class MailSenderFactory {
      * @return {@link SimpleMailSender}
      * @throws GlobalPropertyReadException
      */
-    public static SimpleMailSender getSimpleSystemMailSender() throws GlobalPropertyReadException {
-        if (simpleSystemMailSender == null) {
-            String username = GlobalProperties.get(EmailConfig.F_CONFIG_KEY_UESRNAME);
-            String password = GlobalProperties.get(EmailConfig.F_CONFIG_KEY_PASSWORD);
-            String smtp = GlobalProperties.get(EmailConfig.F_CONFIG_KEY_SMTP);
-            String sender = GlobalProperties.get(EmailConfig.F_CONFIG_KEY_SYS_SENDER);
-            String defaultReceiver = GlobalProperties.get(EmailConfig.F_CONFIG_KEY_DEFAULT_RECEIVER);
-            EmailConfig config = new EmailConfig();
-            config.setUsername(username);
-            config.setPassword(password);
-            config.setDefaultReceiver(defaultReceiver);
-            config.setSmtp(smtp);
-            config.setSender(sender);
-            simpleSystemMailSender = new SimpleMailSender(config);
-        }
-        return simpleSystemMailSender;
-    }
+//    public static SimpleMailSender getSimpleSystemMailSender() throws GlobalPropertyReadException {
+//        if (simpleSystemMailSender == null) {
+//            String username = PropertiesReader.get(EmailConfig.F_CONFIG_KEY_UESRNAME);
+//            String password = PropertiesReader.get(EmailConfig.F_CONFIG_KEY_PASSWORD);
+//            String smtp = PropertiesReader.get(EmailConfig.F_CONFIG_KEY_SMTP);
+//            String sender = PropertiesReader.get(EmailConfig.F_CONFIG_KEY_SYS_SENDER);
+//            String defaultReceiver = PropertiesReader.get(EmailConfig.F_CONFIG_KEY_DEFAULT_RECEIVER);
+//            EmailConfig config = new EmailConfig();
+//            config.setUsername(username);
+//            config.setPassword(password);
+//            config.setDefaultReceiver(defaultReceiver);
+//            config.setSmtp(smtp);
+//            config.setSender(sender);
+//            simpleSystemMailSender = new SimpleMailSender(config);
+//        }
+//        return simpleSystemMailSender;
+//    }
     
-    public static ThreadSimpleMailSender getThreadSimpleMailSender() throws GlobalPropertyReadException {
-        if (threadSimpleSystemMailSender == null) {
-            String username = GlobalProperties.get(EmailConfig.F_CONFIG_KEY_UESRNAME);
-            String password = GlobalProperties.get(EmailConfig.F_CONFIG_KEY_PASSWORD);
-            String smtp = GlobalProperties.get(EmailConfig.F_CONFIG_KEY_SMTP);
-            String sender = GlobalProperties.get(EmailConfig.F_CONFIG_KEY_SYS_SENDER);
-            String defaultReceiver = GlobalProperties.get(EmailConfig.F_CONFIG_KEY_DEFAULT_RECEIVER);
-            EmailConfig config = new EmailConfig();
-            config.setUsername(username);
-            config.setPassword(password);
-            config.setDefaultReceiver(defaultReceiver);
-            config.setSmtp(smtp);
-            config.setSender(sender);
-            threadSimpleSystemMailSender = new ThreadSimpleMailSender(config);
-        }
-        return threadSimpleSystemMailSender;
-    }
-    
-    public static ThreadSimpleMailSender getThreadSimpleMailSenderUseEmailConfig(EmailConfig config) {
-        return new ThreadSimpleMailSender(config);
-    }
- 
-    public static void main(String[] args) throws Exception {
-        SimpleMailSender simpleSystemMailSender = MailSenderFactory.getSimpleSystemMailSender();
-        simpleSystemMailSender.send("密码重置邮件", "<p>请点击下面的链接重置您的密码</p><p><a href=\"http://www.baidu.com\">重置密码</a></p>", "cfrostsun@163.com");
-    }
+//    public static ThreadSimpleMailSender getThreadSimpleMailSender() throws GlobalPropertyReadException {
+//        if (threadSimpleSystemMailSender == null) {
+//            String username = PropertiesReader.get(EmailConfig.F_CONFIG_KEY_UESRNAME);
+//            String password = PropertiesReader.get(EmailConfig.F_CONFIG_KEY_PASSWORD);
+//            String smtp = PropertiesReader.get(EmailConfig.F_CONFIG_KEY_SMTP);
+//            String sender = PropertiesReader.get(EmailConfig.F_CONFIG_KEY_SYS_SENDER);
+//            String defaultReceiver = PropertiesReader.get(EmailConfig.F_CONFIG_KEY_DEFAULT_RECEIVER);
+//            EmailConfig config = new EmailConfig();
+//            config.setUsername(username);
+//            config.setPassword(password);
+//            config.setDefaultReceiver(defaultReceiver);
+//            config.setSmtp(smtp);
+//            config.setSender(sender);
+//            threadSimpleSystemMailSender = new ThreadSimpleMailSender(config);
+//        }
+//        return threadSimpleSystemMailSender;
+//    }
+//    
+//    public static ThreadSimpleMailSender getThreadSimpleMailSenderUseEmailConfig(EmailConfig config) {
+//        return new ThreadSimpleMailSender(config);
+//    }
+// 
+//    public static void main(String[] args) throws Exception {
+//        SimpleMailSender simpleSystemMailSender = MailSenderFactory.getSimpleSystemMailSender();
+//        simpleSystemMailSender.send("密码重置邮件", "<p>请点击下面的链接重置您的密码</p><p><a href=\"http://www.baidu.com\">重置密码</a></p>", "cfrostsun@163.com");
+//    }
 }
