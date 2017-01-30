@@ -49,11 +49,6 @@ import org.apache.logging.log4j.Logger;
 public abstract class FileUtil {
     private static final Logger logger = LogManager.getLogger();
 
-    public static byte[] readFileByByte(String path) throws FileNotFoundException, FileReadException {
-        File file = new File(path);
-        return readFileByByte(file);
-    }
-
     /**
      * 读取文件至内存,一次读取一个字节,适用于2GB以下的文件
      * @param file 被读取的文件
@@ -90,11 +85,6 @@ public abstract class FileUtil {
                     throw new RuntimeException(e);
                 }
         }
-    }
-
-    public static byte[] readFileByMultiBytes(String path, int number) throws FileNotFoundException, FileReadException {
-        File file = new File(path);
-        return readFileByMultiBytes(file, number);
     }
 
     /**
