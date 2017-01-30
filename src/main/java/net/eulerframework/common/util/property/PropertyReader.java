@@ -1,12 +1,9 @@
-package net.eulerframework.common.util;
+package net.eulerframework.common.util.property;
 
 import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.eulerframework.common.util.exception.NullValueException;
-import net.eulerframework.common.util.exception.PropertyReadException;
 
 public class PropertyReader {
     
@@ -66,13 +63,9 @@ public class PropertyReader {
     }
     
     public String get(String property) throws PropertyReadException {
-        try {
-        	String value = (String) propertySource.getProperty(property);
-            logger.info("Load config: " + property + "=" + value);
-            return value;
-        } catch (NullValueException e) {
-            throw new PropertyReadException(e);
-        }
+        String value = (String) propertySource.getProperty(property);
+        logger.info("Load config: " + property + "=" + value);
+        return value;
     }
     
     public String get(String property, String defaultValue) {

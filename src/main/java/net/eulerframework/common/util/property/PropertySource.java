@@ -1,4 +1,4 @@
-package net.eulerframework.common.util;
+package net.eulerframework.common.util.property;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,8 +9,6 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.eulerframework.common.util.exception.NullValueException;
 
 public class PropertySource {
 
@@ -37,10 +35,10 @@ public class PropertySource {
         }
     }
 
-    public Object getProperty(String key) throws NullValueException {
+    public Object getProperty(String key) throws PropertyReadException {
         Object value = this.props.get(key);
         if (value == null) {
-            throw new NullValueException("Key read error, no such key: " + key);
+            throw new PropertyReadException("Key read error, no such key: " + key);
         }
         return value;
     }
