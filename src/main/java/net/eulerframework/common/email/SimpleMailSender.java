@@ -64,7 +64,7 @@ public class SimpleMailSender {
      * @throws AddressException
      * @throws MessagingException
      */
-    public void send(String subject, Object content, String receiver) throws AddressException, MessagingException {
+    public void send(String subject, String content, String receiver) throws AddressException, MessagingException {
         // 创建mime类型邮件
         final MimeMessage message = new MimeMessage(session);
         // 设置发信人
@@ -74,7 +74,7 @@ public class SimpleMailSender {
         // 设置主题
         message.setSubject(subject);
         // 设置邮件内容
-        message.setContent(content.toString(), "text/html;charset=utf-8");
+        message.setContent(content, "text/html;charset=utf-8");
         // 发送
         Transport.send(message);
     }
@@ -91,7 +91,7 @@ public class SimpleMailSender {
      * @throws AddressException
      * @throws MessagingException
      */
-    public void send(String subject, Object content, String... receiver) throws AddressException, MessagingException {
+    public void send(String subject, String content, String... receiver) throws AddressException, MessagingException {
         // 创建mime类型邮件
         final MimeMessage message = new MimeMessage(session);
         // 设置发信人
@@ -104,7 +104,7 @@ public class SimpleMailSender {
         // 设置主题
         message.setSubject(subject);
         // 设置邮件内容
-        message.setContent(content.toString(), "text/html;charset=utf-8");
+        message.setContent(content, "text/html;charset=utf-8");
         // 发送
         Transport.send(message);
     }
@@ -121,7 +121,7 @@ public class SimpleMailSender {
      * @throws AddressException
      * @throws MessagingException
      */
-    public void send(String subject, Object content, Collection<String> receivers)
+    public void send(String subject, String content, Collection<String> receivers)
             throws AddressException, MessagingException {
         this.send(subject, content, receivers.toArray(new String[0]));
     }

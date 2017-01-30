@@ -1,8 +1,7 @@
 package net.eulerframework.common.util.exception;
 
+@SuppressWarnings("serial")
 public class NullValueException extends Exception {
-    private static final long serialVersionUID = -3749594067077482264L;
-
 
     public NullValueException() {
         super();
