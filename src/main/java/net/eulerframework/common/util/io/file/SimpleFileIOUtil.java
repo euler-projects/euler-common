@@ -27,7 +27,7 @@
  * http://eulerframework.net
  * http://cfrost.net
  */
-package net.eulerframework.common.util.io;
+package net.eulerframework.common.util.io.file;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -40,24 +40,26 @@ import java.io.OutputStreamWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.eulerframework.common.util.Assert;
+
 /**
- * 文件读取器，可读取2GB以下文件
- * 
+ * 基于内存的文件读写器,适用小文件的读写
  * @author cFrost
  *
  */
-public abstract class FileUtil {
+public abstract class SimpleFileIOUtil {
     private static final Logger logger = LogManager.getLogger();
+    private static final int MAX_SIZE = 100 * 1024 * 1024;
 
     /**
-     * 读取文件至内存,一次读取一个字节,适用于2GB以下的文件
+     * 读取文件至内存,一次读取一个字节
      * @param file 被读取的文件
      * @return 文件的二进制内容
      * @throws FileNotFoundException 文件不存在
      * @throws FileReadException 其他读取异常
      */
     public static byte[] readFileByByte(File file) throws FileNotFoundException, FileReadException {
-        if(file.length() > Integer.MAX_VALUE) {
+        if(file.length() > MAX_SIZE) {
             throw new FileReadException("文件过大");
         }
         
@@ -88,7 +90,7 @@ public abstract class FileUtil {
     }
 
     /**
-     * 读取文件至内存,一次读取多个字节,适用于2GB以下的文件
+     * 读取文件至内存,一次读取多个字节
      * @param file 被读取的文件
      * @param number 一次读取的字节数
      * @return 文件二进制内容
@@ -96,7 +98,7 @@ public abstract class FileUtil {
      * @throws FileReadException 其他读取异常
      */
     public static byte[] readFileByMultiBytes(File file, int number) throws FileNotFoundException, FileReadException {
-        if(file.length() > Integer.MAX_VALUE) {
+        if(file.length() > MAX_SIZE) {
             throw new FileReadException("文件过大");
         }
         
@@ -145,20 +147,14 @@ public abstract class FileUtil {
         logger.info("Write File: " + filePath);
 
         File file = new File(filePath);
-        // FileWriter fileWritter = null;
         OutputStreamWriter outputStreamWriter = null;
         BufferedWriter bufferWritter = null;
 
         try {
-            // if file doesnt exists, then create it
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            // true = append file
-            // fileWritter = new FileWriter(filePath,true);
+            createFileIfNotExist(file);
+            
             outputStreamWriter = new OutputStreamWriter(new FileOutputStream(file, append), "UTF-8");
             bufferWritter = new BufferedWriter(outputStreamWriter);
-            // new BufferedWriter(fileWritter);
             bufferWritter.write(data);
             bufferWritter.close();
         } catch (IOException e) {
@@ -168,7 +164,6 @@ public abstract class FileUtil {
                 bufferWritter.close();
             if (outputStreamWriter != null)
                 outputStreamWriter.close();
-            // if(fileWritter != null) fileWritter.close();
         }
     }
 
@@ -191,14 +186,8 @@ public abstract class FileUtil {
         FileOutputStream fileOutputStream = null;
 
         try {
-            // if file doesnt exists, then create it
-            if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
-
-            if (!file.exists()) {
-                file.createNewFile();
-            }
+            createFileIfNotExist(file);
+            
             fileOutputStream = new FileOutputStream(file, append);
             fileOutputStream.write(data);
         } catch (IOException e) {
@@ -246,38 +235,15 @@ public abstract class FileUtil {
         return file.delete();
     }
 
-    /**
-     * 统一路径为UNIX格式,结尾的"/"会去掉<br>
-     * 如果只有一个"/"，则会保留<br>
-     * <p>
-     * Examples: <blockquote>
-     * 
-     * <pre>
-     * changeToUnixFormat("\") returns "/"
-     * changeToUnixFormat("D:\floder\") returns "D:/floder"
-     * changeToUnixFormat("D:\floder\file") returns "D:/floder/file"
-     * </pre>
-     * 
-     * </blockquote>
-     * 
-     * @param path
-     *            原始路径
-     * @return unix路径
-     */
-    public static String changeToUnixFormat(String path) {
-        if (path == null)
-            return null;
-
-        String unixPath = path.replace("\\", "/");
-        if (unixPath.endsWith("/") && unixPath.length() > 1) {
-            unixPath = unixPath.substring(0, unixPath.length() - 1);
+    public static void createFileIfNotExist(File file) throws IOException {
+        Assert.isNotNull(file, "file is null");
+        
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
         }
-        return unixPath;
-    }
-    
-    public static void main(String[] args) {
-        int i = 34;
-        byte b = (byte) i;
-        System.out.println((char)b);
+        
+        if (!file.exists()) {
+            file.createNewFile();
+        }
     }
 }

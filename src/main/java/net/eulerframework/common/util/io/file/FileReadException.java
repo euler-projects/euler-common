@@ -1,4 +1,4 @@
-package net.eulerframework.common.util.io;
+package net.eulerframework.common.util.io.file;
 
 @SuppressWarnings("serial")
 public class FileReadException extends Exception {
