@@ -1,32 +1,3 @@
-/*
- * The MIT License (MIT)
- * 
- * Copyright (c) 2015-2016 cFrost.sun(孙宾, SUN BIN) 
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- * 
- * For more information, please visit the following website
- * 
- * https://github.com/euler-form/web-form
- * http://eulerframework.net
- * http://cfrost.net
- */
 package net.eulerframework.common.util.io.file;
 
 import java.io.BufferedWriter;
@@ -59,8 +30,10 @@ public abstract class SimpleFileIOUtil {
      * @throws FileReadException 其他读取异常
      */
     public static byte[] readFileByByte(File file) throws FileNotFoundException, FileReadException {
+        Assert.isNotNull(file, "file is null");
+        
         if(file.length() > MAX_SIZE) {
-            throw new FileReadException("文件过大");
+            throw new FileReadException("file too large, max file size is " + MAX_SIZE + " bytes.");
         }
         
         FileInputStream inputStream = null;
@@ -98,8 +71,12 @@ public abstract class SimpleFileIOUtil {
      * @throws FileReadException 其他读取异常
      */
     public static byte[] readFileByMultiBytes(File file, int number) throws FileNotFoundException, FileReadException {
+        Assert.isNotNull(file, "file is null");
+
+        logger.info("Load file: " + file.getPath() + " Size: " + file.length());
+        
         if(file.length() > MAX_SIZE) {
-            throw new FileReadException("文件过大");
+            throw new FileReadException("file too large, max file size is " + MAX_SIZE + " bytes.");
         }
         
         FileInputStream inputStream = null;
@@ -134,15 +111,13 @@ public abstract class SimpleFileIOUtil {
     /**
      * 写字符串
      * 
-     * @param filePath
-     *            文件路径
-     * @param data
-     *            字符串内容
-     * @param append
-     *            追加模式
-     * @throws IOException
+     * @param filePath 文件路径
+     * @param str 字符串内容
+     * @param append 追加模式
+     * @throws IOException IO异常
      */
-    public static void writeFile(String filePath, String data, boolean append) throws IOException {
+    public static void writeFile(String filePath, String str, boolean append) throws IOException {
+        Assert.isNotNull(filePath, "filePath is null");
 
         logger.info("Write File: " + filePath);
 
@@ -155,7 +130,7 @@ public abstract class SimpleFileIOUtil {
             
             outputStreamWriter = new OutputStreamWriter(new FileOutputStream(file, append), "UTF-8");
             bufferWritter = new BufferedWriter(outputStreamWriter);
-            bufferWritter.write(data);
+            bufferWritter.write(str);
             bufferWritter.close();
         } catch (IOException e) {
             throw e;
@@ -170,15 +145,13 @@ public abstract class SimpleFileIOUtil {
     /**
      * 写二进制数据
      * 
-     * @param filePath
-     *            文件路径
-     * @param data
-     *            数据内容
-     * @param append
-     *            追加模式
-     * @throws IOException
+     * @param filePath 文件路径
+     * @param data 二进制内容
+     * @param append 追加模式
+     * @throws IOException IO异常
      */
     public static void writeFile(String filePath, byte[] data, boolean append) throws IOException {
+        Assert.isNotNull(filePath, "filePath is null");
 
         logger.info("Write File: " + filePath);
 
@@ -201,9 +174,8 @@ public abstract class SimpleFileIOUtil {
     /**
      * 递归删除目录下的所有文件及子目录下所有文件
      * 
-     * @param dir
-     *            将要删除的文件目录
-     * @return boolean Returns "true" if all deletions were successful. If a
+     * @param path 将要删除的文件目录
+     * @return boolean Returns "true" if all deletions were successful or file not exists. If a
      *         deletion fails, the method stops attempting to delete and returns
      *         "false".
      */
@@ -211,8 +183,18 @@ public abstract class SimpleFileIOUtil {
         File file = new File(path);
         return deleteFile(file);
     }
-
+    
+    /**
+     * 递归删除目录下的所有文件及子目录下所有文件
+     * 
+     * @param file 将要删除的文件
+     * @return boolean Returns "true" if all deletions were successful or file not exists. If a
+     *         deletion fails, the method stops attempting to delete and returns
+     *         "false".
+     */
     public static boolean deleteFile(File file) {
+        Assert.isNotNull(file, "file is null");
+        
         if (!file.exists())
             return true;
 
@@ -226,24 +208,32 @@ public abstract class SimpleFileIOUtil {
                 }
             }
         }
-        // 目录此时为空，可以删除
-        return delete(file);
-    }
-
-    private static boolean delete(File file) {
-        logger.info("DELETE " + file.getPath());
+        
+        //此时目录为空，可以删除
+        logger.info("Delete file: " + file.getPath());
         return file.delete();
     }
 
+    /**
+     * 在文件系统创建不存在的文件以及文件所在的目录
+     * @param file 要创建的文件
+     * @throws IOException IO异常
+     */
     public static void createFileIfNotExist(File file) throws IOException {
         Assert.isNotNull(file, "file is null");
         
         if (!file.getParentFile().exists()) {
+            logger.info("Create dir: " + file.getParentFile().getPath());
             file.getParentFile().mkdirs();
+        } else {
+            logger.info("File path exists: " + file.getParentFile().getPath());
         }
         
         if (!file.exists()) {
             file.createNewFile();
+            logger.info("Create new file: " + file.getPath());
+        } else {
+            logger.info("File exists: " + file.getPath());
         }
     }
 }
