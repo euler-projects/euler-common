@@ -16,7 +16,7 @@ import javax.mail.internet.MimeMessage.RecipientType;
 /**
  * 简单邮件发送器，可单发，群发。
  * 
- * @author MZULE
+ * 基于MZULE的SimpleMailSender重写
  * 
  */
 public class SimpleMailSender {
@@ -34,16 +34,14 @@ public class SimpleMailSender {
      * 邮箱session
      */
     private transient Session session;
-    
+
     private final String senderEmailAddr;
-    private final String defaultReceiver;
-    
-    public SimpleMailSender(EmailConfig emailConfig) {
+
+    protected SimpleMailSender(EmailConfig emailConfig) {
         init(emailConfig.getUsername(), emailConfig.getPassword(), emailConfig.getSmtp());
         this.senderEmailAddr = emailConfig.getSender();
-        this.defaultReceiver = emailConfig.getDefaultReceiver();
     }
-    
+
     private void init(String username, String password, String smtpHostName) {
         // 初始化props
         props.put("mail.smtp.auth", "true");
@@ -80,10 +78,6 @@ public class SimpleMailSender {
         // 发送
         Transport.send(message);
     }
-    
-    public void sendToDefaultReceiver(String subject, Object content) throws AddressException, MessagingException {
-        this.send(subject, content, this.defaultReceiver);
-    }
 
     /**
      * 群发邮件
@@ -97,8 +91,7 @@ public class SimpleMailSender {
      * @throws AddressException
      * @throws MessagingException
      */
-    public void send(String subject, Object content, String... receiver)
-            throws AddressException, MessagingException {
+    public void send(String subject, Object content, String... receiver) throws AddressException, MessagingException {
         // 创建mime类型邮件
         final MimeMessage message = new MimeMessage(session);
         // 设置发信人
