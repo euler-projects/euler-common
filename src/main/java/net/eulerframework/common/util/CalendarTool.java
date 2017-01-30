@@ -7,17 +7,15 @@ import java.util.Date;
 import java.util.Locale;
 
 public abstract class CalendarTool {
+    
+    public static Calendar now(){
+        return Calendar.getInstance();
+    }
 
     public static void setZero(Calendar calendar, int... field){
         for(int each : field){
             calendar.set(each, 0);
         }       
-    }
-    
-    public static Calendar beginningOfSystemDay(){
-        Calendar cal = Calendar.getInstance();
-        CalendarTool.setZero(cal, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND);
-        return cal;
     }
     
     public static Calendar beginningOfTheDay(Calendar calendar){
@@ -46,6 +44,12 @@ public abstract class CalendarTool {
         cal.setTime(date);
         return CalendarTool.endingOfTheDay(cal);
     }
+    
+    public static Calendar getInstance(Date date){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        return c;
+    }
 
     public static Date parseDate (String source, String pattern) throws ParseException{
         return new SimpleDateFormat(pattern).parse(source);
@@ -55,30 +59,7 @@ public abstract class CalendarTool {
         return new SimpleDateFormat(pattern, local).parse(source);
     }
 
-    public static Calendar parseCalendar (String source, String pattern) throws ParseException{
-        return formDate(parseDate(source, pattern));
-    }
-
-    public static Calendar parseCalendar (String source, String pattern, Locale local) throws ParseException{
-        return formDate(parseDate(source, pattern, local));
-    }
-
     public static String formatDate (Date date, String pattern){
         return new SimpleDateFormat(pattern).format(date);
-    }
-
-
-    public static String formatCalendar (Calendar calendar, String pattern){
-        return formatDate(calendar.getTime() , pattern);
-    }
-    
-    public static Calendar now(){
-        return Calendar.getInstance();
-    }
-    
-    public static Calendar formDate(Date date){
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        return c;
     }
 }

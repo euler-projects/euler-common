@@ -7,12 +7,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.eulerframework.common.util.log.LogSupport;
 
-public class PropertySource {
-
-    protected final Logger logger = LogManager.getLogger();
+public class PropertySource extends LogSupport {
 
     private Properties props;
 

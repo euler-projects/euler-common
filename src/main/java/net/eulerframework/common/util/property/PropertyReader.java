@@ -2,12 +2,10 @@ package net.eulerframework.common.util.property;
 
 import java.io.IOException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.eulerframework.common.util.log.LogSupport;
 
-public class PropertyReader {
-    
-    protected final Logger logger = LogManager.getLogger();
+
+public class PropertyReader extends LogSupport {
 
     private PropertySource propertySource;
     
