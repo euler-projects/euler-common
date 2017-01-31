@@ -6,7 +6,14 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+
 public abstract class StringTool {
+    
+    protected static final Logger logger = LogManager.getLogger();
+    
     private static final String REGEX_MULTISPACE = "[^\\S\\r\\n]+";// 除换行外的连续空白字符
     private static final String REGEX_HTNL_SCRIPT = "<script[^>]*?>[\\s\\S]*?<\\/script>"; // 定义script的正则表达式
     private static final String REGEX_HTML_STYPE = "<style[^>]*?>[\\s\\S]*?<\\/style>"; // 定义style的正则表达式
@@ -148,6 +155,26 @@ public abstract class StringTool {
             return string;
 
         return string.replace("\r\n", "").replace("\r", "").replace("\n", "");
+    }
+    
+    /**
+     * 将纯ASCII打印字符串(0x20-0x7e)转为下划线命名法，连续的空白字符会被转换为一个下划线表示，如果待转换的字符串含有非ASCII字符，则放弃转换，原样返回
+     * @param string 待转换的字符串
+     * @return 转换后的字符串
+     */
+    public static String toUnderlineNomenclature(String string) {
+        if(string == null || string.length() == 0)
+            return string;
+        if (!string.matches("^[\\u0020-\\u007e]+$")) {
+            logger.warn("只能转换ASCII打印字符串(0x20-0x7e),函数将返回未修改的字符串");
+            return string;
+        }
+        
+        string = StringTool.earseMultiSpcases(string);
+        
+        string = string.replace(' ', '_');
+        
+        return string;
     }
 
     /**
