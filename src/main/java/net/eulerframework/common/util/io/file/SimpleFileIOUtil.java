@@ -6,7 +6,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -168,6 +171,34 @@ public abstract class SimpleFileIOUtil {
         } finally {
             if (fileOutputStream != null)
                 fileOutputStream.close();
+        }
+    }
+    /**
+     * 将文件写入输出流
+     * @param file 待写文件
+     * @param outputStream 目标输出流
+     * @throws IOException 读写异常
+     */
+    public static void readFileToOutputStream(File file, OutputStream outputStream) throws IOException {
+        ByteBuffer buff = ByteBuffer.allocate(1024);
+        FileChannel fileInChannel = null;
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(file);
+            fileInChannel = fileInputStream.getChannel();
+            int length = 0;
+            while((length = fileInChannel.read(buff)) != -1) {
+                buff.flip();
+                outputStream.write(buff.array(), 0, length);
+                buff.clear();
+            }          
+        } finally {
+            if(fileInputStream != null) {
+                fileInputStream.close();          
+            }
+            if(fileInChannel != null) {
+                fileInChannel.close();          
+            }
         }
     }
 
