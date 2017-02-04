@@ -233,4 +233,10 @@ public abstract class StringTool {
         System.out.println(randomString(i));
         System.out.println(i);
     }
+
+    public static String trim(String string) {
+        if(string == null || string.length() == 0)
+            return string;
+        return string.trim();
+    }
 }
