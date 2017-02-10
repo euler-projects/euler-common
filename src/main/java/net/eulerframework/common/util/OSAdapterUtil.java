@@ -1,6 +1,6 @@
 package net.eulerframework.common.util;
 
-public class OSAdapter {
+public class OSAdapterUtil {
 
     /**
      * 统一路径为UNIX格式,结尾的"/"会去掉<br>

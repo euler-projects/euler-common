@@ -28,7 +28,7 @@ public abstract class StringUtil {
     }
 
     public final static int getStringBytesLength(String string) {
-        if (isEmpty(string))
+        if (string == null)
             return 0;
 
         return string.getBytes().length;
