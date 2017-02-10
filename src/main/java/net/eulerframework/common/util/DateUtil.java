@@ -45,7 +45,7 @@ public abstract class DateUtil {
         return DateUtil.endingOfTheDay(cal);
     }
     
-    public static Calendar getInstance(Date date){
+    public static Calendar toCalendar(Date date){
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         return c;
