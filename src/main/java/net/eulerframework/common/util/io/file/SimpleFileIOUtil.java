@@ -33,7 +33,7 @@ public abstract class SimpleFileIOUtil {
      * @throws FileReadException 其他读取异常
      */
     public static byte[] readFileByByte(File file) throws FileNotFoundException, FileReadException {
-        Assert.isNotNull(file, "file is null");
+        Assert.notNull(file, "file is null");
         
         if(file.length() > MAX_SIZE) {
             throw new FileReadException("file too large, max file size is " + MAX_SIZE + " bytes.");
@@ -74,7 +74,7 @@ public abstract class SimpleFileIOUtil {
      * @throws FileReadException 其他读取异常
      */
     public static byte[] readFileByMultiBytes(File file, int number) throws FileNotFoundException, FileReadException {
-        Assert.isNotNull(file, "file is null");
+        Assert.notNull(file, "file is null");
 
         logger.info("Load file: " + file.getPath() + " Size: " + file.length());
         
@@ -120,7 +120,7 @@ public abstract class SimpleFileIOUtil {
      * @throws IOException IO异常
      */
     public static void writeFile(String filePath, String str, boolean append) throws IOException {
-        Assert.isNotNull(filePath, "filePath is null");
+        Assert.notNull(filePath, "filePath is null");
 
         logger.info("Write File: " + filePath);
 
@@ -154,7 +154,7 @@ public abstract class SimpleFileIOUtil {
      * @throws IOException IO异常
      */
     public static void writeFile(String filePath, byte[] data, boolean append) throws IOException {
-        Assert.isNotNull(filePath, "filePath is null");
+        Assert.notNull(filePath, "filePath is null");
 
         logger.info("Write File: " + filePath);
 
@@ -224,7 +224,7 @@ public abstract class SimpleFileIOUtil {
      *         "false".
      */
     public static boolean deleteFile(File file) {
-        Assert.isNotNull(file, "file is null");
+        Assert.notNull(file, "file is null");
         
         if (!file.exists())
             return true;
@@ -251,7 +251,7 @@ public abstract class SimpleFileIOUtil {
      * @throws IOException IO异常
      */
     public static void createFileIfNotExist(File file) throws IOException {
-        Assert.isNotNull(file, "file is null");
+        Assert.notNull(file, "file is null");
         
         if (!file.getParentFile().exists()) {
             logger.info("Create dir: " + file.getParentFile().getPath());

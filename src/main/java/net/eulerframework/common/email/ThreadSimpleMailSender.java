@@ -13,17 +13,17 @@ public class ThreadSimpleMailSender {
     }
 
     public void send(String subject, String content, String receiver) {
-        Assert.isNotNull(subject, "邮件主题不能为空");
-        Assert.isNotNull(content, "邮件内容不能为空");
-        Assert.isNotNull(receiver, "收信人不能为空");
+        Assert.notNull(subject, "邮件主题不能为空");
+        Assert.notNull(content, "邮件内容不能为空");
+        Assert.notNull(receiver, "收信人不能为空");
         MailSendThread mailSendThread = new MailSendThread(subject, content, receiver);
         mailSendThread.start();
     }
 
     public void send(String subject, String content, String... receiver) {
-        Assert.isNotNull(subject, "邮件主题不能为空");
-        Assert.isNotNull(content, "邮件内容不能为空");
-        Assert.isNotNull(receiver, "收信人不能为空");
+        Assert.notNull(subject, "邮件主题不能为空");
+        Assert.notNull(content, "邮件内容不能为空");
+        Assert.notNull(receiver, "收信人不能为空");
         MailSendThread mailSendThread = new MailSendThread(subject, content, receiver);
         mailSendThread.start();
     }

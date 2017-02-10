@@ -1,6 +1,6 @@
 package net.eulerframework.common.util;
 
-public class Sleep {
+public class CommonUtil {
 
     public static void sleep(int seconds) {
         int i = 0;

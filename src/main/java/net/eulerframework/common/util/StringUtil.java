@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.sourceforge.pinyin4j.PinyinHelper;
+
 
 public abstract class StringUtil {
     
@@ -238,5 +240,29 @@ public abstract class StringUtil {
         if(string == null || string.length() == 0)
             return string;
         return string.trim();
+    }
+
+    /**
+     * 将字符串转换为拼音
+     * @param str 原字符串
+     * @return 拼音
+     */
+    public static String toPinYinString(String str){  
+        
+        StringBuilder sb=new StringBuilder();  
+        String[] arr=null;  
+          
+        for(int i=0;i<str.length();i++){  
+            arr=PinyinHelper.toHanyuPinyinStringArray(str.charAt(i));  
+            if(arr!=null && arr.length>0){  
+                for (String string : arr) {  
+                    sb.append(string);  
+                }  
+            } else {
+                sb.append(str.charAt(i));
+            } 
+        }
+          
+        return sb.toString().toLowerCase();  
     }
 }

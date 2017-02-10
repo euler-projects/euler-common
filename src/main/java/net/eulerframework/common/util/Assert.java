@@ -31,11 +31,11 @@ public class Assert {
         }
     }
     
-    public static <T extends RuntimeException> void isNotNull(Object object, String message) {
-        Assert.isNotNull(object, IllegalArgumentException.class, message);
+    public static <T extends RuntimeException> void notNull(Object object, String message) {
+        Assert.notNull(object, IllegalArgumentException.class, message);
     }
 
-    public static <T extends RuntimeException> void isNotNull(Object object, Class<T> exceptionClass, String message) {
+    public static <T extends RuntimeException> void notNull(Object object, Class<T> exceptionClass, String message) {
         if (object == null) {
             Assert.throwException(exceptionClass, message);
         }
