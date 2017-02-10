@@ -22,13 +22,13 @@ public abstract class StringUtil {
     private static final String REGEX_HTML_TAG = "<[^>]+>"; // 定义HTML标签的正则表达式
     // private static final String regEx_space = "\\s*|\t";//定义空格制表符符
     // private static final String regEx_space = "\\s*|\t|\r|\n";//定义空格回车换行符
-
-    public final static boolean isNull(String inputStr) {
+    
+    public final static boolean isEmpty(String inputStr) {
         return inputStr == null || inputStr.trim().equals("") || inputStr.trim().toLowerCase().equals("null");
     }
 
     public final static int getStringBytesLength(String string) {
-        if (isNull(string))
+        if (isEmpty(string))
             return 0;
 
         return string.getBytes().length;
@@ -59,7 +59,7 @@ public abstract class StringUtil {
         }
         subString = subString.substring(0, subString.length() - 1);
 
-        if (!StringUtil.isNull(suffix)) {
+        if (!StringUtil.isEmpty(suffix)) {
             subString += suffix;
         }
 
