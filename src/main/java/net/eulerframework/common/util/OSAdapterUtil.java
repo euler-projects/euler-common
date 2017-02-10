@@ -22,7 +22,7 @@ public class OSAdapterUtil {
      */
     public static String convertDirToUnixFormat(String dir) {
         if (dir == null)
-            return null;
+            return dir;
     
         String unixDir = dir.replace("\\", "/");
         if (unixDir.endsWith("/") && unixDir.length() > 1) {
