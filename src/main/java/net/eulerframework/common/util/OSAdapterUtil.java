@@ -16,19 +16,19 @@ public class OSAdapterUtil {
      * 
      * </blockquote>
      * 
-     * @param path
+     * @param dir
      *            原始路径
      * @return unix路径
      */
-    public static String convertDirToUnixFormat(String path) {
-        if (path == null)
+    public static String convertDirToUnixFormat(String dir) {
+        if (dir == null)
             return null;
     
-        String unixPath = path.replace("\\", "/");
-        if (unixPath.endsWith("/") && unixPath.length() > 1) {
-            unixPath = unixPath.substring(0, unixPath.length() - 1);
+        String unixDir = dir.replace("\\", "/");
+        if (unixDir.endsWith("/") && unixDir.length() > 1) {
+            unixDir = unixDir.substring(0, unixDir.length() - 1);
         }
-        return unixPath;
+        return unixDir;
     }
 
 }
