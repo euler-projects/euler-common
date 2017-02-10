@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import net.eulerframework.common.util.ArrayTool;
+import net.eulerframework.common.util.ArrayUtil;
 
 public class ArrayTest {
 
@@ -15,7 +15,7 @@ public class ArrayTest {
         Character[] ret = {'a', 'b', 'c', 'd', 'e', 'f'}; 
         Character[] ret2 = {'a', 'b', 'c', 'd', 'e', 'f', 'a', 'b', 'c', 'd', 'e', 'f'};    
         
-        assertArrayEquals(ret, ArrayTool.concat(a, b));
-        assertArrayEquals(ret2, ArrayTool.concatAll(a, b, ret));
+        assertArrayEquals(ret, ArrayUtil.concat(a, b));
+        assertArrayEquals(ret2, ArrayUtil.concatAll(a, b, ret));
     }
 }

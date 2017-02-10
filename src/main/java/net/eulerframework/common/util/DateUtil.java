@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public abstract class CalendarTool {
+public abstract class DateUtil {
     
     public static Calendar now(){
         return Calendar.getInstance();
@@ -21,7 +21,7 @@ public abstract class CalendarTool {
     public static Calendar beginningOfTheDay(Calendar calendar){
         Calendar cal = Calendar.getInstance();
         cal.setTime(calendar.getTime());
-        CalendarTool.setZero(cal, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND);
+        DateUtil.setZero(cal, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND);
         return cal;
     }
 
@@ -36,13 +36,13 @@ public abstract class CalendarTool {
     public static Calendar beginningOfTheDay(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        return CalendarTool.beginningOfTheDay(cal);
+        return DateUtil.beginningOfTheDay(cal);
     }
 
     public static Calendar endingOfTheDay(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        return CalendarTool.endingOfTheDay(cal);
+        return DateUtil.endingOfTheDay(cal);
     }
     
     public static Calendar getInstance(Date date){

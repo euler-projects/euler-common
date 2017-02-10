@@ -2,7 +2,7 @@ package net.eulerframework.common.util;
 
 import java.lang.reflect.Array;
 
-public abstract class ArrayTool {
+public abstract class ArrayUtil {
     
     public static <T> T[] concat(T[] array1, T[] array2) {
         int len1 = array1.length;

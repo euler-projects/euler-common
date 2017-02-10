@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-public abstract class StringTool {
+public abstract class StringUtil {
     
     protected static final Logger logger = LogManager.getLogger();
     
@@ -57,7 +57,7 @@ public abstract class StringTool {
         }
         subString = subString.substring(0, subString.length() - 1);
 
-        if (!StringTool.isNull(suffix)) {
+        if (!StringUtil.isNull(suffix)) {
             subString += suffix;
         }
 
@@ -170,7 +170,7 @@ public abstract class StringTool {
             return string;
         }
         
-        string = StringTool.earseMultiSpcases(string);
+        string = StringUtil.earseMultiSpcases(string);
         
         string = string.replace(' ', '_');
         

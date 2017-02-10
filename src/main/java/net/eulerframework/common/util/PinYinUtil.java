@@ -2,7 +2,7 @@ package net.eulerframework.common.util;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 
-public abstract class PinYinTool {
+public abstract class PinYinUtil {
     public static String toPinYinString(String str){  
         
         StringBuilder sb=new StringBuilder();  
