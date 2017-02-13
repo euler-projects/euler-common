@@ -13,7 +13,7 @@ public abstract class Assert {
         }
     }
     
-    public static <T extends RuntimeException> void isTrue(boolean expression, String message) {
+    public static void isTrue(boolean expression, String message) {
         Assert.isTrue(expression, IllegalArgumentException.class, message);
     }
 
@@ -21,7 +21,7 @@ public abstract class Assert {
         Assert.isFalse(!expression, exceptionClass, message);
     }
     
-    public static <T extends RuntimeException> void isFalse(boolean expression, String message) {
+    public static void isFalse(boolean expression, String message) {
         Assert.isFalse(expression, IllegalArgumentException.class, message);
     }
 
@@ -31,7 +31,7 @@ public abstract class Assert {
         }
     }
     
-    public static <T extends RuntimeException> void notNull(Object object, String message) {
+    public static void notNull(Object object, String message) {
         Assert.notNull(object, IllegalArgumentException.class, message);
     }
 
@@ -41,7 +41,7 @@ public abstract class Assert {
         }
     }
     
-    public static <T extends RuntimeException> void isNull(Object object, String message) {
+    public static void isNull(Object object, String message) {
         Assert.isNull(object, IllegalArgumentException.class, message);
     }
 

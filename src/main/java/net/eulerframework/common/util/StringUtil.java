@@ -17,16 +17,21 @@ public abstract class StringUtil {
     protected static final Logger logger = LogManager.getLogger();
     
     private static final String REGEX_MULTISPACE = "[^\\S\\r\\n]+";// 除换行外的连续空白字符
-    private static final String REGEX_HTNL_SCRIPT = "<script[^>]*?>[\\s\\S]*?<\\/script>"; // 定义script的正则表达式
-    private static final String REGEX_HTML_STYPE = "<style[^>]*?>[\\s\\S]*?<\\/style>"; // 定义style的正则表达式
-    private static final String REGEX_HTML_TAG = "<[^>]+>"; // 定义HTML标签的正则表达式
-    // private static final String regEx_space = "\\s*|\t";//定义空格制表符符
-    // private static final String regEx_space = "\\s*|\t|\r|\n";//定义空格回车换行符
     
-    public final static boolean isEmpty(String inputStr) {
-        return inputStr == null || inputStr.trim().equals("") || inputStr.trim().toLowerCase().equals("null");
+    /**
+     * 判断字符串是否为<code>null<code>,<code>""</code>,<code>"null"</code>(忽略大小写)
+     * @param string 待判断的字符串
+     * @return 判断结果
+     */
+    public final static boolean isEmpty(String string) {
+        return string == null || string.trim().equals("") || string.trim().toLowerCase().equals("null");
     }
 
+    /**
+     * 获取字符串的字节数
+     * @param string 待判断的字符串
+     * @return 字符串的字节数
+     */
     public final static int getStringBytesLength(String string) {
         if (string == null)
             return 0;
@@ -37,12 +42,9 @@ public abstract class StringUtil {
     /**
      * 按字节长度截取字符串
      *
-     * @param string
-     *            要截取的字符串
-     * @param subBytes
-     *            截取字节长度
-     * @param suffix
-     *            如果发生截取,在结果后添加的后缀,为<code>null</code>表示不添加
+     * @param string 要截取的字符串
+     * @param subBytes 截取字节长度
+     * @param suffix 如果发生截取,在结果后添加的后缀,为<code>null</code>表示不添加
      * @return 截取后字符串
      */
     public static String subStringByBytes(String string, int subBytes, String suffix) {
@@ -120,43 +122,15 @@ public abstract class StringUtil {
     }
 
     /**
-     * 删除Html标签
-     *
-     * @param htmlStr 带有HTML标记的字符串
-     * @return 清除标记后的字符串
-     */
-    public static String earseHTMLTag(String htmlStr) {
-
-        if (htmlStr == null)
-            return htmlStr;
-
-        Pattern p_script = Pattern.compile(REGEX_HTNL_SCRIPT, Pattern.CASE_INSENSITIVE);
-        Matcher m_script = p_script.matcher(htmlStr);
-        htmlStr = m_script.replaceAll(""); // 过滤script标签
-
-        Pattern p_style = Pattern.compile(REGEX_HTML_STYPE, Pattern.CASE_INSENSITIVE);
-        Matcher m_style = p_style.matcher(htmlStr);
-        htmlStr = m_style.replaceAll(""); // 过滤style标签
-
-        Pattern p_html = Pattern.compile(REGEX_HTML_TAG, Pattern.CASE_INSENSITIVE);
-        Matcher m_html = p_html.matcher(htmlStr);
-        htmlStr = m_html.replaceAll(""); // 过滤html标签
-        htmlStr.replaceAll("&nbsp;", " ");// 替换空格
-        return htmlStr.trim(); // 返回文本字符串
-    }
-
-    /**
      * 删除换行符
      *
      * @param string 待处理的字符串
      * @return 处理后的字符串
      */
     public static String earseReturn(String string) {
-
         if (string == null)
             return string;
-
-        return string.replace("\r\n", "").replace("\r", "").replace("\n", "");
+        return convertToLF(string).replace("\n", "");
     }
     
     /**
@@ -229,13 +203,12 @@ public abstract class StringUtil {
         }
         return stringBuffer.toString();
     }
-    
-    public static void main(String[] args) {
-        Integer i = 100;
-        System.out.println(randomString(i));
-        System.out.println(i);
-    }
 
+    /**
+     * 去除字符串头尾的空白,与<code>String.trim()</code>的区别在于可以处理空对象
+     * @param string 待处理的字符串
+     * @return 处理后的字符串
+     */
     public static String trim(String string) {
         if(string == null || string.length() == 0)
             return string;
