@@ -13,7 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>euler-common</name>
     <url>https://eulerproject.io</url>
-    <description>Common Module for Euler Projects</description>
+    <description>A useful code collection</description>
     
     <properties>
         <jdk.version>1.7</jdk.version>
