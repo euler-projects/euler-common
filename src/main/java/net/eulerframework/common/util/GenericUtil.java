@@ -3,7 +3,7 @@ package net.eulerframework.common.util;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public abstract class Generic {
+public abstract class GenericUtil {
     
     public static Class<?> findSuperClassGenricType(Class<?> clazz, int index){
         if(clazz == null)

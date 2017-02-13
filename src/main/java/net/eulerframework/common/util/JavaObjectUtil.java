@@ -3,7 +3,7 @@ package net.eulerframework.common.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public abstract class BeanTool {
+public abstract class JavaObjectUtil {
     public static void clearEmptyProperty(Object obj) {
         if (obj == null)
             return;
@@ -32,7 +32,7 @@ public abstract class BeanTool {
             Class<?> parentClazz = clazz.getSuperclass();
             if (parentClazz != Object.class) {
                 Field[] parentClazzFields = getBeanFields(parentClazz, true);
-                Field[] result = ArrayTool.concatAll(fields, parentClazzFields);
+                Field[] result = ArrayUtil.concatAll(fields, parentClazzFields);
                 return result;
             }
         }

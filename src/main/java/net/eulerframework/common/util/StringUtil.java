@@ -6,20 +6,29 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class StringTool {
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.sourceforge.pinyin4j.PinyinHelper;
+
+
+public abstract class StringUtil {
+    
+    protected static final Logger logger = LogManager.getLogger();
+    
     private static final String REGEX_MULTISPACE = "[^\\S\\r\\n]+";// 除换行外的连续空白字符
     private static final String REGEX_HTNL_SCRIPT = "<script[^>]*?>[\\s\\S]*?<\\/script>"; // 定义script的正则表达式
     private static final String REGEX_HTML_STYPE = "<style[^>]*?>[\\s\\S]*?<\\/style>"; // 定义style的正则表达式
     private static final String REGEX_HTML_TAG = "<[^>]+>"; // 定义HTML标签的正则表达式
     // private static final String regEx_space = "\\s*|\t";//定义空格制表符符
     // private static final String regEx_space = "\\s*|\t|\r|\n";//定义空格回车换行符
-
-    public final static boolean isNull(String inputStr) {
+    
+    public final static boolean isEmpty(String inputStr) {
         return inputStr == null || inputStr.trim().equals("") || inputStr.trim().toLowerCase().equals("null");
     }
 
     public final static int getStringBytesLength(String string) {
-        if (isNull(string))
+        if (string == null)
             return 0;
 
         return string.getBytes().length;
@@ -50,7 +59,7 @@ public abstract class StringTool {
         }
         subString = subString.substring(0, subString.length() - 1);
 
-        if (!StringTool.isNull(suffix)) {
+        if (!StringUtil.isEmpty(suffix)) {
             subString += suffix;
         }
 
@@ -149,6 +158,26 @@ public abstract class StringTool {
 
         return string.replace("\r\n", "").replace("\r", "").replace("\n", "");
     }
+    
+    /**
+     * 将纯ASCII打印字符串(0x20-0x7e)转为下划线命名法，连续的空白字符会被转换为一个下划线表示，如果待转换的字符串含有非ASCII字符，则放弃转换，原样返回
+     * @param string 待转换的字符串
+     * @return 转换后的字符串
+     */
+    public static String toUnderlineNomenclature(String string) {
+        if(string == null || string.length() == 0)
+            return string;
+        if (!string.matches("^[\\u0020-\\u007e]+$")) {
+            logger.warn("只能转换ASCII打印字符串(0x20-0x7e),函数将返回未修改的字符串");
+            return string;
+        }
+        
+        string = StringUtil.earseMultiSpcases(string);
+        
+        string = string.replace(' ', '_');
+        
+        return string;
+    }
 
     /**
      * 首字母转小写
@@ -205,5 +234,35 @@ public abstract class StringTool {
         Integer i = 100;
         System.out.println(randomString(i));
         System.out.println(i);
+    }
+
+    public static String trim(String string) {
+        if(string == null || string.length() == 0)
+            return string;
+        return string.trim();
+    }
+
+    /**
+     * 将字符串转换为拼音
+     * @param str 原字符串
+     * @return 拼音
+     */
+    public static String toPinYinString(String str){  
+        
+        StringBuilder sb=new StringBuilder();  
+        String[] arr=null;  
+          
+        for(int i=0;i<str.length();i++){  
+            arr=PinyinHelper.toHanyuPinyinStringArray(str.charAt(i));  
+            if(arr!=null && arr.length>0){  
+                for (String string : arr) {  
+                    sb.append(string);  
+                }  
+            } else {
+                sb.append(str.charAt(i));
+            } 
+        }
+          
+        return sb.toString().toLowerCase();  
     }
 }

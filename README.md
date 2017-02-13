@@ -8,3 +8,11 @@
 
 ## About
 Common Utils for Euler Project
+
+Visit [eulerproject.io][] for more info.
+
+## License
+This project is released under the [MIT License][].
+
+[MIT License]: https://opensource.org/licenses/MIT
+[eulerproject.io]: https://eulerproject.io

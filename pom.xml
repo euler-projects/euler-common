@@ -10,25 +10,27 @@
     </parent>
     
     <artifactId>euler-common</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>euler-common</name>
     <url>https://eulerproject.io</url>
-    <description>Common Module for Euler Projects</description>
+    <description>A useful code collection</description>
     
     <properties>
         <jdk.version>1.7</jdk.version>
         
-        <log4j.version>2.5</log4j.version>
+        <log4j2.version>2.5</log4j2.version>
         <pinyin4j.version>2.5.1</pinyin4j.version>
         <javax.mail-api.version>1.5.5</javax.mail-api.version>
         <javax.mail.version>1.5.4</javax.mail.version>
+        
+        <junit.version>4.8.2</junit.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
+            <version>${log4j2.version}</version>
         </dependency>
         <dependency>
             <groupId>com.belerweb</groupId>
@@ -45,6 +47,13 @@
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>${javax.mail.version}</version>
+        </dependency>
+        
+        <dependency>  
+            <groupId>junit</groupId>  
+            <artifactId>junit</artifactId>  
+            <version>${junit.version}</version>  
+            <scope>test</scope>  
         </dependency>
     </dependencies>
 

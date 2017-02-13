@@ -2,81 +2,49 @@ package net.eulerframework.common.email;
 
 import javax.mail.MessagingException;
 
+import net.eulerframework.common.util.Assert;
+
 public class ThreadSimpleMailSender {
-    
+
     private final EmailConfig emailConfig;
-    
-    public ThreadSimpleMailSender(EmailConfig emailConfig) {
+
+    protected ThreadSimpleMailSender(EmailConfig emailConfig) {
         this.emailConfig = emailConfig;
     }
-    
-    public void sendToDefaultReceiver(String subject, Object content) {
-        MailSender1 senderThread = new MailSender1(subject, content);
-        senderThread.start();
+
+    public void send(String subject, String content, String receiver) {
+        Assert.notNull(subject, "邮件主题不能为空");
+        Assert.notNull(content, "邮件内容不能为空");
+        Assert.notNull(receiver, "收信人不能为空");
+        MailSendThread mailSendThread = new MailSendThread(subject, content, receiver);
+        mailSendThread.start();
     }
 
-    public void send(String subject, Object content, String receiver){
-        MailSender2 senderThread = new MailSender2(subject, content, receiver);
-        senderThread.start();
+    public void send(String subject, String content, String... receiver) {
+        Assert.notNull(subject, "邮件主题不能为空");
+        Assert.notNull(content, "邮件内容不能为空");
+        Assert.notNull(receiver, "收信人不能为空");
+        MailSendThread mailSendThread = new MailSendThread(subject, content, receiver);
+        mailSendThread.start();
     }
 
-    public void send(String subject, Object content, String... receiver) {
-        MailSender3 senderThread = new MailSender3(subject, content, receiver);
-        senderThread.start();
-    }
-
-    private class MailSender1 extends Thread {
+    private class MailSendThread extends Thread {
         private final String subject;
-        private final Object content;
-        
-        public MailSender1(String subject, Object content){
-            this.subject = subject;
-            this.content = content;
-        }
-
-        @Override
-        public void run() {
-            SimpleMailSender sender = new SimpleMailSender(emailConfig);
-            try {
-                sender.sendToDefaultReceiver(subject, content);
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
-            }
-            
-        }
-    }
-    
-    private class MailSender2 extends Thread {
-        private final String subject;
-        private final Object content;
+        private final String content;
         private final String receiver;
-        
-        public MailSender2(String subject, Object content, String receiver){
+        private final String[] receivers;
+
+        public MailSendThread(String subject, String content, String receiver) {
             this.subject = subject;
             this.content = content;
             this.receiver = receiver;
+            this.receivers = null;
         }
 
-        @Override
-        public void run() {
-            SimpleMailSender sender = new SimpleMailSender(emailConfig);
-            try {
-                sender.send(subject, content, receiver);
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
-            }
-            
-        }
-    }
-    
-    private class MailSender3 extends Thread {
-        private final String subject;
-        private final Object content;
-        private final String[] receivers;
-        
-        public MailSender3(String subject, Object content, String... receiver){
+        public MailSendThread(String subject, String content, String... receiver) {
             this.subject = subject;
             this.content = content;
+            this.receiver = null;
             this.receivers = receiver;
         }
 
@@ -84,11 +52,15 @@ public class ThreadSimpleMailSender {
         public void run() {
             SimpleMailSender sender = new SimpleMailSender(emailConfig);
             try {
-                sender.send(subject, content, receivers);
+                if (receiver != null) {
+                    sender.send(subject, content, receivers);
+                } else if (receivers != null) {
+                    sender.send(subject, content, receivers);
+                }
             } catch (MessagingException e) {
-                throw new RuntimeException(e);
+                throw new MailSendException(e);
             }
-            
+
         }
     }
 

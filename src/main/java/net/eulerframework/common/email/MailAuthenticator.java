@@ -5,11 +5,11 @@ import javax.mail.PasswordAuthentication;
 
 public class MailAuthenticator extends Authenticator {
 
-    public MailAuthenticator() {
+    protected MailAuthenticator() {
 
     }
 
-    public MailAuthenticator(String username, String password) {
+    protected MailAuthenticator(String username, String password) {
         this.username = username;
         this.password = password;
     }
