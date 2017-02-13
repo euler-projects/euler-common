@@ -32,10 +32,10 @@ public class PropertySource extends LogSupport {
         }
     }
 
-    public Object getProperty(String key) throws PropertyReadException {
+    public Object getProperty(String key) throws PropertyNotFoundException {
         Object value = this.props.get(key);
         if (value == null) {
-            throw new PropertyReadException("Key read error, no such key: " + key);
+            throw new PropertyNotFoundException("Property not found: " + key);
         }
         return value;
     }

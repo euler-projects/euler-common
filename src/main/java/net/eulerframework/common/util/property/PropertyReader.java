@@ -60,7 +60,7 @@ public class PropertyReader extends LogSupport {
         }
     }
     
-    public String get(String property) throws PropertyReadException {
+    public String get(String property) throws PropertyNotFoundException {
         String value = (String) propertySource.getProperty(property);
         logger.info("Load config: " + property + "=" + value);
         return value;
@@ -69,7 +69,7 @@ public class PropertyReader extends LogSupport {
     public String get(String property, String defaultValue) {
         try {
             return get(property);
-        } catch (PropertyReadException e) {
+        } catch (PropertyNotFoundException e) {
             logger.warn("Couldn't load "+ property +" , use " + defaultValue + " for default.");
             return defaultValue;
         }
@@ -78,7 +78,7 @@ public class PropertyReader extends LogSupport {
     public int getIntValue(String property, int defaultValue) {
         try {
             return Integer.parseInt(get(property));
-        } catch (PropertyReadException e) {
+        } catch (PropertyNotFoundException e) {
             logger.warn("Couldn't load "+ property +" , use " + defaultValue + " for default.");
             return defaultValue;
         }
@@ -87,7 +87,7 @@ public class PropertyReader extends LogSupport {
     public long getLongValue(String property, long defaultValue) {
         try {
             return Long.parseLong(get(property));
-        } catch (PropertyReadException e) {
+        } catch (PropertyNotFoundException e) {
             logger.warn("Couldn't load "+ property +" , use " + defaultValue + " for default.");
             return defaultValue;
         }
@@ -97,7 +97,7 @@ public class PropertyReader extends LogSupport {
     public double getDoubleValue(String property, double defaultValue) {
         try {
             return Double.parseDouble(get(property));
-        } catch (PropertyReadException e) {
+        } catch (PropertyNotFoundException e) {
             logger.warn("Couldn't load "+ property +" , use " + defaultValue + " for default.");
             return defaultValue;
         }
@@ -106,7 +106,7 @@ public class PropertyReader extends LogSupport {
     public boolean getBooleanValue(String property, boolean defaultValue) {
         try {
             return Boolean.parseBoolean(get(property));
-        } catch (PropertyReadException e) {
+        } catch (PropertyNotFoundException e) {
             logger.warn("Couldn't load "+ property +" , use " + defaultValue + " for default.");
             return defaultValue;
         }
@@ -127,12 +127,12 @@ public class PropertyReader extends LogSupport {
                 configValue = configValue.toUpperCase();
             
             return T.valueOf(defaultValue.getDeclaringClass(), configValue);
-        } catch (PropertyReadException e) {
+        } catch (PropertyNotFoundException e) {
             logger.warn("Couldn't load "+ property +" , use " + defaultValue + " for default.");
             return defaultValue;
         } catch (IllegalArgumentException e) {
-            logger.warn(property +" was configed as a wrong value , use " + defaultValue + " for default.");
-            return defaultValue;
+            logger.error(property +" was configed as a wrong value.");
+            throw new EnumPropertyReadException(e);
         }
     }
 }
