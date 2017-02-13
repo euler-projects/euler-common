@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Properties;
 
-import net.eulerframework.common.util.log.LogSupport;
+import net.eulerframework.common.base.log.LogSupport;
 
 public class PropertySource extends LogSupport {
 

@@ -2,7 +2,7 @@ package net.eulerframework.common.util.property;
 
 import java.io.IOException;
 
-import net.eulerframework.common.util.log.LogSupport;
+import net.eulerframework.common.base.log.LogSupport;
 
 
 public class PropertyReader extends LogSupport {

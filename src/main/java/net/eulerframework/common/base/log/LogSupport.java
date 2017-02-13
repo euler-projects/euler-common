@@ -1,4 +1,4 @@
-package net.eulerframework.common.util.log;
+package net.eulerframework.common.base.log;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
