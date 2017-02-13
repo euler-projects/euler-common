@@ -2,7 +2,7 @@ package net.eulerframework.common.util;
 
 import java.lang.reflect.Constructor;
 
-public class Assert {
+public abstract class Assert {
     
     private static <T extends RuntimeException> void throwException(Class<T> exceptionClass, String message) {
         try {
