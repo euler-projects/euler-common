@@ -7,7 +7,7 @@
 [![Build Status](https://ci.eulerproject.io/job/euler-common-stable-jdk7/badge/icon)](https://ci.eulerproject.io/job/euler-common-stable-jdk7)
 
 ## About
-Common Utils for Euler Project
+A useful code collection
 
 Visit [eulerproject.io][] for more info.
 
