@@ -12,7 +12,7 @@ public abstract class DateUtil {
         return Calendar.getInstance();
     }
 
-    public static void setZero(Calendar calendar, int... field){
+    public static void setFiledToZero(Calendar calendar, int... field){
         for(int each : field){
             calendar.set(each, 0);
         }       
@@ -21,7 +21,7 @@ public abstract class DateUtil {
     public static Calendar beginningOfTheDay(Calendar calendar){
         Calendar cal = Calendar.getInstance();
         cal.setTime(calendar.getTime());
-        DateUtil.setZero(cal, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND);
+        DateUtil.setFiledToZero(cal, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND);
         return cal;
     }
 
