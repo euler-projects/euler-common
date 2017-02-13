@@ -3,6 +3,7 @@ package net.eulerframework.common.util.property;
 import java.io.IOException;
 
 import net.eulerframework.common.base.log.LogSupport;
+import net.eulerframework.common.util.Assert;
 
 
 public class PropertyReader extends LogSupport {
@@ -27,9 +28,7 @@ public class PropertyReader extends LogSupport {
     public PropertyReader(String configFile) {
         this.logger.info("No config file path defined, search at root classpath path");
         
-        if(!configFile.startsWith("/")) {
-            throw new RuntimeException("configFile must start with '/' if caller class is not defined");
-        }
+        Assert.isTrue(configFile.startsWith("/"), "configFile must start with '/' if caller class is not defined");
         
         this.configFile = configFile;
         this.callerClass = this.getClass();

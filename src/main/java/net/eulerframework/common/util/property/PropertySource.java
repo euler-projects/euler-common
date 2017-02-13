@@ -19,16 +19,22 @@ public class PropertySource extends LogSupport {
      * @param callerClass 调用者的Class，用来确定搜索位置
      * @throws IOException config file cannot be found
      */
-    public PropertySource(String configFile, Class<?> callerClass) throws IOException {
+    protected PropertySource(String configFile, Class<?> callerClass) throws IOException {
+        InputStream inputStream = null;
         try {
             URL url = callerClass.getResource(configFile);
-            InputStream inputStream = url.openStream();
+            inputStream = url.openStream();
             this.logger.info("Load property file: " + url.toString());
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             this.props = new Properties();
             this.props.load(bufferedReader);
         } catch (NullPointerException e) {
             throw new IOException("Property file \"" + configFile + "\" read error. Does this file exist?", e);
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            if(inputStream != null)
+                inputStream.close();
         }
     }
 
