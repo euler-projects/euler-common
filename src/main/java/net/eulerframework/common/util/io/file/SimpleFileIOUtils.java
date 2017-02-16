@@ -21,7 +21,7 @@ import net.eulerframework.common.util.Assert;
  * @author cFrost
  *
  */
-public abstract class SimpleFileIOUtil {
+public abstract class SimpleFileIOUtils {
     private static final Logger logger = LogManager.getLogger();
     private static final int MAX_SIZE = 100 * 1024 * 1024;
 

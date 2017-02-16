@@ -5,7 +5,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public abstract class JavaObjectUtil {
+public abstract class JavaObjectUtils {
     
     /**
      * 将对象中为<code>""</code>的属性置为<code>null</code>
@@ -45,7 +45,7 @@ public abstract class JavaObjectUtil {
             Class<?> parentClazz = clazz.getSuperclass();
             if (parentClazz != Object.class) {
                 Field[] parentClazzFields = getBeanFields(parentClazz, true);
-                Field[] result = ArrayUtil.concatAll(fields, parentClazzFields);
+                Field[] result = ArrayUtils.concatAll(fields, parentClazzFields);
                 return result;
             }
         }
