@@ -51,5 +51,4 @@ public abstract class JsonUtils {
             throw new JsonConvertException(e);
         }
     }
-
 }

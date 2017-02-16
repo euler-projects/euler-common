@@ -62,4 +62,12 @@ public abstract class DateUtils {
     public static String formatDate (Date date, String pattern){
         return new SimpleDateFormat(pattern).format(date);
     }
+
+    public static Date parseDateFromUnixTimestamp(long unixTimestamp) {
+        return new Date(unixTimestamp * 1000);
+    }
+    
+    public static long getUnixTimestamp(Date date) {
+        return date.getTime() / 1000;
+    }
 }
