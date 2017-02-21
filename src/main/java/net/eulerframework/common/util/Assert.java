@@ -48,7 +48,7 @@ public abstract class Assert {
         }
     }
     
-    public static void notNull(boolean object) {
+    public static void notNull(Object object) {
         notNull(object, "[Assertion failed] - this object must not be null");
     }
     
@@ -62,7 +62,7 @@ public abstract class Assert {
         }
     }
     
-    public static void isNull(boolean object) {
+    public static void isNull(Object object) {
         isNull(object, "[Assertion failed] - this object must be null");
     }
     
