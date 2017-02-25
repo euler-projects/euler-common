@@ -2,8 +2,6 @@ package net.eulerframework.common.util.jwt;
 
 import java.util.Date;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.security.jwt.Jwt;
 import org.springframework.security.jwt.JwtHelper;
 import org.springframework.security.jwt.crypto.sign.RsaSigner;
@@ -11,22 +9,27 @@ import org.springframework.security.jwt.crypto.sign.RsaVerifier;
 import org.springframework.security.jwt.crypto.sign.SignatureVerifier;
 import org.springframework.security.jwt.crypto.sign.Signer;
 
+import net.eulerframework.common.base.log.LogSupport;
 import net.eulerframework.common.util.Assert;
 import net.eulerframework.common.util.DateUtils;
 import net.eulerframework.common.util.json.JsonConvertException;
 import net.eulerframework.common.util.json.JsonUtils;
 
-public class JwtEncryptor {
-
-    protected final Logger logger = LogManager.getLogger(this.getClass());
+/**
+ * Json Web Token 加密器/验证器
+ * 
+ * <p>使用加密器功能需提供RSA私钥作为加密密钥
+ * <p>使用验证器功能需提供RSA公钥作为校验密钥
+ * 
+ * @author cFrost
+ *
+ */
+public class JwtEncryptor extends LogSupport {
     
     private String signingKey;
     private String verifierKey;
     private Signer signer;
     private SignatureVerifier verifier;
-    
-    public JwtEncryptor() {
-    }
     
     public void setSigningKey(String rsaPrivateKey) {
         Assert.hasText(rsaPrivateKey);
@@ -66,6 +69,9 @@ public class JwtEncryptor {
      * @return JWT
      */
     public Jwt encode (JwtClaims claims) {
+        if(signer == null)
+            throw new RuntimeException("signingKey is null, cannot encode claims");
+        
         try {
             return JwtHelper.encode(JsonUtils.toJsonStr(claims), signer);
         } catch (JsonConvertException e) {
@@ -81,6 +87,9 @@ public class JwtEncryptor {
      * @throws InvalidJwtException 验证不通过
      */
     public Jwt decode(String jwtStr) throws InvalidJwtException {
+        if(verifier == null)
+            throw new RuntimeException("verifierKey is null, cannot dencode jwt");
+        
         try {
             Jwt jwt = JwtHelper.decode(jwtStr);
 
