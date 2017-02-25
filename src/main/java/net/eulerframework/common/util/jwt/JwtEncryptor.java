@@ -65,7 +65,7 @@ public class JwtEncryptor {
      * @param claims Claims对象
      * @return JWT
      */
-    public Jwt encode (BasicJwtClaims claims) {
+    public Jwt encode (JwtClaims claims) {
         try {
             return JwtHelper.encode(JsonUtils.toJsonStr(claims), signer);
         } catch (JsonConvertException e) {
@@ -74,65 +74,60 @@ public class JwtEncryptor {
     }
     
     /**
-     * 解码token而不校验
+     * 解码并校验JWT字符串
      * 
-     * @param jwtStr token
-     * @return 解码后的Jwt对象
-     * @throws JwtDecodeException 解码错误
-     */
-    private Jwt decodeIngoreVerify(String jwtStr) throws JwtDecodeException {
-        try {
-            return JwtHelper.decode(jwtStr);
-        } catch (Exception e) {
-            throw new JwtDecodeException("Cannot decode jwt string", e);
-        }
-    }
-    
-    /**
-     * 解码并校验token签名
-     * 
-     * @param jwtStr token
+     * @param jwtStr JWT字符串
      * @return 解码后的Jwt对象
      * @throws InvalidJwtException 验证不通过
      */
     public Jwt decode(String jwtStr) throws InvalidJwtException {
         try {
-            Jwt jwt = this.decodeIngoreVerify(jwtStr);
+            Jwt jwt = JwtHelper.decode(jwtStr);
 
             jwt.verifySignature(verifier);
             
+            String claims = jwt.getClaims();
+            
+            Long exp = JsonUtils.readKeyValue(claims, "exp", Long.class);
+            Long nbf = JsonUtils.readKeyValue(claims, "nbf", Long.class);
+            
+            Date now = new Date();
+            
+            if(exp != null) {
+                Date expireTime = DateUtils.parseDateFromUnixTimestamp(exp);
+                if(expireTime != null && expireTime.compareTo(now) <= 0)
+                    throw new InvalidJwtException("token has expired");                
+            }
+            
+            if(nbf != null) {
+                Date effectiveTime = DateUtils.parseDateFromUnixTimestamp(nbf);
+                if(effectiveTime != null && effectiveTime.compareTo(now) > 0)
+                    throw new InvalidJwtException("token has not effective yet");                
+            }             
+            
             return jwt;
+        } catch (InvalidJwtException e) {
+            throw e;
         } catch (Exception e) {
             throw new InvalidJwtException("Invalid jwt string", e);
         }
     }
     
     /**
-     * 解码token的claims并校验claims的过期时间和生效时间
+     * 解码并校验JWT字符串,并把JWT的Claims以对象形式返回
      * 
-     * @param jwtStr token
+     * @param jwtStr JWT字符串
      * @param claimsType claims对应的对象类型
      * @return claims对象
      * @throws InvalidJwtException 验证不通过
      */
-    public <T extends JwtClaims> T decodeClaims(String jwtStr, Class<T> claimsType) throws InvalidJwtException {
+    public <T extends JwtClaims> T decode(String jwtStr, Class<T> claimsType) throws InvalidJwtException {
         Jwt jwt = this.decode(jwtStr);
         try {
             T claims = JsonUtils.toObject(jwt.getClaims(), claimsType);
-            
-            Date now = new Date();
-            
-            Date expireTime = DateUtils.parseDateFromUnixTimestamp(claims.getExp() * 1000);
-            if(expireTime != null && expireTime.compareTo(now) <= 0)
-                throw new InvalidJwtException("token expired");
-            
-            Date effectiveTime = DateUtils.parseDateFromUnixTimestamp(claims.getNbf() * 1000);
-            if(effectiveTime != null && effectiveTime.compareTo(now) > 0)
-                throw new InvalidJwtException("token has not effective yet"); 
-            
             return claims;
         } catch (JsonConvertException e) {
-            throw new InvalidJwtException("Invalid jwt claims", e);
+            throw new InvalidClaimsException("Invalid jwt claims", e);
         }
     }
 }
