@@ -10,7 +10,7 @@ public class BasicJwtClaims implements JwtClaims {
 
     private String iss;
     private String sub;
-    private String aud;
+    private String[] aud;
     private Long exp;
     private Long nbf;
     private Long iat;
@@ -35,11 +35,11 @@ public class BasicJwtClaims implements JwtClaims {
     }
 
     @Override
-    public String getAud() {
+    public String[] getAud() {
         return aud;
     }
 
-    public void setAud(String aud) {
+    public void setAud(String[] aud) {
         this.aud = aud;
     }
 

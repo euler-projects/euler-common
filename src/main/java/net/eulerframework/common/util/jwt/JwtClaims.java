@@ -65,7 +65,7 @@ public interface JwtClaims {
      * 
      * @return the aud string
      */
-    public String getAud();
+    public String[] getAud();
 
     /**
      * "exp" (Expiration Time) Claim
