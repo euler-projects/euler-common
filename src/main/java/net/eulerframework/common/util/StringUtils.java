@@ -24,7 +24,7 @@ public abstract class StringUtils {
      * @return 判断结果
      */
     public final static boolean isNull(String str) {
-        return hasText(str) && !str.trim().toLowerCase().equals("null");
+        return !hasText(str) || str.trim().toLowerCase().equals("null");
     }
     
     /**
