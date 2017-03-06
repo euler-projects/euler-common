@@ -20,13 +20,28 @@ public abstract class StringUtils {
     
     /**
      * 判断字符串是否为<code>null<code>,<code>""</code>,<code>"null"</code>(忽略大小写)
-     * @param string 待判断的字符串
+     * @param str 待判断的字符串
      * @return 判断结果
      */
-    public final static boolean isNull(String string) {
-        return string == null || string.trim().equals("") || string.trim().toLowerCase().equals("null");
+    public final static boolean isNull(String str) {
+        return hasText(str) && !str.trim().toLowerCase().equals("null");
     }
-
+    
+    /**
+     * Check whether the given {@code String} is empty.
+     * <p>This method accepts any Object as an argument, comparing it to
+     * {@code null} and the empty String. As a consequence, this method
+     * will never return {@code true} for a non-null non-String object.
+     * <p>The Object signature is useful for general attribute handling code
+     * that commonly deals with Strings but generally has to iterate over
+     * Objects since attributes may e.g. be primitive value objects as well.
+     * @param str the candidate String
+     * @since 3.2.1
+     */
+    public static boolean isEmpty(Object str) {
+        return (str == null || "".equals(str));
+    }
+    
     /**
      * Check that the given {@code CharSequence} is neither {@code null} nor
      * of length 0.
