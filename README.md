@@ -1,3 +1,5 @@
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.eulerframework/euler-common/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.eulerframework/euler-common)
+
 ## Status
 
 ### latest
