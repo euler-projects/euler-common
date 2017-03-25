@@ -19,7 +19,7 @@ public abstract class StringUtils {
     private static final String REGEX_MULTISPACE = "[^\\S\\r\\n]+";// 除换行外的连续空白字符
     
     /**
-     * 判断字符串是否为{@code null{@code ,{@code ""},{@code "null"}(忽略大小写)
+     * 判断字符串是否为{@code null},{@code ""},{@code "null"}(忽略大小写)
      * @param str 待判断的字符串
      * @return 判断结果
      */
@@ -31,10 +31,10 @@ public abstract class StringUtils {
      * Check whether the given {@code String} is empty.
      * <p>This method accepts any Object as an argument, comparing it to
      * {@code null} and the empty String. As a consequence, this method
-     * will never return {@code true} for a non-null non-String object.</p>
+     * will never return {@code true} for a non-null non-String object.
      * <p>The Object signature is useful for general attribute handling code
      * that commonly deals with Strings but generally has to iterate over
-     * Objects since attributes may e.g. be primitive value objects as well.</p>
+     * Objects since attributes may e.g. be primitive value objects as well.
      * @param str the candidate String
      * @return {@code true} if the {@code str} is not {@code null}
      * 
@@ -48,13 +48,13 @@ public abstract class StringUtils {
      * Check that the given {@code CharSequence} is neither {@code null} nor
      * of length 0.
      * <p>Note: this method returns {@code true} for a {@code CharSequence}
-     * that purely consists of whitespace.</p>
+     * that purely consists of whitespace.
      * <p><pre class="code">
      * StringUtils.hasLength(null) = false
      * StringUtils.hasLength("") = false
      * StringUtils.hasLength(" ") = true
      * StringUtils.hasLength("Hello") = true
-     * </pre></p>
+     * </pre>
      * @param str the {@code CharSequence} to check (may be {@code null})
      * @return {@code true} if the {@code CharSequence} is not {@code null} and has length
      * @see #hasText(String)
@@ -66,7 +66,7 @@ public abstract class StringUtils {
     /**
      * Check that the given {@code String} is neither {@code null} nor of length 0.
      * <p>Note: this method returns {@code true} for a {@code String} that
-     * purely consists of whitespace.</p>
+     * purely consists of whitespace.
      * @param str the {@code String} to check (may be {@code null})
      * @return {@code true} if the {@code String} is not {@code null} and has length
      * @see #hasLength(CharSequence)
@@ -80,14 +80,14 @@ public abstract class StringUtils {
      * Check whether the given {@code CharSequence} contains actual <em>text</em>.
      * <p>More specifically, this method returns {@code true} if the
      * {@code CharSequence} is not {@code null}, its length is greater than
-     * 0, and it contains at least one non-whitespace character.</p>
+     * 0, and it contains at least one non-whitespace character.
      * <p><pre class="code">
      * StringUtils.hasText(null) = false
      * StringUtils.hasText("") = false
      * StringUtils.hasText(" ") = false
      * StringUtils.hasText("12345") = true
      * StringUtils.hasText(" 12345 ") = true
-     * </pre></p>
+     * </pre>
      * @param str the {@code CharSequence} to check (may be {@code null})
      * @return {@code true} if the {@code CharSequence} is not {@code null},
      * its length is greater than 0, and it does not contain whitespace only
@@ -110,7 +110,7 @@ public abstract class StringUtils {
      * Check whether the given {@code String} contains actual <em>text</em>.
      * <p>More specifically, this method returns {@code true} if the
      * {@code String} is not {@code null}, its length is greater than 0,
-     * and it contains at least one non-whitespace character.</p>
+     * and it contains at least one non-whitespace character.
      * @param str the {@code String} to check (may be {@code null})
      * @return {@code true} if the {@code String} is not {@code null}, its
      * length is greater than 0, and it does not contain whitespace only
