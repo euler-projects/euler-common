@@ -5,11 +5,9 @@ import java.lang.reflect.Constructor;
 /**
  * Assertion utility class.
  * 
- * <p>Some code was copied from {@link org.springframework.util.Assert}, copyright belongs to the original author.
+ * <p>Some code was copied from {@code org.springframework.util.Assert} copyright belongs to the original author.
  * 
  * @author cFrost
- * 
- * @see org.springframework.util.Assert
  */
 public abstract class Assert {
     

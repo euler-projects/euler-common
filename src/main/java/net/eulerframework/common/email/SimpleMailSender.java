@@ -61,8 +61,8 @@ public class SimpleMailSender {
      *            邮件内容
      * @param receiver
      *            收件人邮箱地址
-     * @throws AddressException
-     * @throws MessagingException
+     * @throws AddressException The exception thrown when a wrongly formatted address is encountered.
+     * @throws MessagingException The base class for all exceptions thrown by the Messaging classes
      */
     public void send(String subject, String content, String receiver) throws AddressException, MessagingException {
         // 创建mime类型邮件
@@ -88,8 +88,8 @@ public class SimpleMailSender {
      *            内容
      * @param receiver
      *            收件人们
-     * @throws AddressException
-     * @throws MessagingException
+     * @throws AddressException The exception thrown when a wrongly formatted address is encountered.
+     * @throws MessagingException The base class for all exceptions thrown by the Messaging classes
      */
     public void send(String subject, String content, String... receiver) throws AddressException, MessagingException {
         // 创建mime类型邮件
@@ -118,8 +118,8 @@ public class SimpleMailSender {
      *            内容
      * @param receivers
      *            收件人们
-     * @throws AddressException
-     * @throws MessagingException
+     * @throws AddressException The exception thrown when a wrongly formatted address is encountered.
+     * @throws MessagingException The base class for all exceptions thrown by the Messaging classes
      */
     public void send(String subject, String content, Collection<String> receivers)
             throws AddressException, MessagingException {

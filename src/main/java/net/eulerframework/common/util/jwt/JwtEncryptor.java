@@ -125,6 +125,7 @@ public class JwtEncryptor extends LogSupport {
     /**
      * 解码并校验JWT字符串,并把JWT的Claims以对象形式返回
      * 
+     * @param T JwtClaims
      * @param jwtStr JWT字符串
      * @param claimsType claims对应的对象类型
      * @return claims对象
