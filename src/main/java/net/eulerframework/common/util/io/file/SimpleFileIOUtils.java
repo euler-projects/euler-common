@@ -189,6 +189,7 @@ public abstract class SimpleFileIOUtils {
      * 将文件写入输出流
      * @param file 待写文件
      * @param outputStream 目标输出流
+     * @param cacheBytes 读取缓存大小
      * @throws IOException 读写异常
      */
     public static void readFileToOutputStream(File file, OutputStream outputStream, int cacheBytes) throws IOException {

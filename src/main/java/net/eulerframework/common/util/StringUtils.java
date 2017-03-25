@@ -49,7 +49,7 @@ public abstract class StringUtils {
      * of length 0.
      * <p>Note: this method returns {@code true} for a {@code CharSequence}
      * that purely consists of whitespace.
-     * <p><pre class="code">
+     * <pre class="code">
      * StringUtils.hasLength(null) = false
      * StringUtils.hasLength("") = false
      * StringUtils.hasLength(" ") = true
@@ -81,7 +81,7 @@ public abstract class StringUtils {
      * <p>More specifically, this method returns {@code true} if the
      * {@code CharSequence} is not {@code null}, its length is greater than
      * 0, and it contains at least one non-whitespace character.
-     * <p><pre class="code">
+     * <pre class="code">
      * StringUtils.hasText(null) = false
      * StringUtils.hasText("") = false
      * StringUtils.hasText(" ") = false
@@ -285,7 +285,7 @@ public abstract class StringUtils {
     /**
      * 随机生成字符串,字符串可能的取值在ASCII 0x21-0x7e之间
      * @param length 生成的字符串长度
-     * @return
+     * @return 生成的字符串
      */
     public static String randomString(int length) {
         StringBuffer stringBuffer = new StringBuffer();

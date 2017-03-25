@@ -114,7 +114,7 @@ public class PropertyReader extends LogSupport {
     /**
      * 读取枚举类型的配置
      * 
-     * @param T 待读取的枚举类
+     * @param <T> 待读取的枚举类
      * @param property 参数名
      * @param defaultValue 默认值，在读不到的时候返回此值
      * @param toUpperCase 是否将读取到的字符串转为大写后再转为对应的Enum
