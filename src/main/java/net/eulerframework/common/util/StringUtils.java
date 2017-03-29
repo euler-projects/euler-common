@@ -12,19 +12,112 @@ import org.apache.logging.log4j.Logger;
 import net.sourceforge.pinyin4j.PinyinHelper;
 
 
-public abstract class StringUtil {
+public abstract class StringUtils {
     
     protected static final Logger logger = LogManager.getLogger();
     
     private static final String REGEX_MULTISPACE = "[^\\S\\r\\n]+";// 除换行外的连续空白字符
     
     /**
-     * 判断字符串是否为<code>null<code>,<code>""</code>,<code>"null"</code>(忽略大小写)
-     * @param string 待判断的字符串
+     * 判断字符串是否为{@code null},{@code ""},{@code "null"}(忽略大小写)
+     * @param str 待判断的字符串
      * @return 判断结果
      */
-    public final static boolean isEmpty(String string) {
-        return string == null || string.trim().equals("") || string.trim().toLowerCase().equals("null");
+    public final static boolean isNull(String str) {
+        return !hasText(str) || str.trim().toLowerCase().equals("null");
+    }
+    
+    /**
+     * Check whether the given {@code String} is empty.
+     * <p>This method accepts any Object as an argument, comparing it to
+     * {@code null} and the empty String. As a consequence, this method
+     * will never return {@code true} for a non-null non-String object.
+     * <p>The Object signature is useful for general attribute handling code
+     * that commonly deals with Strings but generally has to iterate over
+     * Objects since attributes may e.g. be primitive value objects as well.
+     * @param str the candidate String
+     * @return {@code true} if the {@code str} is not {@code null}
+     * 
+     * @since 3.2.1
+     */
+    public static boolean isEmpty(Object str) {
+        return (str == null || "".equals(str));
+    }
+    
+    /**
+     * Check that the given {@code CharSequence} is neither {@code null} nor
+     * of length 0.
+     * <p>Note: this method returns {@code true} for a {@code CharSequence}
+     * that purely consists of whitespace.
+     * <pre class="code">
+     * StringUtils.hasLength(null) = false
+     * StringUtils.hasLength("") = false
+     * StringUtils.hasLength(" ") = true
+     * StringUtils.hasLength("Hello") = true
+     * </pre>
+     * @param str the {@code CharSequence} to check (may be {@code null})
+     * @return {@code true} if the {@code CharSequence} is not {@code null} and has length
+     * @see #hasText(String)
+     */
+    public static boolean hasLength(CharSequence str) {
+        return (str != null && str.length() > 0);
+    }
+
+    /**
+     * Check that the given {@code String} is neither {@code null} nor of length 0.
+     * <p>Note: this method returns {@code true} for a {@code String} that
+     * purely consists of whitespace.
+     * @param str the {@code String} to check (may be {@code null})
+     * @return {@code true} if the {@code String} is not {@code null} and has length
+     * @see #hasLength(CharSequence)
+     * @see #hasText(String)
+     */
+    public static boolean hasLength(String str) {
+        return hasLength((CharSequence) str);
+    }
+    
+    /**
+     * Check whether the given {@code CharSequence} contains actual <em>text</em>.
+     * <p>More specifically, this method returns {@code true} if the
+     * {@code CharSequence} is not {@code null}, its length is greater than
+     * 0, and it contains at least one non-whitespace character.
+     * <pre class="code">
+     * StringUtils.hasText(null) = false
+     * StringUtils.hasText("") = false
+     * StringUtils.hasText(" ") = false
+     * StringUtils.hasText("12345") = true
+     * StringUtils.hasText(" 12345 ") = true
+     * </pre>
+     * @param str the {@code CharSequence} to check (may be {@code null})
+     * @return {@code true} if the {@code CharSequence} is not {@code null},
+     * its length is greater than 0, and it does not contain whitespace only
+     * @see Character#isWhitespace
+     */
+    public static boolean hasText(CharSequence str) {
+        if (!hasLength(str)) {
+            return false;
+        }
+        int strLen = str.length();
+        for (int i = 0; i < strLen; i++) {
+            if (!Character.isWhitespace(str.charAt(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check whether the given {@code String} contains actual <em>text</em>.
+     * <p>More specifically, this method returns {@code true} if the
+     * {@code String} is not {@code null}, its length is greater than 0,
+     * and it contains at least one non-whitespace character.
+     * @param str the {@code String} to check (may be {@code null})
+     * @return {@code true} if the {@code String} is not {@code null}, its
+     * length is greater than 0, and it does not contain whitespace only
+     * @see #hasText(CharSequence)
+     */
+    public static boolean hasText(String str) {
+        return hasText((CharSequence) str);
     }
 
     /**
@@ -44,7 +137,7 @@ public abstract class StringUtil {
      *
      * @param string 要截取的字符串
      * @param subBytes 截取字节长度
-     * @param suffix 如果发生截取,在结果后添加的后缀,为<code>null</code>表示不添加
+     * @param suffix 如果发生截取,在结果后添加的后缀,为{@code null}表示不添加
      * @return 截取后字符串
      */
     public static String subStringByBytes(String string, int subBytes, String suffix) {
@@ -61,7 +154,7 @@ public abstract class StringUtil {
         }
         subString = subString.substring(0, subString.length() - 1);
 
-        if (!StringUtil.isEmpty(suffix)) {
+        if (!StringUtils.isNull(suffix)) {
             subString += suffix;
         }
 
@@ -146,7 +239,7 @@ public abstract class StringUtil {
             return string;
         }
         
-        string = StringUtil.earseMultiSpcases(string);
+        string = StringUtils.earseMultiSpcases(string);
         
         string = string.replace(' ', '_');
         
@@ -192,7 +285,7 @@ public abstract class StringUtil {
     /**
      * 随机生成字符串,字符串可能的取值在ASCII 0x21-0x7e之间
      * @param length 生成的字符串长度
-     * @return
+     * @return 生成的字符串
      */
     public static String randomString(int length) {
         StringBuffer stringBuffer = new StringBuffer();
@@ -205,7 +298,7 @@ public abstract class StringUtil {
     }
 
     /**
-     * 去除字符串头尾的空白,与<code>String.trim()</code>的区别在于可以处理空对象
+     * 去除字符串头尾的空白,与{@code String.trim()}的区别在于可以处理空对象
      * @param string 待处理的字符串
      * @return 处理后的字符串
      */

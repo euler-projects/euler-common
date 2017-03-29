@@ -1,6 +1,6 @@
 package net.eulerframework.common.util;
 
-public abstract class CommonUtil {
+public abstract class CommonUtils {
 
     /**
      * 程序暂停

@@ -10,7 +10,7 @@
     </parent>
     
     <artifactId>euler-common</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <name>euler-common</name>
     <url>https://eulerproject.io</url>
     <description>A useful code collection</description>
@@ -22,6 +22,8 @@
         <pinyin4j.version>2.5.1</pinyin4j.version>
         <javax.mail-api.version>1.5.5</javax.mail-api.version>
         <javax.mail.version>1.5.4</javax.mail.version>
+        <springsecurity.oauth.jwt.version>1.0.4.RELEASE</springsecurity.oauth.jwt.version>
+        <jackson.version>2.7.3</jackson.version>
         
         <junit.version>4.8.2</junit.version>
     </properties>
@@ -47,6 +49,29 @@
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>${javax.mail.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-jwt</artifactId>
+            <version>${springsecurity.oauth.jwt.version}</version>
+        </dependency>
+        
+        <!-- Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
         
         <dependency>  

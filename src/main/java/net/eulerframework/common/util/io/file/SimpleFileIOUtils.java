@@ -21,9 +21,19 @@ import net.eulerframework.common.util.Assert;
  * @author cFrost
  *
  */
-public abstract class SimpleFileIOUtil {
+public abstract class SimpleFileIOUtils {
     private static final Logger logger = LogManager.getLogger();
-    private static final int MAX_SIZE = 100 * 1024 * 1024;
+    private static int supportMaxFileBytes = 100 * 1024 * 1024;
+    
+    /**
+     * 改变SimpleFileIOUtils中将文件读取到内存类方法的可读取文件的最大字节数
+     * 
+     * @param bytes 最大文件大小
+     */
+    public static  void setSupportMaxFileBytes(int bytes) {
+        Assert.isTrue(bytes < 1024 * 1024 * 1024 *2, "最大支持2GB文件的读取");
+        supportMaxFileBytes = bytes;
+    }
 
     /**
      * 读取文件至内存,一次读取一个字节
@@ -34,9 +44,11 @@ public abstract class SimpleFileIOUtil {
      */
     public static byte[] readFileByByte(File file) throws FileNotFoundException, FileReadException {
         Assert.notNull(file, "file is null");
+
+        logger.info("Load file: " + file.getPath() + " Size: " + file.length());
         
-        if(file.length() > MAX_SIZE) {
-            throw new FileReadException("file too large, max file size is " + MAX_SIZE + " bytes.");
+        if(file.length() > supportMaxFileBytes) {
+            throw new FileReadException("file too large, max file size is " + supportMaxFileBytes + " bytes.");
         }
         
         FileInputStream inputStream = null;
@@ -78,8 +90,8 @@ public abstract class SimpleFileIOUtil {
 
         logger.info("Load file: " + file.getPath() + " Size: " + file.length());
         
-        if(file.length() > MAX_SIZE) {
-            throw new FileReadException("file too large, max file size is " + MAX_SIZE + " bytes.");
+        if(file.length() > supportMaxFileBytes) {
+            throw new FileReadException("file too large, max file size is " + supportMaxFileBytes + " bytes.");
         }
         
         FileInputStream inputStream = null;
@@ -177,10 +189,11 @@ public abstract class SimpleFileIOUtil {
      * 将文件写入输出流
      * @param file 待写文件
      * @param outputStream 目标输出流
+     * @param cacheBytes 读取缓存大小
      * @throws IOException 读写异常
      */
-    public static void readFileToOutputStream(File file, OutputStream outputStream) throws IOException {
-        ByteBuffer buff = ByteBuffer.allocate(1024);
+    public static void readFileToOutputStream(File file, OutputStream outputStream, int cacheBytes) throws IOException {
+        ByteBuffer buff = ByteBuffer.allocate(cacheBytes);
         FileChannel fileInChannel = null;
         FileInputStream fileInputStream = null;
         try {
@@ -231,7 +244,7 @@ public abstract class SimpleFileIOUtil {
 
         if (file.isDirectory()) {
             String[] children = file.list();
-            // 递归删除目录中的子目录下
+            // 递归删除目录中的子目录
             for (int i = 0; i < children.length; i++) {
                 boolean success = deleteFile(new File(file, children[i]));
                 if (!success) {

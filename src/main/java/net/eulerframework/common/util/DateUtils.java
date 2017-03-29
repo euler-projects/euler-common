@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public abstract class DateUtil {
+public abstract class DateUtils {
     
     public static Calendar now(){
         return Calendar.getInstance();
@@ -21,7 +21,7 @@ public abstract class DateUtil {
     public static Calendar beginningOfTheDay(Calendar calendar){
         Calendar cal = Calendar.getInstance();
         cal.setTime(calendar.getTime());
-        DateUtil.setFiledToZero(cal, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND);
+        DateUtils.setFiledToZero(cal, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND);
         return cal;
     }
 
@@ -36,13 +36,13 @@ public abstract class DateUtil {
     public static Calendar beginningOfTheDay(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        return DateUtil.beginningOfTheDay(cal);
+        return DateUtils.beginningOfTheDay(cal);
     }
 
     public static Calendar endingOfTheDay(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        return DateUtil.endingOfTheDay(cal);
+        return DateUtils.endingOfTheDay(cal);
     }
     
     public static Calendar toCalendar(Date date){
@@ -61,5 +61,13 @@ public abstract class DateUtil {
 
     public static String formatDate (Date date, String pattern){
         return new SimpleDateFormat(pattern).format(date);
+    }
+
+    public static Date parseDateFromUnixTimestamp(long unixTimestamp) {
+        return new Date(unixTimestamp * 1000);
+    }
+    
+    public static long getUnixTimestamp(Date date) {
+        return date.getTime() / 1000;
     }
 }
