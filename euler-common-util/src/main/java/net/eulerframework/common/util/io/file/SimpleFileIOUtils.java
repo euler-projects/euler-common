@@ -11,8 +11,8 @@ import java.io.OutputStreamWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.eulerframework.common.util.Assert;
 
@@ -22,7 +22,7 @@ import net.eulerframework.common.util.Assert;
  *
  */
 public abstract class SimpleFileIOUtils {
-    private static final Logger logger = LogManager.getLogger();
+    protected static final Logger LOGGER = LoggerFactory.getLogger(SimpleFileIOUtils.class);
     private static int supportMaxFileBytes = 100 * 1024 * 1024;
     
     /**
@@ -45,7 +45,7 @@ public abstract class SimpleFileIOUtils {
     public static byte[] readFileByByte(File file) throws FileNotFoundException, FileReadException {
         Assert.notNull(file, "file is null");
 
-        logger.info("Load file: " + file.getPath() + " Size: " + file.length());
+        LOGGER.info("Load file: " + file.getPath() + " Size: " + file.length());
         
         if(file.length() > supportMaxFileBytes) {
             throw new FileReadException("file too large, max file size is " + supportMaxFileBytes + " bytes.");
@@ -88,7 +88,7 @@ public abstract class SimpleFileIOUtils {
     public static byte[] readFileByMultiBytes(File file, int number) throws FileNotFoundException, FileReadException {
         Assert.notNull(file, "file is null");
 
-        logger.info("Load file: " + file.getPath() + " Size: " + file.length());
+        LOGGER.info("Load file: " + file.getPath() + " Size: " + file.length());
         
         if(file.length() > supportMaxFileBytes) {
             throw new FileReadException("file too large, max file size is " + supportMaxFileBytes + " bytes.");
@@ -134,7 +134,7 @@ public abstract class SimpleFileIOUtils {
     public static void writeFile(String filePath, String str, boolean append) throws IOException {
         Assert.notNull(filePath, "filePath is null");
 
-        logger.info("Write File: " + filePath);
+        LOGGER.info("Write File: " + filePath);
 
         File file = new File(filePath);
         OutputStreamWriter outputStreamWriter = null;
@@ -168,7 +168,7 @@ public abstract class SimpleFileIOUtils {
     public static void writeFile(String filePath, byte[] data, boolean append) throws IOException {
         Assert.notNull(filePath, "filePath is null");
 
-        logger.info("Write File: " + filePath);
+        LOGGER.info("Write File: " + filePath);
 
         File file = new File(filePath);
         FileOutputStream fileOutputStream = null;
@@ -254,7 +254,7 @@ public abstract class SimpleFileIOUtils {
         }
         
         //此时目录为空，可以删除
-        logger.info("Delete file: " + file.getPath());
+        LOGGER.info("Delete file: " + file.getPath());
         return file.delete();
     }
 
@@ -267,17 +267,17 @@ public abstract class SimpleFileIOUtils {
         Assert.notNull(file, "file is null");
         
         if (!file.getParentFile().exists()) {
-            logger.info("Create dir: " + file.getParentFile().getPath());
+            LOGGER.info("Create dir: " + file.getParentFile().getPath());
             file.getParentFile().mkdirs();
         } else {
-            logger.info("File path exists: " + file.getParentFile().getPath());
+            LOGGER.info("File path exists: " + file.getParentFile().getPath());
         }
         
         if (!file.exists()) {
             file.createNewFile();
-            logger.info("Create new file: " + file.getPath());
+            LOGGER.info("Create new file: " + file.getPath());
         } else {
-            logger.info("File exists: " + file.getPath());
+            LOGGER.info("File exists: " + file.getPath());
         }
     }
 }
