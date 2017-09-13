@@ -259,6 +259,34 @@ public abstract class StringUtils {
         
         return toUpperCaseFirstChar(toCamelCase(str));
     }
+    
+    /**
+     * 把驼峰风格的字符串转换为下划线风格，连续的下划线会被替换为一个。
+     * <pre class="code">
+     * StringUtils.camelCaseToUnderLineCase("EulerFramework") = "euler_framework"
+     * StringUtils.camelCaseToUnderLineCase("Euler_Framework") = "euler_framework"
+     * StringUtils.camelCaseToUnderLineCase("Euler__Framework") = "euler_framework"
+     * StringUtils.camelCaseToUnderLineCase("Euler_framework") = "euler_framework"
+     * StringUtils.camelCaseToUnderLineCase("eulerFramework") = "euler_framework"
+     * </pre>
+     * @param str 峰风格的字符串
+     * @return 下划线风格字符串
+     */
+    public static String camelCaseToUnderLineCase(String str) {
+        if(!hasText(str)) {
+            return str;
+        }
+        
+        char[] chars = str.toCharArray();
+        StringBuilder ret = new StringBuilder();
+        for(char each : chars) {
+            if(Character.isUpperCase(each) && ret.length() > 0) {
+                ret.append('_');
+            }
+            ret.append(each);
+        }
+        return ret.toString().toLowerCase().replaceAll("[_]+", "_");
+    }
 
     /**
      * 首字母转小写
