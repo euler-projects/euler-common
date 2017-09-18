@@ -19,12 +19,12 @@ public abstract class CommonUtils {
     }
 
     /**
-     * 统一路径为UNIX格式,结尾的"/"会去掉,如果只有一个"/"，则会保留<br>
+     * 统一路径为UNIX格式,以"/"结尾<br>
      * Examples:
      * <pre>
      * convertDirToUnixFormat("\") returns "/"
-     * convertDirToUnixFormat("D:\floder\") returns "D:/floder"
-     * convertDirToUnixFormat("D:\floder\file") returns "D:/floder/file"
+     * convertDirToUnixFormat("D:\floder\") returns "D:/floder/"
+     * convertDirToUnixFormat("D:\floder\file") returns "D:/floder/file/"
      * </pre>
      * 
      * @param dir 原始路径
@@ -35,9 +35,9 @@ public abstract class CommonUtils {
             return dir;
     
         String unixDir = dir.replace("\\", "/");
-        if (unixDir.endsWith("/") && unixDir.length() > 1) {
+        while(unixDir.endsWith("/")) {
             unixDir = unixDir.substring(0, unixDir.length() - 1);
         }
-        return unixDir;
+        return unixDir + "/";
     }
 }
