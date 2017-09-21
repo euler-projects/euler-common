@@ -28,9 +28,10 @@ public abstract class CommonUtils {
      * </pre>
      * 
      * @param dir 原始路径
+     * @param endWithSlash 结尾是否追加斜杠
      * @return unix路径
      */
-    public static String convertDirToUnixFormat(String dir) {
+    public static String convertDirToUnixFormat(String dir, boolean endWithSlash) {
         if (dir == null)
             return dir;
     
@@ -38,6 +39,6 @@ public abstract class CommonUtils {
         while(unixDir.endsWith("/")) {
             unixDir = unixDir.substring(0, unixDir.length() - 1);
         }
-        return unixDir + "/";
+        return endWithSlash ? unixDir + "/" : unixDir;
     }
 }

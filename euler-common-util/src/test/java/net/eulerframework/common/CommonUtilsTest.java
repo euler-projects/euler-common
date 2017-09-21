@@ -9,12 +9,19 @@ public class CommonUtilsTest {
 
     @Test
     public void test() {
-        Assert.assertEquals("/app/dev/", CommonUtils.convertDirToUnixFormat("/app/dev"));
-        Assert.assertEquals("/", CommonUtils.convertDirToUnixFormat("/////"));
-        Assert.assertEquals("/", CommonUtils.convertDirToUnixFormat("/"));
-        Assert.assertEquals("/", CommonUtils.convertDirToUnixFormat(""));
-        Assert.assertEquals("/app/dev/", CommonUtils.convertDirToUnixFormat("/app/dev/"));
-        Assert.assertEquals("D:/app/dev/", CommonUtils.convertDirToUnixFormat("D:\\app\\dev"));
-        Assert.assertEquals("D:/app/dev/", CommonUtils.convertDirToUnixFormat("D:\\app\\dev\\"));
+        Assert.assertEquals("/app/dev/", CommonUtils.convertDirToUnixFormat("/app/dev", true));
+        Assert.assertEquals("/", CommonUtils.convertDirToUnixFormat("/////", true));
+        Assert.assertEquals("/", CommonUtils.convertDirToUnixFormat("/", true));
+        Assert.assertEquals("/", CommonUtils.convertDirToUnixFormat("", true));
+        Assert.assertEquals("/app/dev/", CommonUtils.convertDirToUnixFormat("/app/dev/", true));
+        Assert.assertEquals("D:/app/dev/", CommonUtils.convertDirToUnixFormat("D:\\app\\dev", true));
+        Assert.assertEquals("D:/app/dev/", CommonUtils.convertDirToUnixFormat("D:\\app\\dev\\", true));
+        Assert.assertEquals("/app/dev", CommonUtils.convertDirToUnixFormat("/app/dev", false));
+        Assert.assertEquals("", CommonUtils.convertDirToUnixFormat("/////", false));
+        Assert.assertEquals("", CommonUtils.convertDirToUnixFormat("/", false));
+        Assert.assertEquals("", CommonUtils.convertDirToUnixFormat("", false));
+        Assert.assertEquals("/app/dev", CommonUtils.convertDirToUnixFormat("/app/dev/", false));
+        Assert.assertEquals("D:/app/dev", CommonUtils.convertDirToUnixFormat("D:\\app\\dev", false));
+        Assert.assertEquals("D:/app/dev", CommonUtils.convertDirToUnixFormat("D:\\app\\dev\\", false));
     }
 }
