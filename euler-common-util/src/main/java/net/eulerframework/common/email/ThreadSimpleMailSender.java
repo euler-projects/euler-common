@@ -53,7 +53,7 @@ public class ThreadSimpleMailSender {
             SimpleMailSender sender = new SimpleMailSender(emailConfig);
             try {
                 if (receiver != null) {
-                    sender.send(subject, content, receivers);
+                    sender.send(subject, content, receiver);
                 } else if (receivers != null) {
                     sender.send(subject, content, receivers);
                 }
