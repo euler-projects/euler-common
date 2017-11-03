@@ -19,12 +19,15 @@ public abstract class CommonUtils {
     }
 
     /**
-     * 统一路径为UNIX格式,以"/"结尾<br>
+     * 统一路径为UNIX格式<br>
      * Examples:
      * <pre>
-     * convertDirToUnixFormat("\") returns "/"
-     * convertDirToUnixFormat("D:\floder\") returns "D:/floder/"
-     * convertDirToUnixFormat("D:\floder\file") returns "D:/floder/file/"
+     * convertDirToUnixFormat("\", true) returns "/"
+     * convertDirToUnixFormat("D:\floder\", true) returns "D:/floder/"
+     * convertDirToUnixFormat("D:\floder\file", true) returns "D:/floder/file/"
+     * convertDirToUnixFormat("\", false) returns ""
+     * convertDirToUnixFormat("D:\floder\", false) returns "D:/floder"
+     * convertDirToUnixFormat("D:\floder\file", false) returns "D:/floder/file"
      * </pre>
      * 
      * @param dir 原始路径
