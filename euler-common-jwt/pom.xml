@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.eulerframework</groupId>
+        <artifactId>euler-common</artifactId>
+        <version>0.0.4</version>
+    </parent>
+    <artifactId>euler-common-jwt</artifactId>
+
+    <properties>
+        <springsecurity.oauth.jwt.version>1.0.4.RELEASE</springsecurity.oauth.jwt.version>
+
+        <junit.version>4.8.2</junit.version>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-jwt</artifactId>
+            <version>${springsecurity.oauth.jwt.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>euler-common-util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>euler-common-logging</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>
