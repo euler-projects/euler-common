@@ -11,7 +11,7 @@
     </parent>
     
     <artifactId>euler-common</artifactId>
-    <version>0.0.4-SNAPSHOT</version>
+    <version>0.0.4</version>
     <packaging>pom</packaging>
     <name>euler-common</name>
     <url>https://eulerproject.io</url>
