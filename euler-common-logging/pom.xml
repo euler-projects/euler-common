@@ -7,7 +7,7 @@
         <version>0.0.5-SNAPSHOT</version>
     </parent>
     <artifactId>euler-common-logging</artifactId>
-    <name>euler-common-util</name>
+    <name>euler-common-logging</name>
     <url>https://eulerproject.io</url>
     <description>A useful code collection</description>
 

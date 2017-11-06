@@ -7,6 +7,9 @@
         <version>0.0.5-SNAPSHOT</version>
     </parent>
     <artifactId>euler-common-jwt</artifactId>
+    <name>euler-common-jwt</name>
+    <url>https://eulerproject.io</url>
+    <description>A useful code collection</description>
 
     <properties>
         <springsecurity.oauth.jwt.version>1.0.4.RELEASE</springsecurity.oauth.jwt.version>
