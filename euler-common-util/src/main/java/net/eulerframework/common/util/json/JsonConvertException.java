@@ -1,6 +1,5 @@
 package net.eulerframework.common.util.json;
 
-@SuppressWarnings("serial")
 public class JsonConvertException extends Exception {
     public JsonConvertException() {
         super();

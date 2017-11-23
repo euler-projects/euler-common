@@ -1,6 +1,5 @@
 package net.eulerframework.common.util.property;
 
-@SuppressWarnings("serial")
 public class EnumPropertyReadException extends RuntimeException {
 
     public EnumPropertyReadException() {

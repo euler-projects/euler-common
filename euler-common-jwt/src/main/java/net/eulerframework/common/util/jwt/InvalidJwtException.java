@@ -1,6 +1,5 @@
 package net.eulerframework.common.util.jwt;
 
-@SuppressWarnings("serial")
 public class InvalidJwtException extends Exception {
     public InvalidJwtException() {
         super();

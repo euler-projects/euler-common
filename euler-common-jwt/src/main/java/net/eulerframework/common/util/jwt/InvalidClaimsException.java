@@ -1,6 +1,5 @@
 package net.eulerframework.common.util.jwt;
 
-@SuppressWarnings("serial")
 public class InvalidClaimsException extends RuntimeException {
     public InvalidClaimsException() {
         super();
