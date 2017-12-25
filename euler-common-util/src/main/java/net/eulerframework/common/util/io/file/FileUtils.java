@@ -51,7 +51,7 @@ public abstract class FileUtils {
         if(dot > -1) {
             extension = fileName.substring(dot);
         }
-        return extension == null ? null : extension.toLowerCase();
+        return extension == null ? null : extension;
     }
 
     /**
