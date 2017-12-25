@@ -1,6 +1,5 @@
 package net.eulerframework.common.email;
 
-@SuppressWarnings("serial")
 public class MailSendException extends RuntimeException {
     
     public MailSendException() {
