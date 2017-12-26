@@ -27,7 +27,7 @@ public abstract class MIMEUtils {
         if(!extension.startsWith(".")) {
             extension = "." + extension;
         }
-        return new MIME(properties.get(extension, DEFAULT_CONFIG_VALUE));
+        return new MIME(properties.get(extension.toLowerCase(), DEFAULT_CONFIG_VALUE));
     }
     
     public static class MIME {
