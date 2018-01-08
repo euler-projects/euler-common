@@ -1,5 +1,7 @@
 package net.eulerframework.common.util;
 
+import java.util.Locale;
+
 public abstract class CommonUtils {
 
     /**
@@ -43,5 +45,37 @@ public abstract class CommonUtils {
             unixDir = unixDir.substring(0, unixDir.length() - 1);
         }
         return endWithSlash ? unixDir + "/" : unixDir;
+    }
+    
+    /**
+     * 将表示语言的字符串转成Locale对象
+     * @param localeString 表示语言的字符串
+     * @return Locale对象
+     */
+    public static Locale parseLocale(String localeString) {
+        Assert.hasText(localeString);
+        
+        localeString = localeString.toLowerCase();
+        
+        if(localeString.length() == 5) {
+            return new Locale(localeString.substring(0, 2), localeString.substring(3, 5));
+        } else if(localeString.length() == 2){
+            return new Locale(localeString);
+        } else {
+            throw new IllegalArgumentException("地区字符串必须符合语言二码-国家/地区二码的格式, 两者之间必须要有一个分隔符,可是为任意ASCII打印字符, 国家/地区二码为可选部分");
+        }
+    }
+    
+    public static String formatLocal(Locale locale, char split) {
+        Assert.notNull(locale);
+
+        String language = locale.getLanguage();
+        String country = locale.getCountry();
+        
+        if(StringUtils.hasText(country)) {
+            return language.toLowerCase() + split + country.toLowerCase();
+        } else {
+            return language.toLowerCase();
+        }
     }
 }
