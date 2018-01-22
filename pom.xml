@@ -6,12 +6,12 @@
     <parent>
         <groupId>net.eulerframework</groupId>
         <artifactId>euler-parent</artifactId>
-        <version>2</version>
+        <version>3</version>
         <relativePath/>
     </parent>
     
     <artifactId>euler-common</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7</version>
     <packaging>pom</packaging>
     <name>euler-common</name>
     <url>https://eulerproject.io</url>
