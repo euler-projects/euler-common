@@ -2,8 +2,7 @@
 <configuration status="off" monitorInterval="1800">
 
     <properties>
-        <property name="logPath">D:/logs
-        </property>
+        <property name="logPath">/var/logs/euler-framework</property>
         <property name="logFileName">euler-logs</property>
     </properties>
 
