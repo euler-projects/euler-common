@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Map;
 
 public abstract class JavaObjectUtils {
     
@@ -16,7 +17,7 @@ public abstract class JavaObjectUtils {
             return;
         try {
             for (Class<? extends Object> clazz = obj.getClass(); clazz != Object.class; clazz = clazz.getSuperclass()) {
-                Field[] fields = clazz.getDeclaredFields();
+                Field[] fields = getBeanFields(clazz, true);
                 for (Field field : fields)
                     if ((field.getType() == String.class) && (!(Modifier.isStatic(field.getModifiers())))) {
                         boolean accessible = field.isAccessible();
@@ -82,5 +83,42 @@ public abstract class JavaObjectUtils {
         }
     
         return findSuperClassGenricType(clazz.getSuperclass(), index);        
+    }
+    
+    /**
+     * 将Map转换为对象, 目前只支持String类型的属性
+     * @param map
+     * @param objectClass
+     * @return
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public static <E> E readMapAsObject(Map<String, Object> map, Class<E> objectClass) throws InstantiationException, IllegalAccessException {
+        E obj = objectClass.newInstance();
+        Field[] fields = getBeanFields(objectClass, true);
+        
+        for (Field field : fields) {
+            if(Modifier.isStatic(field.getModifiers())) {
+                continue;
+            }
+            
+            if ((field.getType() == String.class)) {
+                setFieldValue(obj, field, map.get(field.getName()));
+            } else if(field.getType().isEnum()) {
+                Object value = map.get(field.getName());
+                if(value != null) {
+                    setFieldValue(obj, field, Enum.valueOf((Class<? extends Enum>) field.getType(), (String) value));
+                }
+            }
+        }
+        
+        return obj;
+    }
+    
+    private static void setFieldValue(Object obj, Field field, Object value) throws IllegalArgumentException, IllegalAccessException {
+        boolean accessible = field.isAccessible();
+        field.setAccessible(true);
+        field.set(obj, value);
+        field.setAccessible(accessible);
     }
 }
