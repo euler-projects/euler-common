@@ -4,6 +4,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class JavaObjectUtils {
@@ -84,6 +88,31 @@ public abstract class JavaObjectUtils {
     
         return findSuperClassGenricType(clazz.getSuperclass(), index);        
     }
+    public static Class<?> findSuperInterfaceGenricType(Class<?> clazz, int interfaceIndex, int index){
+        if(clazz == null)
+            return null;
+        
+        Type type = clazz.getGenericInterfaces()[interfaceIndex];
+        
+        if (type instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType) type;            
+            Type[] argTypes = pType.getActualTypeArguments();
+            
+            if(index >= argTypes.length || index < 0){
+                throw new IndexOutOfBoundsException("Genric args types find error，Index out of bounds: total="+argTypes.length+", index="+index);
+            }
+            
+            Type argType = argTypes[index];
+            
+            if (argType instanceof Class) {
+                return ((Class<?>) argType);
+            }
+            
+            return null;
+        }
+    
+        return findSuperClassGenricType(clazz.getSuperclass(), index);        
+    }
     
     /**
      * 将Map转换为对象, 目前只支持String类型的属性
@@ -102,17 +131,54 @@ public abstract class JavaObjectUtils {
                 continue;
             }
             
-            if ((field.getType() == String.class)) {
-                setFieldValue(obj, field, map.get(field.getName()));
-            } else if(field.getType().isEnum()) {
-                Object value = map.get(field.getName());
-                if(value != null) {
-                    setFieldValue(obj, field, Enum.valueOf((Class<? extends Enum>) field.getType(), (String) value));
-                }
+            Object value = map.get(field.getName());
+            if(value != null) {
+                setFieldValue(obj, field, analyzeValue(value, field.getType()));
             }
         }
         
         return obj;
+    }
+    
+    private static Object analyzeValue(Object value, Class<?> clazz) {
+        if(String.class.equals(clazz)) {
+            return value;
+        } else if(Integer.class.equals(clazz) || "int".equals(clazz.toString())) {
+            return (Integer) value;
+        } else if(Long.class.equals(clazz) || "long".equals(clazz.toString())) {
+            return (Long) value;
+        } else if(Short.class.equals(clazz) || "short".equals(clazz.toString())) {
+            return (Short) value;
+        } else if(Float.class.equals(clazz) || "float".equals(clazz.toString())) {
+            return (Float) value;
+        } else if(Double.class.equals(clazz) || "double".equals(clazz.toString())) {
+            return (Double) value;
+        } else if(Boolean.class.equals(clazz) || "boolean".equals(clazz.toString())) {
+            return (Boolean) value;
+        } else if(Date.class.equals(clazz)) {
+            return new Date((long) value);
+        } else if(BigDecimal.class.equals(clazz)) {
+            return new BigDecimal((String) value);
+        } else if(clazz.isEnum()) {
+            return Enum.valueOf((Class<? extends Enum>) clazz, (String) value);
+        }
+        
+        throw new IllegalArgumentException("Unsupport query property type: " + clazz);
+    }
+    
+    public static Map<String, Object> writeObjectToMap(Object obj) throws IllegalArgumentException, IllegalAccessException {
+        Field[] fields = getBeanFields(obj.getClass(), true);
+        Map<String, Object> result = new HashMap<>();
+        
+        for (Field field : fields) {
+            if(Modifier.isStatic(field.getModifiers())) {
+                continue;
+            }
+            
+            result.put(field.getName(), getFieldValue(obj, field));
+        }
+        
+        return result;
     }
     
     private static void setFieldValue(Object obj, Field field, Object value) throws IllegalArgumentException, IllegalAccessException {
@@ -120,5 +186,13 @@ public abstract class JavaObjectUtils {
         field.setAccessible(true);
         field.set(obj, value);
         field.setAccessible(accessible);
+    }
+    
+    private static Object getFieldValue(Object obj, Field field) throws IllegalArgumentException, IllegalAccessException {
+        boolean accessible = field.isAccessible();
+        field.setAccessible(true);
+        Object value = field.get(obj);
+        field.setAccessible(accessible);
+        return value;
     }
 }
