@@ -249,6 +249,9 @@ public abstract class JavaObjectUtils {
         } else if (Double.class.equals(clazz) || double.class.equals(clazz)) {
             return Double.parseDouble(value);
         } else if (Boolean.class.equals(clazz) || boolean.class.equals(clazz)) {
+            if(!("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value))) {
+                throw new IllegalArgumentException("invalid boolean string: " + value);
+            }
             return Boolean.parseBoolean(value);
         } else if (Character.class.equals(clazz) || char.class.equals(clazz)) {
             if (value.length() > 0)
