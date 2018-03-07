@@ -32,13 +32,13 @@ package net.eulerframework.common.util;
  * @author cFrost
  *
  */
-public class RawMapReaAsObjectException extends IllegalArgumentException {
+public class RawMapReadException extends IllegalArgumentException {
 
-    public RawMapReaAsObjectException(String message) {
+    public RawMapReadException(String message) {
         super(message);
     }
     
-    public RawMapReaAsObjectException(String message, Throwable throwable) {
+    public RawMapReadException(String message, Throwable throwable) {
         super(message, throwable);
     }
 }
