@@ -16,38 +16,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.eulerframework.common.util.io.file.SimpleFileIOUtils;
-
 public abstract class JavaObjectUtils {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(SimpleFileIOUtils.class);
-
-    /**
-     * 将对象中为<code>""</code>的属性置为<code>null</code>
-     * 
-     * @param obj
-     *            待处理的对象
-     */
-    public static void clearEmptyProperty(Object obj) {
-        if (obj == null)
-            return;
-        try {
-            for (Class<? extends Object> clazz = obj.getClass(); clazz != Object.class; clazz = clazz.getSuperclass()) {
-                Field[] fields = getBeanFields(clazz, true);
-                for (Field field : fields)
-                    if ((field.getType() == String.class) && (!(Modifier.isStatic(field.getModifiers())))) {
-                        boolean accessible = field.isAccessible();
-                        field.setAccessible(true);
-                        String value = (String) field.get(obj);
-                        if (value != null && "".equals(value.trim())) {
-                            field.set(obj, null);
-                        }
-                        field.setAccessible(accessible);
-                    }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+    protected static final Logger LOGGER = LoggerFactory.getLogger(JavaObjectUtils.class);
 
     /**
      * 获取对象的属性
@@ -72,39 +42,50 @@ public abstract class JavaObjectUtils {
     }
 
     /**
+     * 将对象中为<code>""</code>的属性置为<code>null</code>
+     * 
+     * @param obj
+     *            待处理的对象
+     */
+    public static void clearEmptyProperty(Object obj) {
+        if (obj == null)
+            return;
+        try {
+            for (Class<? extends Object> clazz = obj.getClass(); clazz != Object.class; clazz = clazz.getSuperclass()) {
+                Field[] fields = getBeanFields(clazz, true);
+                for (Field field : fields)
+                    if ((field.getType() == String.class) && (!(Modifier.isStatic(field.getModifiers())))) {
+                        String value = (String) getFieldValue(obj, field);
+                        if(!StringUtils.hasText(value)) {
+                            setFieldValue(obj, field, null);
+                        }
+                    }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * 获取父类范型类型
      * 
      * @param clazz
      *            当前类
-     * @param index
+     * @param typeArgIndex
      *            第几个范型参数
      * @return 范型参数的<code>Class</code>
      */
-    public static Class<?> findSuperClassGenricType(Class<?> clazz, int index) {
+    public static Class<?> findSuperClassGenricType(Class<?> clazz, int typeArgIndex) {
         if (clazz == null)
             return null;
 
         Type type = clazz.getGenericSuperclass();
 
         if (type instanceof ParameterizedType) {
-            ParameterizedType pType = (ParameterizedType) type;
-            Type[] argTypes = pType.getActualTypeArguments();
-
-            if (index >= argTypes.length || index < 0) {
-                throw new IndexOutOfBoundsException("Genric args types find error，Index out of bounds: total="
-                        + argTypes.length + ", index=" + index);
-            }
-
-            Type argType = argTypes[index];
-
-            if (argType instanceof Class) {
-                return ((Class<?>) argType);
-            }
-
-            return null;
+            return getActualTypeArgumentsOfParameterizedType((ParameterizedType) type, typeArgIndex);
         }
 
-        return findSuperClassGenricType(clazz.getSuperclass(), index);
+        return findSuperClassGenricType(clazz.getSuperclass(), typeArgIndex);
     }
 
     /**
@@ -114,35 +95,32 @@ public abstract class JavaObjectUtils {
      *            实现类
      * @param interfaceIndex
      *            实现接口索引
-     * @param index
+     * @param typeArgIndex
      *            范型参数索引
      * @return 范型类型
      */
-    public static Class<?> findSuperInterfaceGenricType(Class<?> clazz, int interfaceIndex, int index) {
+    public static Class<?> findSuperInterfaceGenricType(Class<?> clazz, int interfaceIndex, int typeArgIndex) {
         if (clazz == null)
             return null;
 
         Type type = clazz.getGenericInterfaces()[interfaceIndex];
 
         if (type instanceof ParameterizedType) {
-            ParameterizedType pType = (ParameterizedType) type;
-            Type[] argTypes = pType.getActualTypeArguments();
-
-            if (index >= argTypes.length || index < 0) {
-                throw new IndexOutOfBoundsException("Genric args types find error，Index out of bounds: total="
-                        + argTypes.length + ", index=" + index);
-            }
-
-            Type argType = argTypes[index];
-
-            if (argType instanceof Class) {
-                return ((Class<?>) argType);
-            }
-
-            return null;
+            return getActualTypeArgumentsOfParameterizedType((ParameterizedType) type, typeArgIndex);
         }
 
-        return findSuperClassGenricType(clazz.getSuperclass(), index);
+        return null;
+    }
+    
+    private static Class<?> getActualTypeArgumentsOfParameterizedType(ParameterizedType pType, int index) {
+        Type argType = pType.getActualTypeArguments()[index];
+
+        if (argType instanceof Class) {
+            return ((Class<?>) argType);
+        }
+
+        return null;
+        
     }
 
     public static void setFieldValue(Object obj, Field field, Object value)
@@ -184,7 +162,7 @@ public abstract class JavaObjectUtils {
             Object value = map.get(field.getName());
             if (value != null) {
                 try {
-                    if (value.getClass().equals(field.getType())) {
+                    if (field.getType().equals(value.getClass())) {
                         setFieldValue(obj, field, value);
                     } else if (LinkedHashMap.class.equals(value.getClass())) {
                         setFieldValue(obj, field,
@@ -192,6 +170,7 @@ public abstract class JavaObjectUtils {
                     } else if (isSafeToString(value.getClass())) {
                         setFieldValue(obj, field, analyzeStringValueToObject(String.valueOf(value), field.getType()));
                     } else {
+                        throw new IllegalArgumentException("Unsupport raw type: " + value.getClass().getName());
                     }
                 } catch (IllegalArgumentException e) {
                     throw new RawMapReaAsObjectException("Property '" + field.getName() + "' which type is '"
@@ -254,6 +233,9 @@ public abstract class JavaObjectUtils {
     }
 
     public static Object analyzeStringValueToObject(String value, Class<?> clazz) {
+        if(value == null)
+            return null;
+        
         if (String.class.equals(clazz)) {
             return value;
         } else if (Integer.class.equals(clazz) || int.class.equals(clazz)) {
@@ -293,6 +275,6 @@ public abstract class JavaObjectUtils {
             return Enum.valueOf((Class<? extends Enum>) clazz, value);
         }
 
-        throw new IllegalArgumentException("Unsupport query property type: " + clazz);
+        throw new IllegalArgumentException("Unsupport type: " + clazz);
     }
 }
