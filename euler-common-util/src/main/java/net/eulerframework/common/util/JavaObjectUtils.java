@@ -8,8 +8,10 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -182,13 +184,16 @@ public abstract class JavaObjectUtils {
             Object value = map.get(field.getName());
             if (value != null) {
                 try {
-                    if(LinkedHashMap.class.equals(value.getClass())) {
+                    if(value.getClass().equals(field.getType())) {
+                        setFieldValue(obj, field, value);
+                    } else if(LinkedHashMap.class.equals(value.getClass())) {
                         setFieldValue(obj, field, readMapAsObject((LinkedHashMap<String, Object>)value, field.getType()));
-                    } else {
+                    } else if(isSafeToString(value.getClass())){
                         setFieldValue(obj, field, analyzeStringValueToObject(String.valueOf(value), field.getType()));
+                    } else {
                     }
-                } catch (Exception e) {
-                    throw new IllegalArgumentException("Property '" + field.getName() + "' read error: " + e.getMessage(), e);
+                } catch (IllegalArgumentException e) {
+                    throw new RawMapReaAsObjectException("Property '" + field.getName() + "' which type is '" + field.getType().getName() + "' read error: " + e.getMessage(), e);
                 }
             }
         }
@@ -211,53 +216,77 @@ public abstract class JavaObjectUtils {
 
         return result;
     }
+    
+    /**
+     * 判断一个类是否可以安全的调用{@link String#valueOf(Object)}方法,
+     * 这里的安全调用指在转为String后可以通过{@link JavaObjectUtils#analyzeStringValueToObject(String, Class)}转换回原始类型
+     * @param clazz 被检查的类型
+     * @return 可以安全转换返回{@code true}, 反之返回{@code false}
+     */
+    public static boolean isSafeToString(Class<?> clazz) {
+        Set<Class<?>> supportClasses =  new HashSet<Class<?>>() {
+            {
+                add(String.class);
+                add(Integer.class);
+                add(Long.class);
+                add(Short.class);
+                add(Float.class);
+                add(Double.class);
+                add(Boolean.class);
+                add(Character.class);
+                add(Date.class);
+                add(BigDecimal.class);
+                add(int.class);
+                add(long.class);
+                add(short.class);
+                add(float.class);
+                add(double.class);
+                add(boolean.class);
+                add(char.class);
+            }
+        };
+        
+        return supportClasses.contains(clazz) || clazz.isEnum();
+    }
 
     public static Object analyzeStringValueToObject(String value, Class<?> clazz) {
-        try {
-            if (String.class.equals(clazz)) {
-                return value;
-            } else if (Integer.class.equals(clazz) || "int".equals(clazz.toString())) {
-                return Integer.parseInt(value);
-            } else if (Long.class.equals(clazz) || "long".equals(clazz.toString())) {
-                return Long.parseLong(value);
-            } else if (Short.class.equals(clazz) || "short".equals(clazz.toString())) {
-                return Short.parseShort(value);
-            } else if (Float.class.equals(clazz) || "float".equals(clazz.toString())) {
-                return Float.parseFloat(value);
-            } else if (Double.class.equals(clazz) || "double".equals(clazz.toString())) {
-                return Double.parseDouble(value);
-            } else if (Boolean.class.equals(clazz) || "boolean".equals(clazz.toString())) {
-                return Boolean.parseBoolean(value);
-            } else if (Character.class.equals(clazz) || "char".equals(clazz.toString())) {
-                if (value.length() > 0)
-                    LOGGER.warn("Query property type is Character, only use the first char of value");
+        if (String.class.equals(clazz)) {
+            return value;
+        } else if (Integer.class.equals(clazz) || int.class.equals(clazz)) {
+            return Integer.parseInt(value);
+        } else if (Long.class.equals(clazz) || long.class.equals(clazz)) {
+            return Long.parseLong(value);
+        } else if (Short.class.equals(clazz) || short.class.equals(clazz)) {
+            return Short.parseShort(value);
+        } else if (Float.class.equals(clazz) || float.class.equals(clazz)) {
+            return Float.parseFloat(value);
+        } else if (Double.class.equals(clazz) || double.class.equals(clazz)) {
+            return Double.parseDouble(value);
+        } else if (Boolean.class.equals(clazz) || boolean.class.equals(clazz)) {
+            return Boolean.parseBoolean(value);
+        } else if (Character.class.equals(clazz) || char.class.equals(clazz)) {
+            if (value.length() > 0)
+                LOGGER.warn("Query property type is Character, only use the first char of value");
 
-                return value.toCharArray()[0];
-            } else if (Date.class.equals(clazz)) {
-                Date ret = null;
+            return value.toCharArray()[0];
+        } else if (Date.class.equals(clazz)) {
+            Date ret = null;
+            try {
+                ret = new Date(Long.parseLong(value));
+            } catch (NumberFormatException e) {
                 try {
-                    ret = new Date(Long.parseLong(value));
-                } catch (NumberFormatException e) {
-                    try {
-                        ret = DateUtils.parseDate(value, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-                    } catch (ParseException e1) {
-                        throw new IllegalArgumentException("Date property value '" + value
-                                + "' format doesn't match timesamp(3) or \"yyyy-MM-dd'T'HH:mm:ss.SSSZ\"");
+                    ret = DateUtils.parseDate(value, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+                } catch (ParseException e1) {
+                    throw new IllegalArgumentException("Date property value '" + value
+                            + "' format doesn't match timesamp(3) or \"yyyy-MM-dd'T'HH:mm:ss.SSSZ\"");
 
-                    }
                 }
-                return ret;
-            } else if (BigDecimal.class.equals(clazz)) {
-                return new BigDecimal(value);
-            } else if (clazz.isEnum()) {
-                return Enum.valueOf((Class<? extends Enum>) clazz, value);
             }
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Number format error: " + e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
+            return ret;
+        } else if (BigDecimal.class.equals(clazz)) {
+            return new BigDecimal(value);
+        } else if (clazz.isEnum()) {
+            return Enum.valueOf((Class<? extends Enum>) clazz, value);
         }
         
         throw new IllegalArgumentException("Unsupport query property type: " + clazz);
