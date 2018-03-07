@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="off" monitorInterval="1800">
 
-    <properties>
+    <!-- <properties>
         <property name="logPath">/var/logs/euler-framework</property>
         <property name="logFileName">euler-logs</property>
     </properties>
@@ -23,7 +23,7 @@
             <DefaultRolloverStrategy max="20" />
         </RollingRandomAccessFile>
 
-    </Appenders>
+    </Appenders> -->
     
     <loggers>
         <root level="warn">

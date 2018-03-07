@@ -184,16 +184,18 @@ public abstract class JavaObjectUtils {
             Object value = map.get(field.getName());
             if (value != null) {
                 try {
-                    if(value.getClass().equals(field.getType())) {
+                    if (value.getClass().equals(field.getType())) {
                         setFieldValue(obj, field, value);
-                    } else if(LinkedHashMap.class.equals(value.getClass())) {
-                        setFieldValue(obj, field, readMapAsObject((LinkedHashMap<String, Object>)value, field.getType()));
-                    } else if(isSafeToString(value.getClass())){
+                    } else if (LinkedHashMap.class.equals(value.getClass())) {
+                        setFieldValue(obj, field,
+                                readMapAsObject((LinkedHashMap<String, Object>) value, field.getType()));
+                    } else if (isSafeToString(value.getClass())) {
                         setFieldValue(obj, field, analyzeStringValueToObject(String.valueOf(value), field.getType()));
                     } else {
                     }
                 } catch (IllegalArgumentException e) {
-                    throw new RawMapReaAsObjectException("Property '" + field.getName() + "' which type is '" + field.getType().getName() + "' read error: " + e.getMessage(), e);
+                    throw new RawMapReaAsObjectException("Property '" + field.getName() + "' which type is '"
+                            + field.getType().getName() + "' read error: " + e.getMessage(), e);
                 }
             }
         }
@@ -216,15 +218,17 @@ public abstract class JavaObjectUtils {
 
         return result;
     }
-    
+
     /**
      * 判断一个类是否可以安全的调用{@link String#valueOf(Object)}方法,
      * 这里的安全调用指在转为String后可以通过{@link JavaObjectUtils#analyzeStringValueToObject(String, Class)}转换回原始类型
-     * @param clazz 被检查的类型
+     * 
+     * @param clazz
+     *            被检查的类型
      * @return 可以安全转换返回{@code true}, 反之返回{@code false}
      */
     public static boolean isSafeToString(Class<?> clazz) {
-        Set<Class<?>> supportClasses =  new HashSet<Class<?>>() {
+        Set<Class<?>> supportClasses = new HashSet<Class<?>>() {
             {
                 add(String.class);
                 add(Integer.class);
@@ -245,7 +249,7 @@ public abstract class JavaObjectUtils {
                 add(char.class);
             }
         };
-        
+
         return supportClasses.contains(clazz) || clazz.isEnum();
     }
 
@@ -288,7 +292,7 @@ public abstract class JavaObjectUtils {
         } else if (clazz.isEnum()) {
             return Enum.valueOf((Class<? extends Enum>) clazz, value);
         }
-        
+
         throw new IllegalArgumentException("Unsupport query property type: " + clazz);
     }
 }
