@@ -30,9 +30,9 @@ package net.eulerframework.common;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Test;
@@ -128,12 +128,17 @@ public class JavaObjectUtilsTest {
                     + "}";
         Map<String, Object> map = om.readValue(json, new TypeReference<Map<String, Object>>() {
         });
-
+        
+        LinkedHashMap<Date, Date> lm = new LinkedHashMap<>();
+        lm.put(new Date(), new Date());
+        
+        //map.put("obj", lm);
+        
         TestObj obj = JavaObjectUtils.readMapAsObject(map, TestObj.class);
-        Assert.assertEquals(obj.getString(), "abc");
-        Assert.assertEquals(obj.getEnumTest(), EnumTest.A);
-        Assert.assertEquals(obj.getObj().getString(), "abc");
-        Assert.assertEquals(obj.getObj().getDate(), null);
+        Assert.assertEquals("abc", obj.getString());
+        Assert.assertEquals(EnumTest.A, obj.getEnumTest());
+        Assert.assertEquals("abc", obj.getObj().getString());
+        Assert.assertEquals(null, obj.getObj().getDate());
     }
 
     @Test

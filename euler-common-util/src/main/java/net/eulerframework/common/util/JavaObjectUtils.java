@@ -182,8 +182,9 @@ public abstract class JavaObjectUtils {
                     if (field.getType().equals(value.getClass())) {
                         setFieldValue(obj, field, value);
                     } else if (LinkedHashMap.class.equals(value.getClass())) {
-                        setFieldValue(obj, field,
-                                readMapAsObject((LinkedHashMap<String, Object>) value, field.getType()));
+                        @SuppressWarnings("unchecked")
+                        LinkedHashMap<String, Object> childRawMap = (LinkedHashMap<String, Object>) value;
+                        setFieldValue(obj, field, readMapAsObject(childRawMap, field.getType()));
                     } else if (isSafeToString(value.getClass())) {
                         setFieldValue(obj, field, analyzeStringValueToObject(String.valueOf(value), field.getType()));
                     } else {
@@ -285,7 +286,7 @@ public abstract class JavaObjectUtils {
             return Boolean.parseBoolean(str);
         } else if (Character.class.equals(clazz) || char.class.equals(clazz)) {
             if (str.length() > 0)
-                LOGGER.warn("Query property type is Character, only use the first char of value");
+                LOGGER.warn("Object type is Character, only use the first char of the string");
 
             return str.toCharArray()[0];
         } else if (Date.class.equals(clazz)) {
@@ -305,7 +306,9 @@ public abstract class JavaObjectUtils {
         } else if (BigDecimal.class.equals(clazz)) {
             return new BigDecimal(str);
         } else if (clazz.isEnum()) {
-            return Enum.valueOf((Class<? extends Enum>) clazz, str);
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Object ret = Enum.valueOf((Class<? extends Enum>) clazz, str);
+            return ret;
         }
 
         throw new IllegalArgumentException("Unsupport type: " + clazz);
