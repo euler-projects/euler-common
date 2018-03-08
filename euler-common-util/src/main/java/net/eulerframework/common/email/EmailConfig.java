@@ -6,6 +6,7 @@ public class EmailConfig {
     private String password;
     private String smtp;
     private String sender;
+    private String senderName;
 
     public String getUsername() {
         return username;
@@ -39,4 +40,11 @@ public class EmailConfig {
         this.sender = sender;
     }
 
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
 }
