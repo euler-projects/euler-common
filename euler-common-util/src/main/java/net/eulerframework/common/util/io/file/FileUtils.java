@@ -28,6 +28,13 @@
  */
 package net.eulerframework.common.util.io.file;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import net.eulerframework.common.util.Assert;
 import net.eulerframework.common.util.StringUtils;
 
 /**
@@ -65,6 +72,25 @@ public abstract class FileUtils {
             return fileName;
         } else {
             return fileName.substring(0, fileName.lastIndexOf(extension));
+        }
+    }
+    
+    private final static String PATH_PREFIX_FILE = "file:";
+    private final static String PATH_PREFIX_CLASS_PATH = "classpath:";
+    
+    public static InputStream getInputStreamFromUri(String uri) throws URISyntaxException, IOException {
+        Assert.hasText(uri);
+        
+        if(uri.startsWith(PATH_PREFIX_FILE)) {
+            return new URI(uri).toURL().openStream();
+        } else if(uri.startsWith(PATH_PREFIX_CLASS_PATH)) {
+            URL url = Class.class.getResource(uri.substring(PATH_PREFIX_CLASS_PATH.length()));
+            if(url == null) {
+                throw new RuntimeException(uri + " not exists");
+            }
+            return url.openStream();
+        } else {
+            throw new RuntimeException(uri + " not supported");
         }
     }
 

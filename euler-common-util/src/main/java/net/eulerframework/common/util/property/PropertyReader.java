@@ -35,6 +35,10 @@ public class PropertyReader extends LogSupport {
         this.loadData();
     }
     
+    public PropertySource getPropertySource() {
+        return propertySource;
+    }
+
     /**
      * 初始化读取器
      * @param configFile Properties文件路径，具体搜索规则参考{@link Class#getResource}
