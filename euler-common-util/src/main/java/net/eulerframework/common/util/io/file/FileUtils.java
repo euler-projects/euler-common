@@ -77,6 +77,7 @@ public abstract class FileUtils {
     
     private final static String PATH_PREFIX_FILE = "file:";
     private final static String PATH_PREFIX_CLASS_PATH = "classpath:";
+    private final static String PATH_PREFIX_ROOT = "/";
     
     public static InputStream getInputStreamFromUri(String uri) throws URISyntaxException, IOException {
         Assert.hasText(uri);
@@ -84,7 +85,13 @@ public abstract class FileUtils {
         if(uri.startsWith(PATH_PREFIX_FILE)) {
             return new URI(uri).toURL().openStream();
         } else if(uri.startsWith(PATH_PREFIX_CLASS_PATH)) {
-            URL url = Class.class.getResource(uri.substring(PATH_PREFIX_CLASS_PATH.length()));
+            URL url = FileUtils.class.getResource(uri.substring(PATH_PREFIX_CLASS_PATH.length()));
+            if(url == null) {
+                throw new RuntimeException(uri + " not exists");
+            }
+            return url.openStream();
+        } else if(uri.startsWith(PATH_PREFIX_ROOT)) {
+            URL url = FileUtils.class.getResource(uri);
             if(url == null) {
                 throw new RuntimeException(uri + " not exists");
             }
