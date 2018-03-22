@@ -1,7 +1,5 @@
 package net.eulerframework.common.util.jwt;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-
 /**
  * Jwt Claims Interface
  * 
@@ -110,7 +108,6 @@ public interface JwtClaims {
      * 
      * @return the iat unix timestamp
      */
-    @JsonGetter
     public Long getIat();
     
     /**

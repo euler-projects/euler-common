@@ -2,13 +2,12 @@ package net.eulerframework.common.util.jwt;
 
 import java.util.Date;
 
-import org.springframework.security.jwt.Jwt;
-import org.springframework.security.jwt.JwtHelper;
-import org.springframework.security.jwt.crypto.sign.RsaSigner;
-import org.springframework.security.jwt.crypto.sign.RsaVerifier;
-import org.springframework.security.jwt.crypto.sign.SignatureVerifier;
-import org.springframework.security.jwt.crypto.sign.Signer;
-
+import net.eulerframework.common.util.jwt.springcode.Jwt;
+import net.eulerframework.common.util.jwt.springcode.JwtHelper;
+import net.eulerframework.common.util.jwt.springcode.crypto.sign.RsaSigner;
+import net.eulerframework.common.util.jwt.springcode.crypto.sign.RsaVerifier;
+import net.eulerframework.common.util.jwt.springcode.crypto.sign.SignatureVerifier;
+import net.eulerframework.common.util.jwt.springcode.crypto.sign.Signer;
 import net.eulerframework.common.base.log.LogSupport;
 import net.eulerframework.common.util.Assert;
 import net.eulerframework.common.util.DateUtils;
