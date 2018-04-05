@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="off" monitorInterval="1800">
 
-    <properties>
-        <property name="logPath">D:/logs
-        </property>
+    <!-- <properties>
+        <property name="logPath">/var/logs/euler-framework</property>
         <property name="logFileName">euler-logs</property>
-    </properties>
+    </properties> -->
 
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
@@ -28,7 +27,6 @@
     
     <loggers>
         <root level="warn">
-            <appender-ref ref="ErrorLog"/>
             <appender-ref ref="Console" />
         </root>
         <logger name="net.eulerframework" level="info" />

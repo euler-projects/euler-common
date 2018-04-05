@@ -1,5 +1,6 @@
 package net.eulerframework.common.email;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Properties;
@@ -12,6 +13,8 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
+
+import net.eulerframework.common.util.StringUtils;
 
 /**
  * 简单邮件发送器，可单发，群发。
@@ -36,10 +39,12 @@ public class SimpleMailSender {
     private transient Session session;
 
     private final String senderEmailAddr;
+    private final String senderName;
 
     protected SimpleMailSender(EmailConfig emailConfig) {
         init(emailConfig.getUsername(), emailConfig.getPassword(), emailConfig.getSmtp());
         this.senderEmailAddr = emailConfig.getSender();
+        this.senderName = emailConfig.getSenderName();
     }
 
     private void init(String username, String password, String smtpHostName) {
@@ -68,7 +73,15 @@ public class SimpleMailSender {
         // 创建mime类型邮件
         final MimeMessage message = new MimeMessage(session);
         // 设置发信人
-        message.setFrom(new InternetAddress(this.senderEmailAddr));
+        if(StringUtils.hasText(this.senderName)) {
+            try {
+                message.setFrom(new InternetAddress(this.senderEmailAddr, this.senderName));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException();
+            }
+        } else {
+            message.setFrom(new InternetAddress(this.senderEmailAddr));
+        }
         // 设置收件人
         message.setRecipient(RecipientType.TO, new InternetAddress(receiver));
         // 设置主题

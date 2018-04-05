@@ -1,17 +1,16 @@
 package net.eulerframework.common.util.property;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import net.eulerframework.common.base.log.LogSupport;
-import net.eulerframework.common.util.Assert;
-
+import net.eulerframework.common.util.ArrayUtils;
 
 public class PropertyReader extends LogSupport {
 
     private PropertySource propertySource;
     
-    private String configFile;
-    private Class<?> callerClass;
+    private String[] configFile;
     
     /**
      * 初始化读取器，使用classpath根目录作为搜索位置，config.properties作为文件名
@@ -22,28 +21,25 @@ public class PropertyReader extends LogSupport {
     }
 
     /**
-     * 初始化读取器，使用classpath根目录作为搜索位置，configFile必须以/开头，搜索顺序为项目classes目录、euler-common的classpath、调用代码所在包的classpath
-     * @param configFile Properties文件路径，具体搜索规则参考{@link Class#getResource}
+     * 初始化读取器, 并指定多个uri作为搜索位置, 如存在相同的属性, 后面的会覆盖前面的
+     * @param configFileUri 配置文件URI
      */
-    public PropertyReader(String configFile) {
-        this.logger.info("No config file path defined, search at root classpath path");
-        
-        Assert.isTrue(configFile.startsWith("/"), "configFile must start with '/' if caller class is not defined");
-        
-        this.configFile = configFile;
-        this.callerClass = this.getClass();
+    public PropertyReader(String... configFileUri) {
+        this.configFile = configFileUri;
         this.loadData();
     }
     
     /**
-     * 初始化读取器
-     * @param configFile Properties文件路径，具体搜索规则参考{@link Class#getResource}
-     * @param callerClass 调用者的Class，用来确定搜索位置
+     * 向读取器追加新的配置文件URI
+     * @param configFileUri 配置文件URI
      */
-    public PropertyReader(String configFile, Class<?> callerClass) {
-        this.configFile = configFile;
-        this.callerClass = callerClass;
-        this.loadData();
+    public void addConfigFile(String... configFileUri) {
+        this.configFile = ArrayUtils.concat(this.configFile, configFileUri);
+        try {
+            this.propertySource.loadProperties(configFileUri);
+        } catch (URISyntaxException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void refresh() {
@@ -53,8 +49,8 @@ public class PropertyReader extends LogSupport {
     
     private void loadData() {
         try {
-            propertySource = new PropertySource(this.configFile, this.callerClass);
-        } catch (IOException e) {
+            propertySource = new PropertySource(this.configFile);
+        } catch (URISyntaxException | IOException e) {
             throw new RuntimeException(e);
         }
     }
