@@ -1,5 +1,6 @@
 package net.eulerframework.common.util.property;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -37,6 +38,8 @@ public class PropertyReader extends LogSupport {
         this.configFile = ArrayUtils.concat(this.configFile, configFileUri);
         try {
             this.propertySource.loadProperties(configFileUri);
+        } catch (FileNotFoundException e1) {
+            //ABORD
         } catch (URISyntaxException | IOException e) {
             throw new RuntimeException(e);
         }
