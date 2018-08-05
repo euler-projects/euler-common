@@ -13,7 +13,6 @@
 
     <properties>
         <slf4j.version>1.7.25</slf4j.version>
-        <log4j2.version>2.5</log4j2.version>
 
         <junit.version>4.8.2</junit.version>
     </properties>
@@ -23,16 +22,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
-            <!-- <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-            </exclusions> -->
         </dependency>
 
         <!-- <dependency>
@@ -40,38 +29,6 @@
             <artifactId>jcl-over-slf4j</artifactId>
             <version>${slf4j.version}</version>
             <scope>runtime</scope>
-        </dependency> -->
-
-        <!-- 核心log4j2jar包 -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j2.version}</version>
-        </dependency>
-        <!-- 用于与slf4j保持桥接 -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>${log4j2.version}</version>
-        </dependency>
-        <!-- web工程需要包含log4j-web，非web工程不需要 -->
-        <!-- <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-web</artifactId>
-            <version>${log4j2.version}</version>
-            <scope>runtime</scope>
-        </dependency> -->
-
-        <!-- 需要使用log4j2的AsyncLogger需要包含disruptor -->
-        <!-- <dependency>
-            <groupId>com.lmax</groupId>
-            <artifactId>disruptor</artifactId>
-            <version>3.2.0</version>
         </dependency> -->
 
         <dependency>
