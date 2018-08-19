@@ -19,7 +19,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 public abstract class DateUtils {
     
@@ -70,20 +69,8 @@ public abstract class DateUtils {
         return new SimpleDateFormat(pattern).parse(source);
     }
 
-    public static Date parseDate (String source, String pattern, Locale local) throws ParseException{
-        return new SimpleDateFormat(pattern, local).parse(source);
-    }
-
     public static String formatDate (Date date, String pattern){
         return new SimpleDateFormat(pattern).format(date);
-    }
-
-    public static String formatDate (Date date, String pattern, Locale local){
-        return new SimpleDateFormat(pattern, local).format(date);
-    }
-
-    public static Date parseDateFromUnixTimestamp(long unixTimestamp) {
-        return new Date(unixTimestamp * 1000);
     }
     
     public static long getUnixTimestamp(Date date) {
