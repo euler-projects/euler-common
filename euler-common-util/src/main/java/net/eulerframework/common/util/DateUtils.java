@@ -78,6 +78,10 @@ public abstract class DateUtils {
         return new SimpleDateFormat(pattern).format(date);
     }
 
+    public static String formatDate (Date date, String pattern, Locale local){
+        return new SimpleDateFormat(pattern, local).format(date);
+    }
+
     public static Date parseDateFromUnixTimestamp(long unixTimestamp) {
         return new Date(unixTimestamp * 1000);
     }
