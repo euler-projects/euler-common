@@ -15,7 +15,9 @@
  */
 package net.eulerframework.common.util;
 
+import java.util.Collection;
 import java.util.Locale;
+import java.util.Map;
 
 public abstract class CommonUtils {
 
@@ -92,5 +94,13 @@ public abstract class CommonUtils {
         } else {
             return language.toLowerCase();
         }
+    }
+    
+    public static boolean isEmpty(Collection<?> collection) {
+        return (collection == null || collection.isEmpty());
+    }
+    
+    public static boolean isEmpty(Map<?, ?> map) {
+        return (map == null || map.isEmpty());
     }
 }

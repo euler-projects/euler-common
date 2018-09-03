@@ -241,12 +241,12 @@ public abstract class StringUtils {
         return str;
     }
     
-    private static String toCamelCase(String str) {
+    private static String toCamelCase(String str, String split) {
         if(!hasLength(str))
             return str;
         
         str = StringUtils.earseMultiSpcases(str);
-        String[] words = str.split(" ");
+        String[] words = str.split(split);
 
         if(words.length <= 1) {
             return str;
@@ -260,19 +260,29 @@ public abstract class StringUtils {
         
         return builder.toString();        
     }
-    
-    public static String toLowerCamelCase(String str) {
+
+    public static String toLowerCamelCase(String str, String split) {
         if(!hasLength(str))
             return str;
         
-        return toLowerCaseFirstChar(toCamelCase(str));
+        return toLowerCaseFirstChar(toCamelCase(str, split));
     }
     
-    public static String toUpperCamelCase(String str) {
+    public static String toUpperCamelCase(String str, String split) {
         if(!hasLength(str))
             return str;
         
-        return toUpperCaseFirstChar(toCamelCase(str));
+        return toUpperCaseFirstChar(toCamelCase(str, split));
+    }
+    
+    @Deprecated
+    public static String toLowerCamelCase(String str) {
+        return toLowerCamelCase(str, " ");
+    }
+    
+    @Deprecated
+    public static String toUpperCamelCase(String str) {        
+        return toUpperCamelCase(str, " ");
     }
     
     /**

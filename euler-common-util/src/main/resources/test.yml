@@ -1,0 +1,8 @@
+root:
+  prop1: value1
+  child:
+    child-prop2: value2
+    childProp3: value3
+    empty:
+
+.jpg: covered

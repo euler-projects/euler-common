@@ -49,5 +49,22 @@ public abstract class ArrayUtils {
         }
         return result;
     }
-
+    
+    public static boolean contains(Object[] array, Object except) {
+        Assert.notNull(array);
+        
+        for(Object obj : array) {
+            if(obj == null) {
+                if(except == null) {
+                    return true;
+                }
+            } else {
+                if(obj.equals(except)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
 }

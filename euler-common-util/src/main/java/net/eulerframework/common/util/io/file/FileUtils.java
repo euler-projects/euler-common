@@ -15,6 +15,7 @@
  */
 package net.eulerframework.common.util.io.file;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -66,7 +67,7 @@ public abstract class FileUtils {
     private final static String PATH_PREFIX_CLASS_PATH = "classpath:";
     private final static String PATH_PREFIX_ROOT = "/";
     
-    public static InputStream getInputStreamFromUri(String uri) throws URISyntaxException, IOException {
+    public static InputStream getInputStreamFromUri(String uri) throws URISyntaxException, FileNotFoundException, IOException {
         Assert.hasText(uri);
         
         if(uri.startsWith(PATH_PREFIX_FILE)) {
@@ -74,13 +75,13 @@ public abstract class FileUtils {
         } else if(uri.startsWith(PATH_PREFIX_CLASS_PATH)) {
             URL url = FileUtils.class.getResource(uri.substring(PATH_PREFIX_CLASS_PATH.length()));
             if(url == null) {
-                throw new RuntimeException(uri + " not exists");
+                throw new FileNotFoundException(uri + " not exists");
             }
             return url.openStream();
         } else if(uri.startsWith(PATH_PREFIX_ROOT)) {
             URL url = FileUtils.class.getResource(uri);
             if(url == null) {
-                throw new RuntimeException(uri + " not exists");
+                throw new FileNotFoundException(uri + " not exists");
             }
             return url.openStream();
         } else {
