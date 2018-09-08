@@ -111,7 +111,7 @@ public class PropertySource extends LogSupport {
         }
     }
     
-    public LinkedHashMap<String, String> flatYamlMap(LinkedHashMap<String, Object> yamlMap) {
+    private LinkedHashMap<String, String> flatYamlMap(LinkedHashMap<String, Object> yamlMap) {
 
         if (CommonUtils.isEmpty(yamlMap)) {
             return null;
