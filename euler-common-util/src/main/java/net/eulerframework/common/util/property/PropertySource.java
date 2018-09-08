@@ -32,6 +32,15 @@ import net.eulerframework.common.util.CommonUtils;
 import net.eulerframework.common.util.StringUtils;
 import net.eulerframework.common.util.io.file.FileUtils;
 
+/**
+ * 配置文件数据源，支持properties文件和yaml文件，<br>
+ * properties文件的key按原始格式读取，<br>
+ * yaml文件会按层级关系转换为平铺的key-value结构，层级之间的key用.分隔，
+ * key会统一转换成小驼峰结构，- 会作为单词分隔符对待，例如exam-key会转换为examKey
+ * 
+ * @author cFrost
+ *
+ */
 public class PropertySource extends LogSupport {
     private static final String[] PROPERTY_FILE_EXTENSIONS = { ".properties", ".property" };
     private static final String[] YAML_FILE_EXTENSIONS = { ".yml", ".yaml" };
