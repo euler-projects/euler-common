@@ -166,7 +166,23 @@ public abstract class StringUtils {
         }
         subString = subString.substring(0, subString.length() - 1);
 
-        if (!StringUtils.isNull(suffix)) {
+        if (StringUtils.hasText(suffix)) {
+            subString += suffix;
+        }
+
+        return subString;
+    }
+    
+    public static String subStringByLength(String str, int length, String suffix) {
+        if(str == null)
+            return str;
+        
+        if (str.length() <= length)
+            return str;
+
+        String subString = str.substring(0, length);
+
+        if (StringUtils.hasText(suffix)) {
             subString += suffix;
         }
 
