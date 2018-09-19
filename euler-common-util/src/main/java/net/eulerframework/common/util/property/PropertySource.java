@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Properties;
 
@@ -34,9 +35,16 @@ import net.eulerframework.common.util.io.file.FileUtils;
 
 /**
  * 配置文件数据源，支持properties文件和yaml文件，<br>
- * properties文件的key按原始格式读取，<br>
- * yaml文件会按层级关系转换为平铺的key-value结构，层级之间的key用.分隔，
- * key会统一转换成小驼峰结构，- 会作为单词分隔符对待，例如exam-key会转换为examKey
+ * 
+ * properties文件的key按原始格式读取<br>
+ * <br>
+ * yaml文件会按层级关系转换为平铺的key-value结构，层级之间的key用<code>.</code>分隔，
+ * key会统一转换成小驼峰结构，<code>-</code>会作为单词分隔符对待，
+ * 例如<code>exam-key<code>会转换为</code>examKey</code><br>
+ * <br>
+ * 为了与properties文件解析逻辑一致：
+ * yaml文件的数组类型数据会被转为用<code>,</code>分隔的字符串；
+ * yaml文件如果value为<code>null</code>，将被存储为空字符串。
  * 
  * @author cFrost
  *
@@ -105,47 +113,54 @@ public class PropertySource extends LogSupport {
         try (InputStream inputStream = FileUtils.getInputStreamFromUri(uri)) {
             @SuppressWarnings("unchecked")
             LinkedHashMap<String, Object> yamlMap = yaml.loadAs(inputStream, LinkedHashMap.class);
-            LinkedHashMap<String, String> flatMap = this.flatYamlMap(yamlMap);
+            LinkedHashMap<String, Object> flatMap = this.flatYamlMap(yamlMap);
 
             if(!CommonUtils.isEmpty(flatMap)) {
-                for (String key : flatMap.keySet()) {
-                    String value = flatMap.get(key);
+                flatMap.forEach((key, value) -> {
                     if(value != null) {
                         this.props.put(key, flatMap.get(key));
                     } else {
                         this.logger.warn("Load config " + key + " is null, but property dose not support null value, ignore it.");
                     }
-                }
+                });
             }
         }
     }
     
-    private LinkedHashMap<String, String> flatYamlMap(LinkedHashMap<String, Object> yamlMap) {
+    private LinkedHashMap<String, Object> flatYamlMap(LinkedHashMap<String, Object> yamlMap) {
 
         if (CommonUtils.isEmpty(yamlMap)) {
             return null;
         }
         
-        LinkedHashMap<String, String> flatMap = new LinkedHashMap<>();
-
-        for (String key : yamlMap.keySet()) {
-            Object obj = yamlMap.get(key);
-
+        LinkedHashMap<String, Object> flatMap = new LinkedHashMap<>();
+        
+        yamlMap.forEach((key, obj) -> {
             if (obj instanceof LinkedHashMap<?, ?>) {
                 @SuppressWarnings("unchecked")
-                LinkedHashMap<String, String> subFlatMap = this.flatYamlMap((LinkedHashMap<String, Object>) obj);
+                LinkedHashMap<String, Object> subFlatMap = this.flatYamlMap((LinkedHashMap<String, Object>) obj);
 
                 if (!CommonUtils.isEmpty(subFlatMap)) {
                     for (String subFlatMapKey : subFlatMap.keySet()) {
-                        String value = subFlatMap.get(subFlatMapKey);
+                        Object value = subFlatMap.get(subFlatMapKey);
                         String fullKey = key + "." + subFlatMapKey;
                         flatMap.put(fullKey, value);
                     }
                 }
+            } else if (obj instanceof ArrayList<?>) {
+                @SuppressWarnings("unchecked")
+                ArrayList<Object> list = (ArrayList<Object>) obj;
+                if(!CommonUtils.isEmpty(list)) {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    list.forEach(each -> stringBuilder.append(String.valueOf(each)).append(","));
+                    flatMap.put(
+                            StringUtils.toLowerCamelCase(key, "-"), 
+                            stringBuilder.subSequence(0, stringBuilder.length() - 1).toString());
+                }
             } else {
-                flatMap.put(StringUtils.toLowerCamelCase(key, "-"), obj == null ? null : String.valueOf(obj));
+                flatMap.put(StringUtils.toLowerCamelCase(key, "-"), obj == null ? "" : String.valueOf(obj));
             }
-        }
+        });
 
         return flatMap;
     }

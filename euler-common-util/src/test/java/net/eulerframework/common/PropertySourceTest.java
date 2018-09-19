@@ -35,7 +35,7 @@ public class PropertySourceTest {
 
     @BeforeClass
     public static void init() throws IOException, URISyntaxException{
-        propertySource = new PropertySource("/config-mime.properties", "/test.yml", "/a.yml", "/a.properties", "/log4j.xml");
+        propertySource = new PropertySource("/config-mime.properties", "/test.yml", "/a.yml", "/a.properties", "/log4j.xml", "/test2.properties");
     }
     
     @Test
@@ -44,13 +44,23 @@ public class PropertySourceTest {
         Assert.assertEquals("value1", propertySource.getProperty("root.prop1"));
         Assert.assertEquals("value2", propertySource.getProperty("root.child.childProp2"));
         Assert.assertEquals("value3", propertySource.getProperty("root.child.childProp3"));
+        Assert.assertEquals("item0,item1,item2", propertySource.getProperty("root.array"));
+        Assert.assertEquals("19", propertySource.getProperty("root.integer"));
+        Assert.assertEquals("1", propertySource.getProperty("integer"));
+        Assert.assertEquals("", propertySource.getProperty("property.empty"));
+        Assert.assertEquals("", propertySource.getProperty("root.child.empty"));
     }
     
 
-    @Test(expected = PropertyNotFoundException.class)
-    public void testPropertyNotFoundException() throws PropertyNotFoundException {
-        propertySource.getProperty("root.child.empty");
-    }
+//    @Test(expected = PropertyNotFoundException.class)
+//    public void testPropertyNotFoundException1() throws PropertyNotFoundException {
+//        propertySource.getProperty("root.child.empty");
+//    }
+//    
+//    @Test(expected = PropertyNotFoundException.class)
+//    public void testPropertyNotFoundException2() throws PropertyNotFoundException {
+//        propertySource.getProperty("property.empty");
+//    }
     
     @Test
     public void testCoverRead() throws IOException, URISyntaxException, PropertyNotFoundException {
