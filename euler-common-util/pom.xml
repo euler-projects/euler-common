@@ -15,7 +15,7 @@
         <pinyin4j.version>2.5.1</pinyin4j.version>
         <javax.mail-api.version>1.5.5</javax.mail-api.version>
         <javax.mail.version>1.5.4</javax.mail.version>
-        <jackson.version>2.9.3</jackson.version>
+        <jackson.version>2.9.7</jackson.version>
         <!-- <jyaml.version>1.3</jyaml.version> -->
         <snakeyaml.version>1.23</snakeyaml.version>
         <log4j2.version>2.5</log4j2.version>
