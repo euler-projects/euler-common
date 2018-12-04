@@ -2,9 +2,9 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>net.eulerframework</groupId>
+        <groupId>org.eulerframework</groupId>
         <artifactId>euler-common</artifactId>
-        <version>1.0.0.M1</version>
+        <version>1.0.0.M2</version>
     </parent>
     <artifactId>euler-common-util</artifactId>
     <name>euler-common-util</name>
@@ -15,7 +15,10 @@
         <pinyin4j.version>2.5.1</pinyin4j.version>
         <javax.mail-api.version>1.5.5</javax.mail-api.version>
         <javax.mail.version>1.5.4</javax.mail.version>
-        <jackson.version>2.9.3</jackson.version>
+        <jackson.version>2.9.7</jackson.version>
+        <!-- <jyaml.version>1.3</jyaml.version> -->
+        <snakeyaml.version>1.23</snakeyaml.version>
+        <log4j2.version>2.5</log4j2.version>
 
         <junit.version>4.8.2</junit.version>
     </properties>
@@ -55,17 +58,50 @@
             <version>${jackson.version}</version>
         </dependency>
 
+        <!-- <dependency>
+            <groupId>org.jyaml</groupId>
+            <artifactId>jyaml</artifactId>
+            <version>${jyaml.version}</version>
+        </dependency> -->
+        
+        <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>${snakeyaml.version}</version>
+        </dependency>
+        
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>euler-common-logging</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j2.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j2.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j2.version}</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>

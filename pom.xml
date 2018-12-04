@@ -4,14 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.eulerframework</groupId>
+        <groupId>org.eulerframework</groupId>
         <artifactId>euler-parent</artifactId>
-        <version>3</version>
+        <version>4</version>
         <relativePath/>
     </parent>
     
     <artifactId>euler-common</artifactId>
-    <version>1.0.0.M1</version>
+    <version>1.0.0.M2</version>
     <packaging>pom</packaging>
     <name>euler-common</name>
     <url>https://eulerproject.io</url>
@@ -22,30 +22,6 @@
         <module>euler-common-util</module>
         <module>euler-common-jwt</module>
     </modules>
-
-    <properties>
-        <jdk.version>1.7</jdk.version>        
-        
-        
-    </properties>
-
-    <dependencyManagement>
-        
-    </dependencyManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
-                <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <scm>
         <connection>scm:git:https://github.com/euler-projects/euler-common.git</connection>
