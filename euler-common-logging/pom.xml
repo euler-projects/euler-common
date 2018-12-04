@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.eulerframework</groupId>
         <artifactId>euler-common</artifactId>
-        <version>1.0.0.M2-SNAPSHOT</version>
+        <version>1.0.0.M2</version>
     </parent>
     <artifactId>euler-common-logging</artifactId>
     <name>euler-common-logging</name>
