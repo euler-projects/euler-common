@@ -15,59 +15,17 @@
  */
 package org.eulerframework.common.util.property;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import org.eulerframework.common.base.log.LogSupport;
-import org.eulerframework.common.util.ArrayUtils;
 
 public class PropertyReader extends LogSupport {
 
-    private PropertySource propertySource;
-    
-    private String[] configFile;
+    private final PropertySource propertySource;
     
     /**
      * 初始化读取器，使用classpath根目录作为搜索位置，config.properties作为文件名
      */
-    public PropertyReader() {
-        this("/config.properties");
-        this.logger.warn("No config file path defined, use '"+ this.configFile +"' for default.");
-    }
-
-    /**
-     * 初始化读取器, 并指定多个uri作为搜索位置, 如存在相同的属性, 后面的会覆盖前面的
-     * @param configFileUri 配置文件URI
-     */
-    public PropertyReader(String... configFileUri) {
-        this.configFile = configFileUri;
-        this.loadData();
-    }
-    
-    /**
-     * 向读取器追加新的配置文件URI
-     * @param configFileUri 配置文件URI
-     */
-    public void addConfigFile(String... configFileUri) {
-        this.configFile = ArrayUtils.concat(this.configFile, configFileUri);
-        try {
-            this.propertySource.loadProperties(configFileUri);
-        } catch (URISyntaxException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void refresh() {
-        logger.info("Refresh File Config");
-        this.loadData();
-    }
-    
-    private void loadData() {
-        try {
-            propertySource = new PropertySource(this.configFile);
-        } catch (URISyntaxException | IOException e) {
-            throw new RuntimeException(e);
-        }
+    public PropertyReader(PropertySource propertySource) {
+        this.propertySource = propertySource;
     }
     
     public String get(String property) throws PropertyNotFoundException {

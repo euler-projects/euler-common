@@ -15,11 +15,15 @@
  */
 package org.eulerframework.common.util;
 
+import org.eulerframework.common.util.property.FilePropertySource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.eulerframework.common.util.property.InvalidPropertyValueException;
 import org.eulerframework.common.util.property.PropertyReader;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 public abstract class MIMEUtils {
     protected static final Logger LOGGER = LoggerFactory.getLogger(MIMEUtils.class);
@@ -27,10 +31,14 @@ public abstract class MIMEUtils {
     private static final String DEFAULT_CONFIG_VALUE = "application/octet-stream;attachment";
     private static final MIME DEFAULT_MIME = new MIME(DEFAULT_CONFIG_VALUE);
 
-    private static final PropertyReader properties = new PropertyReader("/config-mime.properties");
+    private static final PropertyReader properties;
 
-    public static void reload() {
-        properties.refresh();
+    static {
+        try {
+            properties = new PropertyReader(new FilePropertySource("/config-mime.properties"));
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
     
     public static MIME getDefaultMIME() {

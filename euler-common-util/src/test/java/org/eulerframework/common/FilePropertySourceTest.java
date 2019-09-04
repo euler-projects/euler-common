@@ -18,6 +18,7 @@ package org.eulerframework.common;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import org.eulerframework.common.util.property.FilePropertySource;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -29,13 +30,13 @@ import org.eulerframework.common.util.property.PropertySource;
  * @author cFrost
  *
  */
-public class PropertySourceTest {
+public class FilePropertySourceTest {
     
     public static PropertySource propertySource;
 
     @BeforeClass
     public static void init() throws IOException, URISyntaxException{
-        propertySource = new PropertySource("/config-mime.properties", "/test.yml", "/a.yml", "/a.properties", "/log4j.xml", "/test2.properties");
+        propertySource = new FilePropertySource("/config-mime.properties", "/test.yml", "/a.yml", "/a.properties", "/log4j.xml", "/test2.properties");
     }
     
     @Test
@@ -64,9 +65,9 @@ public class PropertySourceTest {
     
     @Test
     public void testCoverRead() throws IOException, URISyntaxException, PropertyNotFoundException {
-        PropertySource propertySource = new PropertySource("/config-mime.properties");
+        FilePropertySource propertySource = new FilePropertySource("/config-mime.properties");
         Assert.assertEquals("image/jpeg;inline", propertySource.getProperty(".jpg"));
-        propertySource.loadProperties("/test.yml");
+        propertySource.addPropertyFile("/test.yml");
         Assert.assertEquals("covered", propertySource.getProperty(".jpg"));
     }
 }
