@@ -23,11 +23,22 @@ import org.eulerframework.common.util.StringUtils;
 public class StringUtilsTest {
 
     @Test
-    public void test() {
-        Assert.assertEquals("euler_framework", StringUtils.camelCaseToUnderLineCase("EulerFramework"));
-        Assert.assertEquals("euler_framework", StringUtils.camelCaseToUnderLineCase("Euler_Framework"));
-        Assert.assertEquals("euler_framework", StringUtils.camelCaseToUnderLineCase("Euler__Framework"));
-        Assert.assertEquals("euler_framework", StringUtils.camelCaseToUnderLineCase("Euler_framework"));
-        Assert.assertEquals("euler_framework", StringUtils.camelCaseToUnderLineCase("eulerFramework"));
+    public void camelStyleToUnderLineLowerCase() {
+        Assert.assertEquals("euler_framework", StringUtils.camelStyleToUnderLineLowerCase("EulerFramework"));
+        Assert.assertEquals("euler_framework", StringUtils.camelStyleToUnderLineLowerCase("Euler_Framework"));
+        Assert.assertEquals("euler_framework", StringUtils.camelStyleToUnderLineLowerCase("Euler__Framework"));
+        Assert.assertEquals("euler_framework", StringUtils.camelStyleToUnderLineLowerCase("Euler_framework"));
+        Assert.assertEquals("euler_framework", StringUtils.camelStyleToUnderLineLowerCase("eulerFramework"));
+        Assert.assertEquals("e_u_l_e_r_f_r_a_m_e_w_o_r_k", StringUtils.camelStyleToUnderLineLowerCase("EULERFRAMEWORK"));
+    }
+
+    @Test
+    public void camelStyleToDashLowerCase() {
+        Assert.assertEquals("euler-framework", StringUtils.camelStyleToDashLowerCase("EulerFramework"));
+        Assert.assertEquals("euler-framework", StringUtils.camelStyleToDashLowerCase("Euler-Framework"));
+        Assert.assertEquals("euler-framework", StringUtils.camelStyleToDashLowerCase("Euler--Framework"));
+        Assert.assertEquals("euler-framework", StringUtils.camelStyleToDashLowerCase("Euler-framework"));
+        Assert.assertEquals("euler-framework", StringUtils.camelStyleToDashLowerCase("eulerFramework"));
+        Assert.assertEquals("e-u-l-e-r-f-r-a-m-e-w-o-r-k", StringUtils.camelStyleToDashLowerCase("EULERFRAMEWORK"));
     }
 }

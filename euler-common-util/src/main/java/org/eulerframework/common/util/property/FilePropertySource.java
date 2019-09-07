@@ -174,11 +174,11 @@ public class FilePropertySource extends LogSupport implements PropertySource {
                     StringBuilder stringBuilder = new StringBuilder();
                     list.forEach(each -> stringBuilder.append(String.valueOf(each)).append(","));
                     flatMap.put(
-                            StringUtils.toLowerCamelCase(key, "-"),
+                            StringUtils.toLowerCaseCamelStyle(key, "-"),
                             stringBuilder.subSequence(0, stringBuilder.length() - 1).toString());
                 }
             } else {
-                flatMap.put(StringUtils.toLowerCamelCase(key, "-"), obj == null ? "" : String.valueOf(obj));
+                flatMap.put(StringUtils.toLowerCaseCamelStyle(key, "-"), obj == null ? "" : String.valueOf(obj));
             }
         });
 

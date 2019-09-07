@@ -64,7 +64,7 @@ public class YamlPropertySource {
         
         for(String key : keySet) {
             Object value = map.get(key);
-            String lowerCamelCaseKey = StringUtils.toLowerCamelCase(key, "-");
+            String lowerCamelCaseKey = StringUtils.toLowerCaseCamelStyle(key, "-");
             if(value instanceof LinkedHashMap<?, ?>) {
                 value = convertToLowerCamelCaseKeyLinkedHashMap((LinkedHashMap<String, Object>)value);
             }
