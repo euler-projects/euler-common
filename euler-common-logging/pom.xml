@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.eulerframework</groupId>
         <artifactId>euler-common</artifactId>
-        <version>1.0.0.M3-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <artifactId>euler-common-logging</artifactId>
     <name>euler-common-logging</name>
@@ -13,7 +13,6 @@
 
     <properties>
         <slf4j.version>1.7.25</slf4j.version>
-
         <junit.version>4.8.2</junit.version>
     </properties>
 

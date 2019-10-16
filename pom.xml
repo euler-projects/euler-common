@@ -6,16 +6,21 @@
     <parent>
         <groupId>org.eulerframework</groupId>
         <artifactId>euler-parent</artifactId>
-        <version>4</version>
+        <version>5-SNAPSHOT</version>
         <relativePath/>
     </parent>
     
     <artifactId>euler-common</artifactId>
-    <version>1.0.0.M3-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
     <name>euler-common</name>
     <url>https://eulerproject.io</url>
     <description>A useful code collection</description>
+
+    <properties>
+        <revision>1.0.0.M7-SNAPSHOT</revision>
+        <main.basedir>${basedir}</main.basedir>
+    </properties>
 
     <modules>
         <module>euler-common-logging</module>
@@ -23,10 +28,58 @@
         <module>euler-common-jwt</module>
     </modules>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <inherited>true</inherited>
+                <executions>
+                    <execution>
+                        <!-- Tidy up all POMs before they are published -->
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                        <configuration>
+                            <updatePomFile>true</updatePomFile>
+                            <flattenMode>oss</flattenMode>
+                            <pomElements>
+                                <distributionManagement>remove</distributionManagement>
+                                <repositories>remove</repositories>
+                            </pomElements>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>flatten-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <scm>
         <connection>scm:git:https://github.com/euler-projects/euler-common.git</connection>
         <developerConnection>scm:git:git@github.com:euler-projects/euler-common.git</developerConnection>
         <url>https://github.com/euler-projects/euler-common</url>
     </scm>
 
+    <repositories>
+        <repository>
+            <id>euler-snapshot</id>
+            <name>euler-snapshot</name>
+            <url>https://repo.eulerproject.io/repository/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
