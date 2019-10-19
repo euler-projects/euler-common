@@ -10,3 +10,4 @@ pom.xml.versionsBackup
 *.iml
 *.pem
 
+.flattened-pom.xml
