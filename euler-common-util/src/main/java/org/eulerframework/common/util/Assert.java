@@ -16,6 +16,7 @@
 package org.eulerframework.common.util;
 
 import java.lang.reflect.Constructor;
+import java.util.function.Supplier;
 
 /**
  * Assertion utility class.
@@ -35,6 +36,57 @@ public abstract class Assert {
         }
     }
 
+    /**
+     * Assert a boolean expression, throwing an {@code IllegalStateException}
+     * if the expression evaluates to {@code false}.
+     * <p>Call {@link #isTrue} if you wish to throw an {@code IllegalArgumentException}
+     * on an assertion failure.
+     * <pre class="code">Assert.state(id == null, "The id property must not already be initialized");</pre>
+     * @param expression a boolean expression
+     * @param message the exception message to use if the assertion fails
+     * @throws IllegalStateException if {@code expression} is {@code false}
+     */
+    public static void state(boolean expression, String message) {
+        if (!expression) {
+            throw new IllegalStateException(message);
+        }
+    }
+
+    /**
+     * Assert a boolean expression, throwing an {@code IllegalStateException}
+     * if the expression evaluates to {@code false}.
+     * <p>Call {@link #isTrue} if you wish to throw an {@code IllegalArgumentException}
+     * on an assertion failure.
+     * <pre class="code">
+     * Assert.state(id == null,
+     *     () -&gt; "ID for " + entity.getName() + " must not already be initialized");
+     * </pre>
+     * @param expression a boolean expression
+     * @param messageSupplier a supplier for the exception message to use if the
+     * assertion fails
+     * @throws IllegalStateException if {@code expression} is {@code false}
+     * @since 5.0
+     */
+    public static void state(boolean expression, Supplier<String> messageSupplier) {
+        if (!expression) {
+            throw new IllegalStateException(nullSafeGet(messageSupplier));
+        }
+    }
+
+    /**
+     * Assert a boolean expression, throwing an {@code IllegalStateException}
+     * if the expression evaluates to {@code false}.
+     * @deprecated as of 4.3.7, in favor of {@link #state(boolean, String)}
+     */
+    @Deprecated
+    public static void state(boolean expression) {
+        state(expression, "[Assertion failed] - this state invariant must be true");
+    }
+
+    private static String nullSafeGet(Supplier<String> messageSupplier) {
+        return (messageSupplier != null ? messageSupplier.get() : null);
+    }
+
     public static void isTrue(boolean expression) {
         isTrue(expression, "[Assertion failed] - this expression must be true");
     }
@@ -43,9 +95,19 @@ public abstract class Assert {
         Assert.isTrue(expression, IllegalArgumentException.class, message);
     }
 
+    public static void isTrue(boolean expression, Supplier<String> messageSupplier) {
+        Assert.isTrue(expression, IllegalArgumentException.class, messageSupplier);
+    }
+
     public static <T extends RuntimeException> void isTrue(boolean expression, Class<T> exceptionClass, String message) {
         if (!expression) {
             Assert.throwException(exceptionClass, message);
+        }
+    }
+
+    public static <T extends RuntimeException> void isTrue(boolean expression, Class<T> exceptionClass, Supplier<String> messageSupplier) {
+        if (!expression) {
+            Assert.throwException(exceptionClass, nullSafeGet(messageSupplier));
         }
     }
     
@@ -71,9 +133,19 @@ public abstract class Assert {
         Assert.notNull(object, IllegalArgumentException.class, message);
     }
 
+    public static void notNull(Object object, Supplier<String> messageSupplier) {
+        Assert.notNull(object, IllegalArgumentException.class, messageSupplier);
+    }
+
     public static <T extends RuntimeException> void notNull(Object object, Class<T> exceptionClass, String message) {
         if (object == null) {
             Assert.throwException(exceptionClass, message);
+        }
+    }
+
+    public static <T extends RuntimeException> void notNull(Object object, Class<T> exceptionClass, Supplier<String> messageSupplier) {
+        if (object == null) {
+            Assert.throwException(exceptionClass, nullSafeGet(messageSupplier));
         }
     }
     
