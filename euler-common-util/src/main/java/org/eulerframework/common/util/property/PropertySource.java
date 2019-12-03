@@ -50,4 +50,5 @@ import org.eulerframework.common.util.io.file.FileUtils;
  */
 public interface PropertySource {
     Object getProperty(String key) throws PropertyNotFoundException;
+    <T> T getProperty(String key, Class<T> requireType) throws PropertyNotFoundException;
 }

@@ -20,6 +20,7 @@ import org.eulerframework.common.util.ArrayUtils;
 import org.eulerframework.common.util.CommonUtils;
 import org.eulerframework.common.util.StringUtils;
 import org.eulerframework.common.util.io.file.FileUtils;
+import org.eulerframework.common.util.property.converter.RawTypeConverterUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.BufferedReader;
@@ -172,7 +173,7 @@ public class FilePropertySource extends LogSupport implements PropertySource {
                 ArrayList<Object> list = (ArrayList<Object>) obj;
                 if (!CommonUtils.isEmpty(list)) {
                     StringBuilder stringBuilder = new StringBuilder();
-                    list.forEach(each -> stringBuilder.append(String.valueOf(each)).append(","));
+                    list.forEach(each -> stringBuilder.append(each).append(","));
                     flatMap.put(
                             StringUtils.toLowerCaseCamelStyle(key, "-"),
                             stringBuilder.subSequence(0, stringBuilder.length() - 1).toString());
@@ -187,10 +188,15 @@ public class FilePropertySource extends LogSupport implements PropertySource {
 
     @Override
     public Object getProperty(String key) throws PropertyNotFoundException {
-        Object value = this.props.get(key);
-        if (value == null) {
+        if(!this.props.containsKey(key)) {
             throw new PropertyNotFoundException("Property not found: " + key);
         }
-        return value;
+
+        return this.props.get(key);
+    }
+
+    @Override
+    public <T> T getProperty(String key, Class<T> requireType) throws PropertyNotFoundException {
+        return RawTypeConverterUtils.convert(this.getProperty(key), requireType);
     }
 }
