@@ -13,22 +13,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.eulerframework.common.util.property.converter;
+package org.eulerframework.common.util.type;
 
+import org.eulerframework.common.util.type.TypeUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Date;
 
-public class RawTypeConverterUtilsTest {
+public class TypeUtilsTest {
 
     @Test
     public void convert() {
-        Assert.assertNull(RawTypeConverterUtils.convert(null, Date.class));
+        Assert.assertNull(TypeUtils.convert(null, Date.class));
         java.sql.Date sqlDate = new java.sql.Date(123L);
-        Assert.assertEquals(new Date(123L), RawTypeConverterUtils.convert(sqlDate, Date.class));
+        Assert.assertEquals(new Date(123L), TypeUtils.convert(sqlDate, Date.class));
         java.sql.Date[] sqlDateArray = new java.sql.Date[]{new java.sql.Date(1L), new java.sql.Date(2L)};
-        Assert.assertArrayEquals(new Date[]{new Date(1L), new Date(2L)}, RawTypeConverterUtils.convert(sqlDateArray, Date[].class));
+        Assert.assertArrayEquals(new Date[]{new Date(1L), new Date(2L)}, TypeUtils.convert(sqlDateArray, Date[].class));
+
+        Assert.assertEquals(DurationStyle.SIMPLE, TypeUtils.convert("SiMPlE", DurationStyle.class));
+
+        Assert.assertArrayEquals(new Integer[] {1, 2, 3}, TypeUtils.convert("1, 2, 3", Integer[].class));
+        Assert.assertEquals(new Integer(1), TypeUtils.convert("1", Integer.class));
+        int i = TypeUtils.convert("1", int.class);
+        Assert.assertEquals(1, i);
     }
 
 }

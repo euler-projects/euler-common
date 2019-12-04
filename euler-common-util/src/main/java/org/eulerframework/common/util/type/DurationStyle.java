@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.eulerframework.common.util.property.converter;
+package org.eulerframework.common.util.type;
 
 import org.eulerframework.common.util.Assert;
 import org.eulerframework.common.util.StringUtils;

@@ -16,12 +16,8 @@
 package org.eulerframework.common.util.property;
 
 import org.eulerframework.common.base.log.LogSupport;
-import org.eulerframework.common.util.CommonUtils;
-import org.eulerframework.common.util.StringUtils;
-import org.eulerframework.common.util.property.converter.BoxedValue;
-import org.eulerframework.common.util.property.converter.BoxedValueHelper;
+import org.eulerframework.common.util.type.TypeUtils;
 
-import java.lang.reflect.Array;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Locale;
@@ -38,30 +34,23 @@ public class PropertyReader extends LogSupport {
     }
 
     public <T> T get(String property, Class<T> requireType) throws PropertyNotFoundException {
-        Object value = propertySource.getProperty(property);
-        BoxedValue<T> boxedValue = BoxedValueHelper.box(value, requireType);
-        logger.info("Load config: " + property + "=" + boxedValue.asText());
-        return boxedValue.getConvertedValue();
+        T value = propertySource.getProperty(property, requireType);
+        if(logger.isDebugEnabled()) {
+            logger.debug("Load config: {} = {}", property, TypeUtils.asString(value));
+        }
+        return value;
     }
 
-    //TODO: 不一定非要先转String，有可能读取到的就是数组
     @SuppressWarnings("unchecked")
-    public <T> T[] getArray(String property, Class<T> requireType) throws PropertyNotFoundException {
-        String value = this.get(property, String.class);
-        if(StringUtils.isEmpty(value)) {
-            return null;
+    public <T> T get(String property, T defaultValue) {
+        try {
+            return (T) this.get(property, defaultValue.getClass());
+        } catch (PropertyNotFoundException e) {
+            if(logger.isWarnEnabled()) {
+                logger.warn("Couldn't load "+ property +" , use " + TypeUtils.asString(defaultValue) + " for default.");
+            }
+            return defaultValue;
         }
-
-        String[] originArray = value.split(",");
-
-        Object array = Array.newInstance(requireType, originArray.length);
-
-        for(int i = 0; i < originArray.length; i++) {
-            BoxedValue<T> boxedValue = BoxedValueHelper.box(originArray[i].trim(), requireType);
-            Array.set(array, i, boxedValue.getConvertedValue());
-        }
-
-        return (T[]) array;
     }
 
     public String getString(String property) throws PropertyNotFoundException {
@@ -97,7 +86,7 @@ public class PropertyReader extends LogSupport {
 
     public Locale[] getLocaleArrayValue(String property, Locale[] defaultValue) {
         try {
-            return this.getArray(property, Locale.class);
+            return this.get(property, Locale[].class);
         } catch (PropertyNotFoundException e) {
             logger.warn("Couldn't load "+ property +" , use " + Arrays.toString(defaultValue) + " for default.");
             return defaultValue;
@@ -149,7 +138,10 @@ public class PropertyReader extends LogSupport {
      * @param defaultValue 默认值，在读不到的时候返回此值
      * @param toUpperCase 是否将读取到的字符串转为大写后再转为对应的Enum
      * @return 配置了正确的参数按配置返回，未配置或配置参数不正确返回默认值
+     *
+     * @deprecated use {@link PropertyReader#get(String, Object)} for instead
      */
+    @Deprecated
     public <T extends Enum<T>> T getEnumValue(String property, T defaultValue, boolean toUpperCase) {
         try {
             String configValue = getString(property);

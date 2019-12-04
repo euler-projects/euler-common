@@ -20,7 +20,7 @@ import org.eulerframework.common.util.ArrayUtils;
 import org.eulerframework.common.util.CommonUtils;
 import org.eulerframework.common.util.StringUtils;
 import org.eulerframework.common.util.io.file.FileUtils;
-import org.eulerframework.common.util.property.converter.RawTypeConverterUtils;
+import org.eulerframework.common.util.type.TypeUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.BufferedReader;
@@ -197,6 +197,6 @@ public class FilePropertySource extends LogSupport implements PropertySource {
 
     @Override
     public <T> T getProperty(String key, Class<T> requireType) throws PropertyNotFoundException {
-        return RawTypeConverterUtils.convert(this.getProperty(key), requireType);
+        return TypeUtils.convert(this.getProperty(key), requireType);
     }
 }
