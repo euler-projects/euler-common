@@ -15,10 +15,10 @@
  */
 package org.eulerframework.common.util.type;
 
-import org.eulerframework.common.util.type.TypeUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.time.Duration;
 import java.util.Date;
 
 public class TypeUtilsTest {
@@ -33,10 +33,73 @@ public class TypeUtilsTest {
 
         Assert.assertEquals(DurationStyle.SIMPLE, TypeUtils.convert("SiMPlE", DurationStyle.class));
 
+
+        Assert.assertEquals(Integer[].class, TypeUtils.convert("1, 2, 3", Integer[].class).getClass());
         Assert.assertArrayEquals(new Integer[] {1, 2, 3}, TypeUtils.convert("1, 2, 3", Integer[].class));
+
+
+        Assert.assertEquals(Integer.class, TypeUtils.convert("1", Integer.class).getClass());
         Assert.assertEquals(new Integer(1), TypeUtils.convert("1", Integer.class));
-        int i = TypeUtils.convert("1", int.class);
-        Assert.assertEquals(1, i);
+
+
+        Assert.assertArrayEquals(new String[] {"1", "2", "3", "4"}, TypeUtils.convert("1, 2, 3, 4", String[].class));
+        Assert.assertArrayEquals(new String[] {"1", "2", "3"}, TypeUtils.convert(new String[] {"1", "2", "3"}, String[].class));
+
     }
 
+    @Test
+    public void convertToInt() {
+        Assert.assertEquals(1, TypeUtils.convertToInt("1"));
+        Assert.assertEquals(2, TypeUtils.convertToInt(2));
+        Assert.assertEquals(-1, TypeUtils.convertToInt(Long.MAX_VALUE));
+    }
+
+    @Test
+    public void convertToLong() {
+        Assert.assertEquals(1L, TypeUtils.convertToLong("1"));
+        Assert.assertEquals(2L, TypeUtils.convertToLong(2));
+        Assert.assertEquals(Long.MAX_VALUE, TypeUtils.convertToLong(Long.MAX_VALUE));
+    }
+
+    @Test
+    public void convertToByte() {
+        byte b = 127;
+        Assert.assertEquals(b, TypeUtils.convertToByte("127"));
+    }
+
+    @Test
+    public void convertToShort() {
+        Assert.assertEquals(1, TypeUtils.convertToShort("1"));
+    }
+
+    @Test
+    public void convertToFloat() {
+        Assert.assertEquals(1.1, TypeUtils.convertToFloat("1.1"), 0.01);
+    }
+
+    @Test
+    public void convertToDouble() {
+        Assert.assertEquals(1.1, TypeUtils.convertToDouble("1.1"), 0.01);
+    }
+
+    @Test
+    public void convertToIntArray() {
+        Assert.assertArrayEquals(new int[] {1, 2, 3}, TypeUtils.convertToIntArray(new int[] {1, 2, 3}));
+        Assert.assertArrayEquals(new int[] {1, 2, 3}, TypeUtils.convertToIntArray(new Integer[] {1, 2, 3}));
+        Assert.assertArrayEquals(new int[] {1, 2, 3}, TypeUtils.convertToIntArray(new String[] {"1", "2", "3"}));
+        Assert.assertArrayEquals(new int[] {1, 2, 3}, TypeUtils.convertToIntArray("1, 2, 3"));
+    }
+
+    @Test
+    public void convertToLongArray() {
+        Assert.assertArrayEquals(new long[] {1, 2, 3}, TypeUtils.convertToLongArray(new long[] {1, 2, 3}));
+        Assert.assertArrayEquals(new long[] {1, 2, 3}, TypeUtils.convertToLongArray(new Integer[] {1, 2, 3}));
+        Assert.assertArrayEquals(new long[] {1, 2, 3}, TypeUtils.convertToLongArray(new String[] {"1", "2", "3"}));
+        Assert.assertArrayEquals(new long[] {1, 2, 3}, TypeUtils.convertToLongArray("1, 2, 3"));
+    }
+
+    @Test
+    public void asString() {
+        Assert.assertEquals("PT1S", TypeUtils.asString(Duration.ofSeconds(1)));
+    }
 }

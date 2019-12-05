@@ -24,18 +24,33 @@ class ArrayTypeConverter<T> implements TypeConverter<T[]> {
     @Override
     @SuppressWarnings("unchecked")
     public T[] convert(Object value) {
-        String stringValue = this.stringTypeConverter.convert(value);
+        Object[] rawArray;
+        if(value.getClass().isArray()) {
+            rawArray = (Object[]) value;
+        } else {
+            String stringValue = this.stringTypeConverter.convert(value);
 
-        if(StringUtils.isEmpty(stringValue)) {
-            return null;
+            if(StringUtils.isEmpty(stringValue)) {
+                return null;
+            }
+
+            String[] stringArray = stringValue.split(this.split);
+
+            for(int i = 0; i < stringArray.length; i++) {
+                stringArray[i] = stringArray[i].trim();
+            }
+
+            rawArray = stringArray;
         }
 
-        String[] stringArray = stringValue.split(this.split);
+        if(this.itemType.equals(rawArray.getClass().getComponentType())) {
+            return (T[]) rawArray;
+        }
 
-        Object array = Array.newInstance(this.itemType, stringArray.length);
+        Object array = Array.newInstance(this.itemType, rawArray.length);
 
-        for(int i = 0; i < stringArray.length; i++) {
-            Array.set(array, i, this.itemTypeConverter.convert(stringArray[i].trim()));
+        for(int i = 0; i < rawArray.length; i++) {
+            Array.set(array, i, this.itemTypeConverter.convert(rawArray[i]));
         }
 
         return (T[]) array;

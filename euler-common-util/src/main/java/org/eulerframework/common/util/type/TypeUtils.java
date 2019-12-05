@@ -42,8 +42,10 @@ public class TypeUtils {
         IntegerTypeConverter integerTypeConverter = new IntegerTypeConverter();
         TYPE_CONVERTERS.put(Integer.class, integerTypeConverter);
         TYPE_CONVERTERS.put(Integer[].class, new ArrayTypeConverter<>(integerTypeConverter, Integer.class));
-        TYPE_CONVERTERS.put(int.class, integerTypeConverter);
-        TYPE_CONVERTERS.put(int[].class, new ArrayTypeConverter<>(integerTypeConverter, int.class));
+
+        LongTypeConverter longTypeConverter = new LongTypeConverter();
+        TYPE_CONVERTERS.put(Long.class, longTypeConverter);
+        TYPE_CONVERTERS.put(Long[].class, new ArrayTypeConverter<>(longTypeConverter, Long.class));
     }
 
     @SuppressWarnings("unchecked")
@@ -54,23 +56,143 @@ public class TypeUtils {
             return (T) raw;
         }
 
-        if(requireType.isEnum()) {
-            T[] enumConstants = requireType.getEnumConstants();
-            String rawString = String.valueOf(raw);
-            for(T enumConstant : enumConstants) {
-                if(enumConstant.toString().equalsIgnoreCase(rawString)) {
-                    return enumConstant;
-                }
-            }
-
-            throw new IllegalArgumentException(raw + " can not convert to Enum " + requireType.getName() +  ", the valid values are " + Arrays.toString(enumConstants));
-        }
-
         TypeConverter<T> typeConverter = getTypeConverter(requireType);
 
-        Assert.notNull(typeConverter, () -> "No type converter for " + requireType.getName() + "was found.");
+        if(typeConverter == null) {
+            if(requireType.isEnum()) {
+                T[] enumConstants = requireType.getEnumConstants();
+                String rawString = convert(raw, String.class);
+                for(T enumConstant : enumConstants) {
+                    if(enumConstant.toString().equalsIgnoreCase(rawString)) {
+                        return enumConstant;
+                    }
+                }
+
+                throw new IllegalArgumentException(raw + " can not convert to Enum " + requireType.getName() +  ", the valid values are " + Arrays.toString(enumConstants));
+            } else {
+                throw new IllegalArgumentException("No type converter for " + requireType.getName() + " was found.");
+            }
+        }
 
         return typeConverter.convert(raw);
+    }
+
+    public static int convertToInt(Object raw) {
+        Assert.notNull(raw, "value is null");
+
+        if(Number.class.isAssignableFrom(raw.getClass())) {
+            return ((Number) raw).intValue();
+        }
+
+        return Integer.parseInt(convert(raw, String.class));
+    }
+
+    public static long convertToLong(Object raw) {
+        Assert.notNull(raw, "value is null");
+
+        if(Number.class.isAssignableFrom(raw.getClass())) {
+            return ((Number) raw).longValue();
+        }
+
+        return Long.parseLong(convert(raw, String.class));
+    }
+
+    public static byte convertToByte(Object raw) {
+        Assert.notNull(raw, "value is null");
+
+        if(Number.class.isAssignableFrom(raw.getClass())) {
+            return ((Number) raw).byteValue();
+        }
+
+        return Byte.parseByte(convert(raw, String.class));
+    }
+
+    public static short convertToShort(Object raw) {
+        Assert.notNull(raw, "value is null");
+
+        if(Number.class.isAssignableFrom(raw.getClass())) {
+            return ((Number) raw).shortValue();
+        }
+
+        return Short.parseShort(convert(raw, String.class));
+    }
+
+    public static float convertToFloat(Object raw) {
+        Assert.notNull(raw, "value is null");
+
+        if(Number.class.isAssignableFrom(raw.getClass())) {
+            return ((Number) raw).floatValue();
+        }
+
+        return Float.parseFloat(convert(raw, String.class));
+    }
+
+    public static double convertToDouble(Object raw) {
+        Assert.notNull(raw, "value is null");
+
+        if(Number.class.isAssignableFrom(raw.getClass())) {
+            return ((Number) raw).doubleValue();
+        }
+
+        return Double.parseDouble(convert(raw, String.class));
+    }
+
+    public static boolean convertToBoolean(Object raw) {
+        Assert.notNull(raw, "value is null");
+
+        if(Boolean.class.isAssignableFrom(raw.getClass())) {
+            return (Boolean) raw;
+        }
+
+        return Boolean.parseBoolean(convert(raw, String.class));
+    }
+
+    public static int[] convertToIntArray(Object raw) {
+        Assert.notNull(raw, "value is null");
+
+        if(int[].class.equals(raw.getClass())) {
+            return (int[]) raw;
+        }
+
+        if(Number[].class.isAssignableFrom(raw.getClass())) {
+            Number[] numbers = (Number[]) raw;
+            int[] result = new int[numbers.length];
+            for(int i = 0; i < numbers.length; i++) {
+                result[i] = numbers[i].intValue();
+            }
+            return result;
+        }
+
+        Integer[] integerArray = convert(raw, Integer[].class);
+        int[] result = new int[integerArray.length];
+        for(int i = 0; i < integerArray.length; i++) {
+            result[i] = integerArray[i];
+        }
+        return result;
+    }
+
+    public static long[] convertToLongArray(Object raw) {
+        Assert.notNull(raw, "value is null");
+
+        if(long[].class.equals(raw.getClass())) {
+            return (long[]) raw;
+        }
+
+        if(Number[].class.isAssignableFrom(raw.getClass())) {
+            Number[] numbers = (Number[]) raw;
+            long[] result = new long[numbers.length];
+            for(int i = 0; i < numbers.length; i++) {
+                result[i] = numbers[i].longValue();
+            }
+            return result;
+        }
+
+        Long[] objArray = convert(raw, Long[].class);
+        long[] result = new long[objArray.length];
+        for(int i = 0; i < objArray.length; i++) {
+            result[i] = objArray[i];
+        }
+        return result;
     }
 
     @SuppressWarnings("unchecked")

@@ -16,11 +16,8 @@
 package org.eulerframework.common.util.property;
 
 import org.eulerframework.common.base.log.LogSupport;
+import org.eulerframework.common.util.Assert;
 import org.eulerframework.common.util.type.TypeUtils;
-
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.Locale;
 
 public class PropertyReader extends LogSupport {
 
@@ -33,21 +30,30 @@ public class PropertyReader extends LogSupport {
         this.propertySource = propertySource;
     }
 
+    public Object get(String property) throws PropertyNotFoundException {
+        Object value = propertySource.getProperty(property);
+        if(logger.isDebugEnabled()) {
+            logger.debug("Load config: '{}' = '{}'", property, TypeUtils.asString(value));
+        }
+        return value;
+    }
+
     public <T> T get(String property, Class<T> requireType) throws PropertyNotFoundException {
         T value = propertySource.getProperty(property, requireType);
         if(logger.isDebugEnabled()) {
-            logger.debug("Load config: {} = {}", property, TypeUtils.asString(value));
+            logger.debug("Load config: '{}' = '{}'", property, TypeUtils.asString(value));
         }
         return value;
     }
 
     @SuppressWarnings("unchecked")
     public <T> T get(String property, T defaultValue) {
+        Assert.notNull(defaultValue, "defaultValue can not be null");
         try {
             return (T) this.get(property, defaultValue.getClass());
         } catch (PropertyNotFoundException e) {
             if(logger.isWarnEnabled()) {
-                logger.warn("Couldn't load "+ property +" , use " + TypeUtils.asString(defaultValue) + " for default.");
+                logger.warn("Couldn't load '{}' , use '{}' for default.", property, TypeUtils.asString(defaultValue));
             }
             return defaultValue;
         }
@@ -58,55 +64,23 @@ public class PropertyReader extends LogSupport {
     }
     
     public String getString(String property, String defaultValue) {
-        try {
-            return this.get(property, String.class);
-        } catch (PropertyNotFoundException e) {
-            logger.warn("Couldn't load "+ property +" , use " + defaultValue + " for default.");
-            return defaultValue;
-        }
-    }
-
-    public Locale getLocaleValue(String property, Locale defaultValue) {
-        try {
-            return this.get(property, Locale.class);
-        } catch (PropertyNotFoundException e) {
-            logger.warn("Couldn't load "+ property +" , use " + defaultValue + " for default.");
-            return defaultValue;
-        }
-    }
-
-    public Duration getDurationValue(String property, Duration defaultValue) {
-        try {
-            return this.get(property, Duration.class);
-        } catch (PropertyNotFoundException e) {
-            logger.warn("Couldn't load "+ property +" , use " + defaultValue + " for default.");
-            return defaultValue;
-        }
-    }
-
-    public Locale[] getLocaleArrayValue(String property, Locale[] defaultValue) {
-        try {
-            return this.get(property, Locale[].class);
-        } catch (PropertyNotFoundException e) {
-            logger.warn("Couldn't load "+ property +" , use " + Arrays.toString(defaultValue) + " for default.");
-            return defaultValue;
-        }
+        return this.get(property, defaultValue);
     }
 
     public int getIntValue(String property, int defaultValue) {
         try {
-            return Integer.parseInt(getString(property));
+            return TypeUtils.convertToInt(this.get(property));
         } catch (PropertyNotFoundException e) {
-            logger.warn("Couldn't load "+ property +" , use " + defaultValue + " for default.");
+            logger.warn("Couldn't load '{}' , use '{}' for default.", property, defaultValue);
             return defaultValue;
         }
     }
     
     public long getLongValue(String property, long defaultValue) {
         try {
-            return Long.parseLong(getString(property));
+            return TypeUtils.convertToLong(this.get(property));
         } catch (PropertyNotFoundException e) {
-            logger.warn("Couldn't load "+ property +" , use " + defaultValue + " for default.");
+            logger.warn("Couldn't load '{}' , use '{}' for default.", property, defaultValue);
             return defaultValue;
         }
     }
@@ -114,48 +88,19 @@ public class PropertyReader extends LogSupport {
 
     public double getDoubleValue(String property, double defaultValue) {
         try {
-            return Double.parseDouble(getString(property));
+            return TypeUtils.convertToDouble(this.get(property));
         } catch (PropertyNotFoundException e) {
-            logger.warn("Couldn't load "+ property +" , use " + defaultValue + " for default.");
+            logger.warn("Couldn't load '{}' , use '{}' for default.", property, defaultValue);
             return defaultValue;
         }
     }
 
     public boolean getBooleanValue(String property, boolean defaultValue) {
         try {
-            return Boolean.parseBoolean(getString(property));
+            return TypeUtils.convertToBoolean(this.get(property));
         } catch (PropertyNotFoundException e) {
-            logger.warn("Couldn't load "+ property +" , use " + defaultValue + " for default.");
+            logger.warn("Couldn't load '{}' , use '{}' for default.", property, defaultValue);
             return defaultValue;
-        }
-    }
-    
-    /**
-     * 读取枚举类型的配置
-     * 
-     * @param <T> 待读取的枚举类
-     * @param property 参数名
-     * @param defaultValue 默认值，在读不到的时候返回此值
-     * @param toUpperCase 是否将读取到的字符串转为大写后再转为对应的Enum
-     * @return 配置了正确的参数按配置返回，未配置或配置参数不正确返回默认值
-     *
-     * @deprecated use {@link PropertyReader#get(String, Object)} for instead
-     */
-    @Deprecated
-    public <T extends Enum<T>> T getEnumValue(String property, T defaultValue, boolean toUpperCase) {
-        try {
-            String configValue = getString(property);
-            
-            if(toUpperCase)
-                configValue = configValue.toUpperCase();
-            
-            return T.valueOf(defaultValue.getDeclaringClass(), configValue);
-        } catch (PropertyNotFoundException e) {
-            logger.warn("Couldn't load "+ property +" , use " + defaultValue + " for default.");
-            return defaultValue;
-        } catch (IllegalArgumentException e) {
-            logger.error(property +" was configed as a wrong value.");
-            throw new EnumPropertyReadException(e);
         }
     }
 }
