@@ -46,17 +46,21 @@ public class PropertyReader extends LogSupport {
         return value;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T get(String property, T defaultValue) {
-        Assert.notNull(defaultValue, "defaultValue can not be null");
+    public <T> T get(String property, Class<T> requireType, T defaultValue) {
         try {
-            return (T) this.get(property, defaultValue.getClass());
+            return this.get(property, requireType);
         } catch (PropertyNotFoundException e) {
             if(logger.isWarnEnabled()) {
                 logger.warn("Couldn't load '{}' , use '{}' for default.", property, TypeUtils.asString(defaultValue));
             }
             return defaultValue;
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T get(String property, T defaultValue) {
+        Assert.notNull(defaultValue, "defaultValue can not be null");
+        return this.get(property, (Class<T>) defaultValue.getClass(), defaultValue);
     }
 
     public String getString(String property) throws PropertyNotFoundException {

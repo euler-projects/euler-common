@@ -25,5 +25,6 @@ public class PropertyReaderTest {
     public void get() throws PropertyNotFoundException {
         Assert.assertEquals(DurationStyle.SIMPLE, propertyReader.get("enum.durationStyle", DurationStyle.class));
         Assert.assertEquals(DurationStyle.SIMPLE, propertyReader.get("enum.notExists", DurationStyle.SIMPLE));
+        Assert.assertEquals(DurationStyle.SIMPLE, propertyReader.get("enum.notExists", DurationStyle.class, DurationStyle.SIMPLE));
     }
 }
