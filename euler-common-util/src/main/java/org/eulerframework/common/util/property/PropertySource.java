@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2018 the original author or authors.
+ * Copyright 2013-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,40 +15,30 @@
  */
 package org.eulerframework.common.util.property;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Properties;
-
-import org.yaml.snakeyaml.Yaml;
-
-import org.eulerframework.common.base.log.LogSupport;
-import org.eulerframework.common.util.ArrayUtils;
-import org.eulerframework.common.util.CommonUtils;
-import org.eulerframework.common.util.StringUtils;
-import org.eulerframework.common.util.io.file.FileUtils;
-
 /**
- * 配置文件数据源，支持properties文件和yaml文件，<br>
- * <p>
- * properties文件的key按原始格式读取<br>
- * <br>
- * yaml文件会按层级关系转换为平铺的key-value结构，层级之间的key用<code>.</code>分隔，
- * key会统一转换成小驼峰结构，<code>-</code>会作为单词分隔符对待，
- * 例如<code>exam-key<code>会转换为</code>examKey</code><br>
- * <br>
- * 为了与properties文件解析逻辑一致：
- * yaml文件的数组类型数据会被转为用<code>,</code>分隔的字符串；
- * yaml文件如果value为<code>null</code>，将被存储为空字符串。
+ * 配置数据源
  *
  * @author cFrost
  */
 public interface PropertySource {
+
+    /**
+     * 获取配置项的值
+     *
+     * @param key 配置项
+     * @return 配置项值
+     * @throws PropertyNotFoundException 配置项不存在
+     */
     Object getProperty(String key) throws PropertyNotFoundException;
+
+    /**
+     * 按指定类型获取配置项的值
+     *
+     * @param key         配置项
+     * @param requireType 配置项的值类型
+     * @param <T>         配置项的值类型
+     * @return 配置项值
+     * @throws PropertyNotFoundException 配置项不存在
+     */
     <T> T getProperty(String key, Class<T> requireType) throws PropertyNotFoundException;
 }
