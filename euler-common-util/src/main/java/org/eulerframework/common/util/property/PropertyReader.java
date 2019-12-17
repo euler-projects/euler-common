@@ -68,7 +68,7 @@ public class PropertyReader extends LogSupport {
     }
     
     public String getString(String property, String defaultValue) {
-        return this.get(property, defaultValue);
+        return this.get(property, String.class, defaultValue);
     }
 
     public int getIntValue(String property, int defaultValue) {

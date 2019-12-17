@@ -209,4 +209,12 @@ public class TypeUtils {
     private static <T> TypeConverter<T> getTypeConverter(Class<T> requireType) {
         return (TypeConverter<T>) TYPE_CONVERTERS.get(requireType);
     }
+
+    public static boolean containsTypeConverter(Class<?> clazz) {
+        return TYPE_CONVERTERS.containsKey(clazz);
+    }
+
+    public static void addTypeConverter(Class<?> clazz, TypeConverter<?> typeConverter) {
+        TYPE_CONVERTERS.put(clazz, typeConverter);
+    }
 }
