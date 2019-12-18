@@ -88,7 +88,9 @@ public class FilePropertySource extends LogSupport implements PropertySource {
      */
     public void addPropertyFile(String... uri) throws IOException, URISyntaxException {
         this.propertyFileUris = ArrayUtils.concat(this.propertyFileUris, uri);
-        this.loadProperties(this.propertyFileUris);
+        for (String each : uri) {
+            this.loadProperties(each);
+        }
     }
 
     public void refresh() throws IOException, URISyntaxException {

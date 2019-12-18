@@ -30,6 +30,10 @@ public class PropertyReader extends LogSupport {
         this.propertySource = propertySource;
     }
 
+    public PropertySource getPropertySource() {
+        return propertySource;
+    }
+
     public Object get(String property) throws PropertyNotFoundException {
         Object value = propertySource.getProperty(property);
         if(logger.isDebugEnabled()) {
