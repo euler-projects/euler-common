@@ -190,6 +190,12 @@ public class FilePropertySource extends LogSupport implements PropertySource {
 
     @Override
     public Object getProperty(String key) throws PropertyNotFoundException {
+        String systemProperty = System.getProperty(key);
+
+        if(systemProperty != null) {
+            return systemProperty;
+        }
+
         if(!this.props.containsKey(key)) {
             throw new PropertyNotFoundException("Property not found: " + key);
         }
