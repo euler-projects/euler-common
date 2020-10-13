@@ -20,7 +20,7 @@
         <snakeyaml.version>1.23</snakeyaml.version>
         <log4j2.version>2.5</log4j2.version>
 
-        <junit.version>4.8.2</junit.version>
+        <junit.version>4.13.1</junit.version>
     </properties>
 
     <dependencies>
