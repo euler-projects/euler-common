@@ -17,7 +17,7 @@
         <javax.mail.version>1.5.4</javax.mail.version>
         <jackson.version>2.9.7</jackson.version>
         <!-- <jyaml.version>1.3</jyaml.version> -->
-        <snakeyaml.version>1.23</snakeyaml.version>
+        <snakeyaml.version>1.31</snakeyaml.version>
         <log4j2.version>2.5</log4j2.version>
 
         <junit.version>4.8.2</junit.version>
