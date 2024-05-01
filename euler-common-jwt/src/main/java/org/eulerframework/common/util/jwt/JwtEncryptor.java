@@ -26,7 +26,7 @@ import org.eulerframework.common.base.log.LogSupport;
 import org.eulerframework.common.util.Assert;
 import org.eulerframework.common.util.DateUtils;
 import org.eulerframework.common.util.json.JsonConvertException;
-import org.eulerframework.common.util.json.JsonUtils;
+import org.eulerframework.common.util.json.JacksonUtils;
 
 /**
  * Json Web Token 加密器/验证器
@@ -86,7 +86,7 @@ public class JwtEncryptor extends LogSupport {
             throw new RuntimeException("signingKey is null, cannot encode claims");
         
         try {
-            return JwtHelper.encode(JsonUtils.toJsonStr(claims), signer);
+            return JwtHelper.encode(JacksonUtils.toJsonStr(claims), signer);
         } catch (JsonConvertException e) {
             throw new RuntimeException("Cannot convert object to JSON");
         }
@@ -110,8 +110,8 @@ public class JwtEncryptor extends LogSupport {
             
             String claims = jwt.getClaims();
             
-            Long exp = JsonUtils.readKeyValue(claims, "exp", Long.class);
-            Long nbf = JsonUtils.readKeyValue(claims, "nbf", Long.class);
+            Long exp = JacksonUtils.readKeyValue(claims, "exp", Long.class);
+            Long nbf = JacksonUtils.readKeyValue(claims, "nbf", Long.class);
             
             Date now = new Date();
             
@@ -147,7 +147,7 @@ public class JwtEncryptor extends LogSupport {
     public <T extends JwtClaims> T decode(String jwtStr, Class<T> claimsType) throws InvalidJwtException {
         Jwt jwt = this.decode(jwtStr);
         try {
-            T claims = JsonUtils.toObject(jwt.getClaims(), claimsType);
+            T claims = JacksonUtils.toObject(jwt.getClaims(), claimsType);
             return claims;
         } catch (JsonConvertException e) {
             throw new InvalidClaimsException("Invalid jwt claims", e);

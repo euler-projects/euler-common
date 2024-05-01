@@ -21,19 +21,31 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-public abstract class JsonUtils {
+public abstract class JacksonUtils {
 
     private final static ObjectMapper OM;
 
     static {
         OM = new ObjectMapper();
-        OM.setSerializationInclusion(Include.NON_NULL);
+        OM.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        OM.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        OM.configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, true);
+        OM.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+
+        OM.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        OM.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+
+        OM.registerModule(new JavaTimeModule());
+    }
+
+    public static ObjectMapper getDefaultObjectMapper() {
+        return OM;
     }
 
     public static String toJsonStr(Object obj) throws JsonConvertException {
@@ -88,11 +100,5 @@ public abstract class JsonUtils {
         } catch (IOException e) {
             throw new JsonConvertException(e);
         }
-    }
-    
-    public static void main(String[] args) throws JsonConvertException {
-        String json = "{\"exp1\":1234,\"nbf\":7777,\"jid\":\"a-dfe\"}";
-        
-        System.out.println(JsonUtils.readKeyValue(json, "exp", String.class));
     }
 }
