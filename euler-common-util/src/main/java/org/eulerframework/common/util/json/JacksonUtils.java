@@ -42,6 +42,7 @@ public abstract class JacksonUtils {
         OM.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
 
         OM.registerModule(new JavaTimeModule());
+        OM.registerModule(new JsSafeModule());
     }
 
     public static ObjectMapper getDefaultObjectMapper() {
