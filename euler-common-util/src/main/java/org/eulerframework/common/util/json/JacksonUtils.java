@@ -15,16 +15,14 @@
  */
 package org.eulerframework.common.util.json;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public abstract class JacksonUtils {
 
@@ -49,15 +47,23 @@ public abstract class JacksonUtils {
         return OM;
     }
 
-    public static String toJsonStr(Object obj) throws JsonConvertException {
+    public static <T> T readValue(String jsonStr, Class<T> valueClass) {
         try {
-            return OM.writeValueAsString(obj);
+            return OM.readValue(jsonStr, valueClass);
         } catch (JsonProcessingException e) {
-            throw new JsonConvertException(e);
+            throw ExceptionUtils.<RuntimeException>rethrow(e);
         }
     }
 
-    public static <T> T readKeyValue(String jsonStr, String key, Class<T> keyValueClass) throws JsonConvertException {
+    public static String writeValueAsString(Object object) {
+        try {
+            return OM.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw ExceptionUtils.<RuntimeException>rethrow(e);
+        }
+    }
+
+    public static <T> T readKeyValue(String jsonStr, String key, Class<T> keyValueClass) {
 
         try {
             JsonNode root = OM.readTree(jsonStr);
@@ -71,35 +77,8 @@ public abstract class JacksonUtils {
             }
 
             return null;
-        } catch (IOException e) {
-            throw new JsonConvertException(e);
-        }
-    }
-
-    public static <T> T toObject(String jsonStr, Class<T> valueClass) throws JsonConvertException {
-        try {
-            return OM.readValue(jsonStr, valueClass);
-        } catch (IOException e) {
-            throw new JsonConvertException(e);
-        }
-    }
-
-    public static <T> ArrayList<T> toArrayList(String jsonStr, Class<T> valueClass) throws JsonConvertException {
-        try {
-            JavaType t = OM.getTypeFactory().constructCollectionType(ArrayList.class, valueClass);
-            return OM.readValue(jsonStr, t);
-        } catch (IOException e) {
-            throw new JsonConvertException(e);
-        }
-    }
-
-    public static <K, V> LinkedHashMap<K, V> toLinkedHashMap(String jsonStr, Class<K> keyClass, Class<V> valueClass)
-            throws JsonConvertException {
-        try {
-            JavaType t = OM.getTypeFactory().constructMapLikeType(LinkedHashMap.class, keyClass, valueClass);
-            return OM.readValue(jsonStr, t);
-        } catch (IOException e) {
-            throw new JsonConvertException(e);
+        } catch (JsonProcessingException e) {
+            throw ExceptionUtils.<RuntimeException>rethrow(e);
         }
     }
 }

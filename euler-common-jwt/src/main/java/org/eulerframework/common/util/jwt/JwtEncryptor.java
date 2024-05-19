@@ -25,25 +25,23 @@ import org.eulerframework.common.util.jwt.springcode.crypto.sign.Signer;
 import org.eulerframework.common.base.log.LogSupport;
 import org.eulerframework.common.util.Assert;
 import org.eulerframework.common.util.DateUtils;
-import org.eulerframework.common.util.json.JsonConvertException;
 import org.eulerframework.common.util.json.JacksonUtils;
 
 /**
  * Json Web Token 加密器/验证器
- * 
+ *
  * <p>使用加密器功能需提供RSA私钥作为加密密钥
  * <p>使用验证器功能需提供RSA公钥作为校验密钥
- * 
- * @author cFrost
  *
+ * @author cFrost
  */
 public class JwtEncryptor extends LogSupport {
-    
+
     private String signingKey;
     private String verifierKey;
     private Signer signer;
     private SignatureVerifier verifier;
-    
+
     public void setSigningKey(String rsaPrivateKey) {
         Assert.hasText(rsaPrivateKey);
 
@@ -53,18 +51,17 @@ public class JwtEncryptor extends LogSupport {
         if (this.signingKey.startsWith("-----BEGIN")) {
             signer = new RsaSigner(this.signingKey);
             logger.info("Configured with RSA signing key");
-        }
-        else {
+        } else {
             throw new IllegalArgumentException(
                     "SigningKey property must be a RSA private key");
         }
     }
-    
+
     public void setVerifierKey(String rsaPublicKey) {
         Assert.hasText(rsaPublicKey);
 
         this.verifierKey = rsaPublicKey.trim();
-        
+
         try {
             new RsaSigner(this.verifierKey);
             throw new IllegalArgumentException(
@@ -72,61 +69,58 @@ public class JwtEncryptor extends LogSupport {
         } catch (Exception expected) {
             // Expected
         }
-        
+
         this.verifier = new RsaVerifier(this.verifierKey);
     }
-    
+
     /**
      * 生成JWT
+     *
      * @param claims Claims对象
      * @return JWT
      */
-    public Jwt encode (JwtClaims claims) {
-        if(signer == null)
+    public Jwt encode(JwtClaims claims) {
+        if (signer == null)
             throw new RuntimeException("signingKey is null, cannot encode claims");
-        
-        try {
-            return JwtHelper.encode(JacksonUtils.toJsonStr(claims), signer);
-        } catch (JsonConvertException e) {
-            throw new RuntimeException("Cannot convert object to JSON");
-        }
+
+        return JwtHelper.encode(JacksonUtils.writeValueAsString(claims), signer);
     }
-    
+
     /**
      * 解码并校验JWT字符串
-     * 
+     *
      * @param jwtStr JWT字符串
      * @return 解码后的Jwt对象
      * @throws InvalidJwtException 验证不通过
      */
     public Jwt decode(String jwtStr) throws InvalidJwtException {
-        if(verifier == null)
+        if (verifier == null)
             throw new RuntimeException("verifierKey is null, cannot dencode jwt");
-        
+
         try {
             Jwt jwt = JwtHelper.decode(jwtStr);
 
             jwt.verifySignature(verifier);
-            
+
             String claims = jwt.getClaims();
-            
+
             Long exp = JacksonUtils.readKeyValue(claims, "exp", Long.class);
             Long nbf = JacksonUtils.readKeyValue(claims, "nbf", Long.class);
-            
+
             Date now = new Date();
-            
-            if(exp != null) {
+
+            if (exp != null) {
                 Date expireTime = DateUtils.parseDateFromUnixTimestamp(exp);
-                if(expireTime != null && expireTime.compareTo(now) <= 0)
-                    throw new InvalidJwtException("token has expired");                
+                if (expireTime != null && expireTime.compareTo(now) <= 0)
+                    throw new InvalidJwtException("token has expired");
             }
-            
-            if(nbf != null) {
+
+            if (nbf != null) {
                 Date effectiveTime = DateUtils.parseDateFromUnixTimestamp(nbf);
-                if(effectiveTime != null && effectiveTime.compareTo(now) > 0)
-                    throw new InvalidJwtException("token has not effective yet");                
-            }             
-            
+                if (effectiveTime != null && effectiveTime.compareTo(now) > 0)
+                    throw new InvalidJwtException("token has not effective yet");
+            }
+
             return jwt;
         } catch (InvalidJwtException e) {
             throw e;
@@ -134,23 +128,18 @@ public class JwtEncryptor extends LogSupport {
             throw new InvalidJwtException("Invalid jwt string", e);
         }
     }
-    
+
     /**
      * 解码并校验JWT字符串,并把JWT的Claims以对象形式返回
-     * 
-     * @param <T> JwtClaims
-     * @param jwtStr JWT字符串
+     *
+     * @param <T>        JwtClaims
+     * @param jwtStr     JWT字符串
      * @param claimsType claims对应的对象类型
      * @return claims对象
      * @throws InvalidJwtException 验证不通过
      */
     public <T extends JwtClaims> T decode(String jwtStr, Class<T> claimsType) throws InvalidJwtException {
         Jwt jwt = this.decode(jwtStr);
-        try {
-            T claims = JacksonUtils.toObject(jwt.getClaims(), claimsType);
-            return claims;
-        } catch (JsonConvertException e) {
-            throw new InvalidClaimsException("Invalid jwt claims", e);
-        }
+        return JacksonUtils.readValue(jwt.getClaims(), claimsType);
     }
 }
