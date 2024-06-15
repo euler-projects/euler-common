@@ -12,11 +12,39 @@
     <artifactId>euler-common-ssh</artifactId>
     <description>A SSH util collection</description>
 
+    <properties>
+        <netty.version>4.1.111.Final</netty.version>
+        <spring-integration.version>6.3.0</spring-integration.version>
+        <apache-sshd.version>2.12.1</apache-sshd.version>
+    </properties>
+
     <dependencies>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
+            <version>${netty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport</artifactId>
+            <version>${netty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-core</artifactId>
+            <version>${spring-integration.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-file</artifactId>
+            <version>${spring-integration.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.sshd</groupId>
             <artifactId>apache-sshd</artifactId>
-            <version>2.4.0</version>
+            <version>${apache-sshd.version}</version>
             <type>pom</type>
         </dependency>
     </dependencies>
