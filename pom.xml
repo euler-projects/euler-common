@@ -20,6 +20,7 @@
     <properties>
         <revision>1.0.0.M7-SNAPSHOT</revision>
         <main.basedir>${basedir}</main.basedir>
+        <java.version>11</java.version>
     </properties>
 
     <modules>
@@ -27,6 +28,7 @@
         <module>euler-common-util</module>
         <module>euler-common-jwt</module>
         <module>euler-common-ssh</module>
+        <module>euler-common-util-aliyun</module>
     </modules>
 
     <build>
