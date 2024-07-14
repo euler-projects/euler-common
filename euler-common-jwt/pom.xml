@@ -32,7 +32,7 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>euler-common-util</artifactId>
+            <artifactId>euler-common-util-extra</artifactId>
             <version>${project.version}</version>
         </dependency>
 

@@ -26,9 +26,11 @@
     <modules>
         <module>euler-common-logging</module>
         <module>euler-common-util</module>
+        <module>euler-common-util-extra</module>
         <module>euler-common-jwt</module>
         <module>euler-common-ssh</module>
         <module>euler-common-util-aliyun</module>
+        <module>euler-common-http</module>
     </modules>
 
     <build>

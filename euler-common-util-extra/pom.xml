@@ -6,8 +6,8 @@
         <artifactId>euler-common</artifactId>
         <version>${revision}</version>
     </parent>
-    <artifactId>euler-common-util</artifactId>
-    <name>euler-common-util</name>
+    <artifactId>euler-common-util-extra</artifactId>
+    <name>euler-common-util-extra</name>
     <url>https://eulerproject.io</url>
     <description>A useful code collection</description>
 
@@ -106,6 +106,12 @@
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>${log4j2.version}</version>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>euler-common-util</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

@@ -1,4 +1,4 @@
-package org.eulerframework.common.util.http;
+package org.eulerframework.common.util.net;
 
 
 import java.net.URI;

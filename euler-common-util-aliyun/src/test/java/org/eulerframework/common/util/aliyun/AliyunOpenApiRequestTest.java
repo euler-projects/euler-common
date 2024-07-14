@@ -1,6 +1,6 @@
 package org.eulerframework.common.util.aliyun;
 
-import org.eulerframework.common.util.http.JdkHttpClientExecutor;
+import org.eulerframework.common.http.JdkHttpClientTemplate;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -15,7 +15,7 @@ public class AliyunOpenApiRequestTest {
                 .queryParam("RegionId", "cn-shenzhen")
                 .accessKeyId(System.getenv("ACCESS_KEY_ID"))
                 .accessKeySecret(System.getenv("ACCESS_KEY_SECRET"))
-                .execute(new JdkHttpClientExecutor());
+                .execute(new JdkHttpClientTemplate());
 
         System.out.println(resp);
 

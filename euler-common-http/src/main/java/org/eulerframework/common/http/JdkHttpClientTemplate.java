@@ -1,4 +1,7 @@
-package org.eulerframework.common.util.http;
+package org.eulerframework.common.http;
+
+import org.eulerframework.common.http.request.RequestBody;
+import org.eulerframework.common.http.request.StringRequestBody;
 
 import java.io.IOException;
 import java.net.URI;
@@ -9,9 +12,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
-public class JdkHttpClientExecutor implements HttpExecutor {
+public class JdkHttpClientTemplate implements HttpTemplate {
     @Override
-    public String execute(HttpMethod httpMethod, URI uri, Map<String, String> headers, String body) throws IOException {
+    public String execute(HttpMethod httpMethod, URI uri, Map<String, String> headers, RequestBody body) throws IOException {
         System.out.println(uri.getScheme());
         System.out.println(uri.getHost());
         System.out.println(uri.getPath());
@@ -28,9 +31,11 @@ public class JdkHttpClientExecutor implements HttpExecutor {
                 builder.GET();
                 break;
             case POST:
-                builder.POST(this.stringBodyPublisher(body));
+                builder.POST(this.stringBodyPublisher(((StringRequestBody) body).getContent()));
+                break;
             case PUT:
-                builder.PUT(this.stringBodyPublisher(body));
+                builder.PUT(this.stringBodyPublisher(((StringRequestBody) body).getContent()));
+                break;
             case DELETE:
                 builder.DELETE();
                 break;

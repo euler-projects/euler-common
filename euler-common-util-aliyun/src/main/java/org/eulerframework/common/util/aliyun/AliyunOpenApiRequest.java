@@ -1,9 +1,10 @@
 package org.eulerframework.common.util.aliyun;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.eulerframework.common.util.http.HttpExecutor;
-import org.eulerframework.common.util.http.HttpMethod;
-import org.eulerframework.common.util.http.URIBuilder;
+import org.eulerframework.common.http.HttpTemplate;
+import org.eulerframework.common.http.HttpMethod;
+import org.eulerframework.common.http.request.StringRequestBody;
+import org.eulerframework.common.util.net.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -382,9 +383,9 @@ public class AliyunOpenApiRequest {
             }
         }
 
-        public String execute(HttpExecutor httpExecutor) throws IOException {
+        public String execute(HttpTemplate httpTemplate) throws IOException {
             AliyunOpenApiRequest request = this.build();
-            return httpExecutor.execute(request.getHttpMethod(), request.getEndpoint(), request.getHeaders(), request.getBody());
+            return httpTemplate.execute(request.getHttpMethod(), request.getEndpoint(), request.getHeaders(), new StringRequestBody(request.getBody(), "application/www-form-urlencoded"));
         }
     }
 }
