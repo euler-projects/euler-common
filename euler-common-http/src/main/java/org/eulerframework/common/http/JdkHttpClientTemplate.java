@@ -1,20 +1,24 @@
 package org.eulerframework.common.http;
 
+import org.eulerframework.common.http.request.HttpRequest;
 import org.eulerframework.common.http.request.RequestBody;
 import org.eulerframework.common.http.request.StringRequestBody;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class JdkHttpClientTemplate implements HttpTemplate {
     @Override
-    public String execute(HttpMethod httpMethod, URI uri, Map<String, String> headers, RequestBody body) throws IOException {
+    public JdkHttpResponse execute(HttpRequest httpRequest) throws IOException {
+        HttpMethod httpMethod = httpRequest.getHttpMethod();
+        URI uri = httpRequest.getUri();
+        List<Header> headers = httpRequest.getHeaders();
+        RequestBody body = httpRequest.getBody();
+
         System.out.println(uri.getScheme());
         System.out.println(uri.getHost());
         System.out.println(uri.getPath());
@@ -24,8 +28,14 @@ public class JdkHttpClientTemplate implements HttpTemplate {
         System.out.println(uri.getAuthority());
         System.out.println(uri);
 
-        HttpRequest.Builder builder = HttpRequest.newBuilder().uri(uri);
-        Optional.ofNullable(headers).orElse(Collections.emptyMap()).forEach(builder::header);
+        java.net.http.HttpRequest.Builder builder = java.net.http.HttpRequest.newBuilder().uri(uri);
+
+        if (headers != null && !headers.isEmpty()) {
+            for (Header header : headers) {
+                builder.header(header.getName(), header.getValue());
+            }
+        }
+
         switch (httpMethod) {
             case GET:
                 builder.GET();
@@ -43,20 +53,20 @@ public class JdkHttpClientTemplate implements HttpTemplate {
                 throw new IllegalArgumentException("Unsupported http method: " + httpMethod);
         }
 
-        HttpRequest httpRequest = builder.build();
+        java.net.http.HttpRequest jdkHttpRequest = builder.build();
         HttpClient client = HttpClient.newHttpClient();
-        HttpResponse<String> response;
+        HttpResponse<InputStream> response;
         try {
-            response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            response = client.send(jdkHttpRequest, HttpResponse.BodyHandlers.ofInputStream());
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            throw ExceptionEraser.asRuntimeException(e);
         }
-        return response.body();
+        return new JdkHttpResponse(response);
     }
 
-    private HttpRequest.BodyPublisher stringBodyPublisher(String str) {
+    private java.net.http.HttpRequest.BodyPublisher stringBodyPublisher(String str) {
         return Optional.ofNullable(str)
-                .map(HttpRequest.BodyPublishers::ofString).
-                orElse(HttpRequest.BodyPublishers.noBody());
+                .map(java.net.http.HttpRequest.BodyPublishers::ofString).
+                orElse(java.net.http.HttpRequest.BodyPublishers.noBody());
     }
 }

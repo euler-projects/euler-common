@@ -1,9 +1,12 @@
 package org.eulerframework.common.util.aliyun;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.eulerframework.common.http.ContentType;
 import org.eulerframework.common.http.HttpTemplate;
 import org.eulerframework.common.http.HttpMethod;
+import org.eulerframework.common.http.request.HttpRequest;
 import org.eulerframework.common.http.request.StringRequestBody;
+import org.eulerframework.common.http.response.HttpResponse;
 import org.eulerframework.common.util.net.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -21,12 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class AliyunOpenApiRequest {
@@ -39,7 +38,7 @@ public class AliyunOpenApiRequest {
     private final URI endpoint;
     private final String action;
     private final String version;
-    private final Map<String, String> headers = new LinkedHashMap<>();
+    private final Map<String, List<String>> headers = new LinkedHashMap<>();
     //    private final Map<String, String> queryParams = new LinkedHashMap<>();
     private String body = null;
 
@@ -49,7 +48,7 @@ public class AliyunOpenApiRequest {
             String path,
             String action,
             String version,
-            Map<String, String> headers,
+            Map<String, List<String>> headers,
             Map<String, String> queryParams,
             Map<String, String> bodyParams,
             AliyunCredentials credentials) throws URISyntaxException {
@@ -63,7 +62,7 @@ public class AliyunOpenApiRequest {
 
         if (bodyParams != null && !bodyParams.isEmpty()) {
             if (HttpMethod.supportBody(this.httpMethod)) {
-                this.headers.put("Content-Type", "application/x-www-form-urlencoded");
+                this.headers.put("Content-Type", Collections.singletonList(ContentType.APPLICATION_FORM_URLENCODED.toString()));
 
                 this.body = bodyParams.entrySet()
                         .stream()
@@ -90,12 +89,12 @@ public class AliyunOpenApiRequest {
     }
 
     private void initSystemHeader() {
-        this.headers.put("x-acs-action", this.action);
-        this.headers.put("x-acs-version", this.version);
-        this.headers.put("x-acs-date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-                .format(LocalDateTime.now(ZoneId.of("GMT"))));
-        this.headers.put("x-acs-signature-nonce", UUID.randomUUID().toString());
-        this.headers.put("Authorization", this.buildAuthorizationHeader());
+        this.headers.put("x-acs-action", Collections.singletonList(this.action));
+        this.headers.put("x-acs-version", Collections.singletonList(this.version));
+        this.headers.put("x-acs-date", Collections.singletonList(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                .format(LocalDateTime.now(ZoneId.of("GMT")))));
+        this.headers.put("x-acs-signature-nonce", Collections.singletonList(UUID.randomUUID().toString()));
+        this.headers.put("Authorization", Collections.singletonList(this.buildAuthorizationHeader()));
     }
 
     private String buildAuthorizationHeader() {
@@ -119,17 +118,20 @@ public class AliyunOpenApiRequest {
 
         // 计算请求体的哈希值
         String hashedRequestPayload = sha256Hex(requestPayload);
-        this.headers.put("x-acs-content-sha256", hashedRequestPayload);
+        this.headers.put("x-acs-content-sha256", Collections.singletonList(hashedRequestPayload));
         // 构造请求头，多个规范化消息头，按照消息头名称（小写）的字符代码顺序以升序排列后拼接在一起
         StringBuilder canonicalHeaders = new StringBuilder();
         // 已签名消息头列表，多个请求头名称（小写）按首字母升序排列并以英文分号（;）分隔
         StringBuilder signedHeadersSb = new StringBuilder();
 
         final TreeMap<String, String> willSignHeaders = new TreeMap<>(Comparator.naturalOrder());
-        this.headers.forEach((header, value) -> {
+        this.headers.forEach((header, values) -> {
             if (header.toLowerCase().startsWith("x-acs-")
                     || header.equalsIgnoreCase("Content-Type")) {
-                willSignHeaders.put(header.toLowerCase(), value.trim());
+                if (values == null || values.size() != 1) {
+                    throw new IllegalArgumentException("Header " + header + " should contain exactly one value");
+                }
+                willSignHeaders.put(header.toLowerCase(), values.get(0).trim());
             }
         });
 
@@ -276,7 +278,7 @@ public class AliyunOpenApiRequest {
         return version;
     }
 
-    public Map<String, String> getHeaders() {
+    public Map<String, List<String>> getHeaders() {
         return headers;
     }
 
@@ -298,7 +300,7 @@ public class AliyunOpenApiRequest {
         private String path;
         private String action;
         private String version;
-        private final Map<String, String> headers = new LinkedHashMap<>();
+        private final Map<String, List<String>> headers = new LinkedHashMap<>();
         private final Map<String, String> queryParams = new LinkedHashMap<>();
         private final Map<String, String> bodyParams = new LinkedHashMap<>();
         private String accessKeyId;
@@ -341,7 +343,7 @@ public class AliyunOpenApiRequest {
         }
 
         public Builder header(String header, String value) {
-            this.headers.put(header, value);
+            this.headers.computeIfAbsent(header, k -> new ArrayList<>()).add(value);
             return this;
         }
 
@@ -385,7 +387,21 @@ public class AliyunOpenApiRequest {
 
         public String execute(HttpTemplate httpTemplate) throws IOException {
             AliyunOpenApiRequest request = this.build();
-            return httpTemplate.execute(request.getHttpMethod(), request.getEndpoint(), request.getHeaders(), new StringRequestBody(request.getBody(), "application/www-form-urlencoded"));
+            HttpRequest httpRequest;
+            try {
+                httpRequest = HttpRequest.of(request.getHttpMethod(), request.getEndpoint())
+                        .headers(request.getHeaders())
+                        .body(new StringRequestBody(request.getBody(), ContentType.APPLICATION_FORM_URLENCODED))
+                        .build();
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+
+            try (HttpResponse httpResponse = httpTemplate.execute(httpRequest)) {
+                InputStream in = httpResponse.getContent();
+                byte[] data = in.readAllBytes();
+                return new String(data, StandardCharsets.UTF_8);
+            }
         }
     }
 }

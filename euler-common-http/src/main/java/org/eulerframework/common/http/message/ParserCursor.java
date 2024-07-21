@@ -25,22 +25,24 @@
  *
  */
 
-package org.eulerframework.common.http.util;
+package org.eulerframework.common.http.message;
+
+
+import org.eulerframework.common.http.util.Tokenizer;
 
 /**
- * Commons chars used by HTTP/1.1 protocol.
- *
- * @since 5.0
+ * This class represents a context of a parsing operation:
+ * <ul>
+ *  <li>the current position the parsing operation is expected to start at</li>
+ *  <li>the bounds limiting the scope of the parsing operation</li>
+ * </ul>
+ * <p>
+ * CLAUSE: Most code of this class is copied from Apache HTTP.
  */
-public final class Chars {
+public class ParserCursor extends Tokenizer.Cursor {
 
-    public static final int CR = 13; // <US-ASCII CR, carriage return (13)>
-    public static final int LF = 10; // <US-ASCII LF, linefeed (10)>
-    public static final int SP = 32; // <US-ASCII SP, space (32)>
-    public static final int HT = 9;  // <US-ASCII HT, horizontal-tab (9)>
-    public static final int DEL = 127; // <US-ASCII DEL, delete (127)>
-
-    private Chars() {
+    public ParserCursor(final int lowerBound, final int upperBound) {
+        super(lowerBound, upperBound);
     }
 
 }

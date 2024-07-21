@@ -18,6 +18,10 @@ public enum HttpMethod {
 
     TRACE;
 
+    public boolean supportBody() {
+        return supportBody(this);
+    }
+
     public static boolean supportBody(HttpMethod httpMethod) {
         return POST.equals(httpMethod) || PUT.equals(httpMethod) || PATCH.equals(httpMethod);
     }

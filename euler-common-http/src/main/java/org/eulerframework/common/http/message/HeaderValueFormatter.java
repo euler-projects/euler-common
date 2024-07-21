@@ -27,36 +27,38 @@
 
 package org.eulerframework.common.http.message;
 
-import org.eulerframework.common.http.util.CharArrayBuffer;
+
+import org.eulerframework.common.http.HeaderElement;
 import org.eulerframework.common.http.Param;
+import org.eulerframework.common.http.util.CharArrayBuffer;
 
 /**
  * Interface for formatting elements of a header value.
  * Instances of this interface are expected to be stateless and thread-safe.
  * <p>
- * Copied from Apache Http Client
+ * CLAUSE: Most code of this class is copied from Apache HTTP.
  */
 public interface HeaderValueFormatter {
 
-//    /**
-//     * Formats an array of header elements.
-//     *
-//     * @param buffer    buffer to write formatted content to.
-//     * @param elems     the header elements to format
-//     * @param quote     {@code true} to always format with quoted values,
-//     *                  {@code false} to use quotes only when necessary
-//     */
-//    void formatElements(CharArrayBuffer buffer, HeaderElement[] elems, boolean quote);
-//
-//    /**
-//     * Formats one header element.
-//     *
-//     * @param buffer    buffer to write formatted content to.
-//     * @param elem      the header element to format
-//     * @param quote     {@code true} to always format with quoted values,
-//     *                  {@code false} to use quotes only when necessary
-//     */
-//    void formatHeaderElement(CharArrayBuffer buffer, HeaderElement elem, boolean quote);
+    /**
+     * Formats an array of header elements.
+     *
+     * @param buffer    buffer to write formatted content to.
+     * @param elems     the header elements to format
+     * @param quote     {@code true} to always format with quoted values,
+     *                  {@code false} to use quotes only when necessary
+     */
+    void formatElements(CharArrayBuffer buffer, HeaderElement[] elems, boolean quote);
+
+    /**
+     * Formats one header element.
+     *
+     * @param buffer    buffer to write formatted content to.
+     * @param elem      the header element to format
+     * @param quote     {@code true} to always format with quoted values,
+     *                  {@code false} to use quotes only when necessary
+     */
+    void formatHeader(CharArrayBuffer buffer, HeaderElement elem, boolean quote);
 
     /**
      * Formats the parameters of a header element.
@@ -64,21 +66,21 @@ public interface HeaderValueFormatter {
      * This method will <i>not</i> generate a leading semicolon.
      *
      * @param buffer    buffer to write formatted content to.
-     * @param params      the parameters (name-value pairs) to format
+     * @param nvps      the parameters (name-value pairs) to format
      * @param quote     {@code true} to always format with quoted values,
      *                  {@code false} to use quotes only when necessary
      */
-    void formatParameters(CharArrayBuffer buffer, Param[] params, boolean quote);
+    void formatParameters(CharArrayBuffer buffer, Param[] nvps, boolean quote);
 
     /**
      * Formats one name-value pair, where the value is optional.
      *
      * @param buffer    buffer to write formatted content to.
-     * @param param       the name-value pair to format
+     * @param nvp       the name-value pair to format
      * @param quote     {@code true} to always format with a quoted value,
      *                  {@code false} to use quotes only when necessary
      */
-    void formatNameValuePair(CharArrayBuffer buffer, Param param, boolean quote);
+    void formatParam(CharArrayBuffer buffer, Param nvp, boolean quote);
 
 }
 

@@ -27,13 +27,15 @@
 
 package org.eulerframework.common.http.message;
 
-import org.eulerframework.common.http.util.CharArrayBuffer;
+import org.eulerframework.common.http.HeaderElement;
 import org.eulerframework.common.http.Param;
+import org.eulerframework.common.http.util.Args;
+import org.eulerframework.common.http.util.CharArrayBuffer;
 
 /**
  * Default {@link HeaderValueFormatter} implementation.
  * <p>
- * Copied from Apache Http Client
+ * CLAUSE: Most code of this class is copied from Apache HTTP.
  */
 public class BasicHeaderValueFormatter implements HeaderValueFormatter {
 
@@ -46,72 +48,64 @@ public class BasicHeaderValueFormatter implements HeaderValueFormatter {
         super();
     }
 
-//    @Override
-//    public void formatElements(
-//            final CharArrayBuffer buffer, final HeaderElement[] elems, final boolean quote) {
-//        Args.notNull(buffer, "Char array buffer");
-//        Args.notNull(elems, "Header element array");
-//
-//        for (int i = 0; i < elems.length; i++) {
-//            if (i > 0) {
-//                buffer.append(", ");
-//            }
-//            formatHeaderElement(buffer, elems[i], quote);
-//        }
-//    }
-//
-//    @Override
-//    public void formatHeaderElement(
-//            final CharArrayBuffer buffer, final HeaderElement elem, final boolean quote) {
-//        Args.notNull(buffer, "Char array buffer");
-//        Args.notNull(elem, "Header element");
-//
-//        buffer.append(elem.getName());
-//        final String value = elem.getValue();
-//        if (value != null) {
-//            buffer.append('=');
-//            formatValue(buffer, value, quote);
-//        }
-//
-//        final int c = elem.getParameterCount();
-//        if (c > 0) {
-//            for (int i = 0; i < c; i++) {
-//                buffer.append("; ");
-//                formatNameValuePair(buffer, elem.getParameter(i), quote);
-//            }
-//        }
-//    }
-
     @Override
-    public void formatParameters(
-            final CharArrayBuffer buffer, final Param[] params, final boolean quote) {
-        if (buffer == null) {
-            throw new IllegalArgumentException("Char array buffer must not be null");
-        }
-        if (params == null) {
-            throw new IllegalArgumentException("Header parameter array must not be null");
-        }
+    public void formatElements(
+            final CharArrayBuffer buffer, final HeaderElement[] elems, final boolean quote) {
+        Args.notNull(buffer, "Char array buffer");
+        Args.notNull(elems, "Header element array");
 
-        for (int i = 0; i < params.length; i++) {
+        for (int i = 0; i < elems.length; i++) {
             if (i > 0) {
-                buffer.append("; ");
+                buffer.append(", ");
             }
-            formatNameValuePair(buffer, params[i], quote);
+            formatHeader(buffer, elems[i], quote);
         }
     }
 
     @Override
-    public void formatNameValuePair(
-            final CharArrayBuffer buffer, final Param param, final boolean quote) {
-        if (buffer == null) {
-            throw new IllegalArgumentException("Char array buffer must not be null");
-        }
-        if (param == null) {
-            throw new IllegalArgumentException("Param must not be null");
+    public void formatHeader(
+            final CharArrayBuffer buffer, final HeaderElement elem, final boolean quote) {
+        Args.notNull(buffer, "Char array buffer");
+        Args.notNull(elem, "Header element");
+
+        buffer.append(elem.getName());
+        final String value = elem.getValue();
+        if (value != null) {
+            buffer.append('=');
+            formatValue(buffer, value, quote);
         }
 
-        buffer.append(param.getName());
-        final String value = param.getValue();
+        final int c = elem.getParameterCount();
+        if (c > 0) {
+            for (int i = 0; i < c; i++) {
+                buffer.append("; ");
+                formatParam(buffer, elem.getParameter(i), quote);
+            }
+        }
+    }
+
+    @Override
+    public void formatParameters(
+            final CharArrayBuffer buffer, final Param[] nvps, final boolean quote) {
+        Args.notNull(buffer, "Char array buffer");
+        Args.notNull(nvps, "Header parameter array");
+
+        for (int i = 0; i < nvps.length; i++) {
+            if (i > 0) {
+                buffer.append("; ");
+            }
+            formatParam(buffer, nvps[i], quote);
+        }
+    }
+
+    @Override
+    public void formatParam(
+            final CharArrayBuffer buffer, final Param nvp, final boolean quote) {
+        Args.notNull(buffer, "Char array buffer");
+        Args.notNull(nvp, "Name / value pair");
+
+        buffer.append(nvp.getName());
+        final String value = nvp.getValue();
         if (value != null) {
             buffer.append('=');
             formatValue(buffer, value, quote);

@@ -12,7 +12,7 @@ public class AliyunOpenApiRequestTest {
                 .endpoint("https://ecs.cn-shenzhen.aliyuncs.com")
                 .action("DescribeInstances")
                 .version("2014-05-26")
-                .queryParam("RegionId", "cn-shenzhen")
+                .bodyParam("RegionId", "cn-shenzhen")
                 .accessKeyId(System.getenv("ACCESS_KEY_ID"))
                 .accessKeySecret(System.getenv("ACCESS_KEY_SECRET"))
                 .execute(new JdkHttpClientTemplate());

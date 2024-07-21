@@ -7,8 +7,11 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.*;
 import java.text.Normalizer;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 
 public class URIBuilder {
     private String scheme;
@@ -64,6 +67,16 @@ public class URIBuilder {
     public URIBuilder path(String path) {
         this.path = path;
         return this;
+    }
+
+    public URIBuilder path(String template, Consumer<PathTemplate> pathTemplateConsumer) {
+        PathTemplate pathTemplate = new PathTemplate(template);
+        pathTemplateConsumer.accept(pathTemplate);
+        return this.path(pathTemplate.getPath());
+    }
+
+    public URIBuilder path(String template, Map<String, String> vars) {
+        return this.path(new PathTemplate(template).params(vars).getPath());
     }
 
     public URIBuilder query(String key, String value) {
@@ -631,5 +644,72 @@ public class URIBuilder {
         }
 
         return sb.toString();
+    }
+
+    public static class PathTemplate {
+        private final String template;
+        private final Map<String, String> variables = new HashMap<>();
+
+        private PathTemplate(String template) {
+            this.template = template;
+        }
+
+        public PathTemplate params(Map<String, String> variables) {
+            this.variables.putAll(variables);
+            return this;
+        }
+
+        public PathTemplate param(String name, Object value) {
+            this.variables.put(name, value.toString());
+            return this;
+        }
+
+        private String getPath() {
+            if (this.template == null || this.template.isEmpty()) {
+                return this.template;
+            }
+
+            StringBuilder pathBuffer = new StringBuilder();
+            StringBuilder paramBuffer = new StringBuilder();
+            int tag = 0;
+
+            char[] chars = this.template.toCharArray();
+            for (int i = 0; i < chars.length; i++) {
+                char c = chars[i];
+                if (ESCAPE == c) {
+                    pathBuffer.append(chars[++i]);
+                    continue;
+                }
+
+                if (L == c) {
+                    tag = 1;
+                    continue;
+                }
+
+                if (R == c) {
+                    if (tag < 1) {
+                        throw new SyntaxException("Invalid URI path char '" + c + "', index " + i);
+                    }
+                    tag = 0;
+                    String param = paramBuffer.toString();
+                    paramBuffer.delete(0, paramBuffer.length());
+                    String value = this.variables.get(param);
+                    pathBuffer.append(value);
+                    continue;
+                }
+
+                if (tag == 0) {
+                    pathBuffer.append(c);
+                } else {
+                    paramBuffer.append(c);
+                }
+            }
+
+            return pathBuffer.toString();
+        }
+
+        private static final char ESCAPE = '\\';
+        private static final char L = '{';
+        private static final char R = '}';
     }
 }

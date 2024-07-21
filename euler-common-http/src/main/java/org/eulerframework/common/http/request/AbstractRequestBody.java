@@ -11,7 +11,7 @@ public abstract class AbstractRequestBody implements RequestBody {
     private final ContentType contentType;
 
     /**
-     * Creates a new instance of {@link RequestBody} with default charset UTF-8.
+     * Creates a new instance of {@link HttpRequest} with default charset UTF-8.
      *
      * @param mimeType MIME type. It may not be {@code null} or empty. It may not contain
      *                 characters {@code <">, <;>, <,>} reserved by the HTTP specification.
@@ -21,7 +21,7 @@ public abstract class AbstractRequestBody implements RequestBody {
     }
 
     /**
-     * Creates a new instance of {@link RequestBody}.
+     * Creates a new instance of {@link HttpRequest}.
      *
      * @param mimeType MIME type. It may not be {@code null} or empty. It may not contain
      *                 characters {@code <">, <;>, <,>} reserved by the HTTP specification.
@@ -29,11 +29,11 @@ public abstract class AbstractRequestBody implements RequestBody {
      *                 specification. This parameter is optional.
      */
     public AbstractRequestBody(String mimeType, Charset charset) {
-        if (mimeType != null) {
-            this.contentType = new ContentType(mimeType, charset);
-        } else {
-            this.contentType = null;
-        }
+        this(mimeType == null ? null : ContentType.create(mimeType, charset));
+    }
+
+    public AbstractRequestBody(ContentType contentType) {
+        this.contentType = contentType;
     }
 
     @Override
