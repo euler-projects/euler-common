@@ -1,9 +1,5 @@
 package org.eulerframework.common.http;
 
-import org.eulerframework.common.http.request.HttpRequest;
-import org.eulerframework.common.http.request.RequestBody;
-import org.eulerframework.common.http.response.HttpResponse;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;

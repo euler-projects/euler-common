@@ -1,19 +1,17 @@
 package org.eulerframework.common.http;
 
-import org.eulerframework.common.http.request.HttpRequest;
-import org.eulerframework.common.http.request.RequestBody;
 import org.eulerframework.common.http.request.StringRequestBody;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
-import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.util.*;
 
 public class JdkHttpClientTemplate implements HttpTemplate {
     @Override
-    public JdkHttpResponse execute(HttpRequest httpRequest) throws IOException {
+    public HttpResponse execute(HttpRequest httpRequest) throws IOException {
         HttpMethod httpMethod = httpRequest.getHttpMethod();
         URI uri = httpRequest.getUri();
         List<Header> headers = httpRequest.getHeaders();
@@ -55,13 +53,18 @@ public class JdkHttpClientTemplate implements HttpTemplate {
 
         java.net.http.HttpRequest jdkHttpRequest = builder.build();
         HttpClient client = HttpClient.newHttpClient();
-        HttpResponse<InputStream> response;
+        java.net.http.HttpResponse<InputStream> response;
         try {
-            response = client.send(jdkHttpRequest, HttpResponse.BodyHandlers.ofInputStream());
+            response = client.send(jdkHttpRequest, BodyHandlers.ofInputStream());
         } catch (InterruptedException e) {
             throw ExceptionEraser.asRuntimeException(e);
         }
-        return new JdkHttpResponse(response);
+
+        return HttpResponse.newBuilder()
+                .status(response.statusCode())
+                .headers(response.headers().map())
+                .content(response.body())
+                .build();
     }
 
     private java.net.http.HttpRequest.BodyPublisher stringBodyPublisher(String str) {

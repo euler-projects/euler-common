@@ -4,9 +4,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eulerframework.common.http.ContentType;
 import org.eulerframework.common.http.HttpTemplate;
 import org.eulerframework.common.http.HttpMethod;
-import org.eulerframework.common.http.request.HttpRequest;
+import org.eulerframework.common.http.HttpRequest;
 import org.eulerframework.common.http.request.StringRequestBody;
-import org.eulerframework.common.http.response.HttpResponse;
+import org.eulerframework.common.http.HttpResponse;
 import org.eulerframework.common.util.net.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -398,7 +398,7 @@ public class AliyunOpenApiRequest {
             }
 
             try (HttpResponse httpResponse = httpTemplate.execute(httpRequest)) {
-                InputStream in = httpResponse.getContent();
+                InputStream in = (InputStream) httpResponse.getBody().getContent();
                 byte[] data = in.readAllBytes();
                 return new String(data, StandardCharsets.UTF_8);
             }

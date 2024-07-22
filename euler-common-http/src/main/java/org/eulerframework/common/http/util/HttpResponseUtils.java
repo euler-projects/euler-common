@@ -1,10 +1,11 @@
 package org.eulerframework.common.http.util;
 
-import org.eulerframework.common.http.response.HttpResponse;
+import org.eulerframework.common.http.Header;
+import org.eulerframework.common.http.HttpResponse;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class HttpResponseUtils {
     public static Optional<String> firstHeader(HttpResponse response, String name) {
@@ -13,17 +14,15 @@ public class HttpResponseUtils {
                 .findFirst();
     }
 
-    public static  List<String> header(HttpResponse response, String name) {
-        Map<String, List<String>> headers = response.getHeaders();
+    public static List<String> header(HttpResponse response, String name) {
+        List<Header> headers = response.getHeaders();
         if (headers == null || headers.isEmpty()) {
             return List.of();
         }
 
-        return headers.entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().equalsIgnoreCase(name))
-                .findFirst()
-                .map(Map.Entry::getValue)
-                .orElse(List.of());
+        return headers.stream()
+                .filter(header -> header.getName().equalsIgnoreCase(name))
+                .map(Header::getValue)
+                .collect(Collectors.toList());
     }
 }

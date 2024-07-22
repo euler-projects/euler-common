@@ -1,6 +1,8 @@
 package org.eulerframework.common.http.request;
 
 import org.eulerframework.common.http.ContentType;
+import org.eulerframework.common.http.HttpRequest;
+import org.eulerframework.common.http.RequestBody;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -39,5 +41,10 @@ public abstract class AbstractRequestBody implements RequestBody {
     @Override
     public ContentType getContentType() {
         return contentType;
+    }
+
+    @Override
+    public int getContentLength() {
+        return -1;
     }
 }

@@ -1,122 +1,66 @@
-package org.eulerframework.common.http.request;
+package org.eulerframework.common.http;
 
-import org.eulerframework.common.http.ContentType;
-import org.eulerframework.common.http.Header;
-import org.eulerframework.common.http.HttpMethod;
-import org.eulerframework.common.http.ReX;
 import org.eulerframework.common.http.message.BasicHeader;
 import org.eulerframework.common.http.util.Args;
 import org.eulerframework.common.util.net.URIBuilder;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Consumer;
 
-public final class HttpRequest implements ReX {
-    private final HttpMethod httpMethod;
-    private final URI uri;
-    private final List<Header> headers = new ArrayList<>();
-    private ContentType contentType;
-    private final RequestBody body;
+public interface HttpRequest {
 
-    private HttpRequest(HttpMethod httpMethod, URI uri, List<Header> headers, RequestBody body) {
-        this.httpMethod = httpMethod;
-        this.uri = uri;
-        this.headers.addAll(headers);
-        this.body = body;
+    HttpMethod getHttpMethod();
 
-        // check content-type header is match with the given body's content-type,
-        // or add a content-type header if the given headers does not contain one.
-        if (this.httpMethod.supportBody() && this.body != null) {
-            this.contentType = this.body.getContentType();
-            ContentType headerContentType = null;
+    URI getUri();
 
-            for (Header header : this.headers) {
-                if (header.getName().equalsIgnoreCase(ContentType.HEADER_CONTENT_TYPE)) {
-                    headerContentType = ContentType.parse(header.getValue());
-                    break;
-                }
-            }
+    List<Header> getHeaders();
 
-            if (headerContentType == null) {
-                this.headers.add(new BasicHeader(ContentType.HEADER_CONTENT_TYPE, this.contentType.toString()));
-            } else {
-                if (!headerContentType.isSameMimeTypeAndCharset(this.contentType)) {
-                    throw new IllegalArgumentException("Request body's content type '"
-                            + this.contentType
-                            + "' does not match with the content-type header '"
-                            + headerContentType
-                            + "' ");
-                }
-            }
-        }
-    }
+    RequestBody getBody() throws IOException;
 
-    public HttpMethod getHttpMethod() {
-        return httpMethod;
-    }
-
-    public URI getUri() {
-        return uri;
-    }
-
-    @Override
-    public List<Header> getHeaders() {
-        return headers;
-    }
-
-    @Override
-    public ContentType getContentType() {
-        return this.contentType;
-    }
-
-    public RequestBody getBody() {
-        return body;
-    }
-
-
-    public static Builder of(HttpMethod httpMethod, URI uri) {
+    static Builder of(HttpMethod httpMethod, URI uri) {
         return new UriSupportBuilder(httpMethod, uri);
     }
 
-    public static Builder of(HttpMethod httpMethod, String url) {
+    static Builder of(HttpMethod httpMethod, String url) {
         return new UriBuilderSupportBuilder(httpMethod, URIBuilder.of(url));
     }
 
-    public static Builder get(String url) {
+    static Builder get(String url) {
         return of(HttpMethod.GET, url);
     }
 
-    public static Builder head(String url) {
+    static Builder head(String url) {
         return of(HttpMethod.HEAD, url);
     }
 
-    public static Builder post(String url) {
+    static Builder post(String url) {
         return of(HttpMethod.POST, url);
     }
 
-    public static Builder put(String url) {
+    static Builder put(String url) {
         return of(HttpMethod.PUT, url);
     }
 
-    public static Builder patch(String url) {
+    static Builder patch(String url) {
         return of(HttpMethod.PATCH, url);
     }
 
-    public static Builder delete(String url) {
+    static Builder delete(String url) {
         return of(HttpMethod.DELETE, url);
     }
 
-    public static Builder options(String url) {
+    static Builder options(String url) {
         return of(HttpMethod.OPTIONS, url);
     }
 
-    public static Builder trace(String url) {
+    static Builder trace(String url) {
         return of(HttpMethod.TRACE, url);
     }
 
-    public static class UriBuilderSupportBuilder extends Builder {
+    class UriBuilderSupportBuilder extends Builder {
         private final URIBuilder uriBuilder;
 
         private UriBuilderSupportBuilder(HttpMethod httpMethod, URIBuilder uriBuilder) {
@@ -171,7 +115,7 @@ public final class HttpRequest implements ReX {
         }
     }
 
-    public static class UriSupportBuilder extends Builder {
+    class UriSupportBuilder extends Builder {
         private final URI uri;
 
         private UriSupportBuilder(HttpMethod httpMethod, URI uri) {
@@ -186,7 +130,7 @@ public final class HttpRequest implements ReX {
         }
     }
 
-    public static abstract class Builder {
+    abstract class Builder {
         private final HttpMethod httpMethod;
         private final List<Header> headers = new ArrayList<>();
         private RequestBody body;
@@ -219,8 +163,67 @@ public final class HttpRequest implements ReX {
         }
 
         public HttpRequest build() throws URISyntaxException {
+            return new BasicHttpRequest(this.httpMethod, this.getUri(), this.headers, this.body);
+        }
+    }
 
-            return new HttpRequest(this.httpMethod, this.getUri(), this.headers, this.body);
+    final class BasicHttpRequest implements HttpRequest {
+        private final HttpMethod httpMethod;
+        private final URI uri;
+        private final List<Header> headers = new ArrayList<>();
+        private final RequestBody body;
+
+        private BasicHttpRequest(HttpMethod httpMethod, URI uri, List<Header> headers, RequestBody body) {
+            this.httpMethod = httpMethod;
+            this.uri = uri;
+            this.headers.addAll(headers);
+            this.body = body;
+
+            // check content-type header is match with the given body's content-type,
+            // or add a content-type header if the given headers does not contain one.
+            if (this.httpMethod.supportBody() && this.body != null) {
+                ContentType bodyContentType = this.body.getContentType();
+                ContentType headerContentType = null;
+
+                for (Header header : this.headers) {
+                    if (header.getName().equalsIgnoreCase(ContentType.HEADER_CONTENT_TYPE)) {
+                        headerContentType = ContentType.parse(header.getValue());
+                        break;
+                    }
+                }
+
+                if (headerContentType == null) {
+                    this.headers.add(new BasicHeader(ContentType.HEADER_CONTENT_TYPE, bodyContentType.toString()));
+                } else {
+                    if (!headerContentType.isSameMimeTypeAndCharset(bodyContentType)) {
+                        throw new IllegalArgumentException("Request body's content type '"
+                                + bodyContentType
+                                + "' does not match with the content-type header '"
+                                + headerContentType
+                                + "' ");
+                    }
+                }
+            }
+        }
+
+        @Override
+        public HttpMethod getHttpMethod() {
+            return httpMethod;
+        }
+
+        @Override
+        public URI getUri() {
+            return uri;
+        }
+
+        @Override
+        public List<Header> getHeaders() {
+            return headers;
+        }
+
+        @Override
+        public RequestBody getBody() {
+            return body;
         }
     }
 }
