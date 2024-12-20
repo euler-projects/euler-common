@@ -31,6 +31,7 @@
         <module>euler-common-ssh</module>
         <module>euler-common-util-aliyun</module>
         <module>euler-common-http</module>
+        <module>euler-common-proto</module>
     </modules>
 
     <build>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" monitorInterval="1800">
+
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{ISO8601} %-5p - %msg%n" />
+        </Console>
+
+    </Appenders>
+    
+    <loggers>
+        <logger name="org.eulerframework.common.util.aliyun.AliyunOpenApiRequest" level="trace"/>
+        <root level="debug">
+            <appender-ref ref="console" />
+        </root>
+    </loggers>
+</configuration>
