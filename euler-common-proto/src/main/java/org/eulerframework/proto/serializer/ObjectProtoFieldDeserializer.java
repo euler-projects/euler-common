@@ -25,11 +25,18 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
 public class ObjectProtoFieldDeserializer implements Deserializer {
+    private final SerializerRegistry serializerRegistry;
+
+    public ObjectProtoFieldDeserializer(SerializerRegistry serializerRegistry) {
+        this.serializerRegistry = serializerRegistry;
+    }
+
     @Override
     public <T> T read(InputStream in, Class<T> clazz) throws IOException {
         ByteObject byteObject = clazz.getAnnotation(ByteObject.class);
         if (byteObject == null) {
             ObjectField<T> field = new ObjectField<>();
+            field.setSerializerRegistry(this.serializerRegistry);
             field.read(this.newInstance(clazz));
             field.read(in);
             return field.value();

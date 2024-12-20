@@ -15,7 +15,6 @@
  */
 package org.eulerframework.proto.field;
 
-import org.eulerframework.proto.ProtoType;
 import org.eulerframework.proto.annotation.ProtoProperty;
 import org.eulerframework.proto.serializer.*;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -25,26 +24,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ObjectField<T> implements ProtoField<T> {
-    private final static Map<String, Serializer> serializerMap = new HashMap<>();
-    private final static Map<String, Deserializer> deserializerMap = new HashMap<>();
+    private SerializerRegistry serializerRegistry;
 
-    static {
-        serializerMap.put(ProtoType.WORD, new UnsignedShortProtoFieldSerializer());
-        serializerMap.put(ProtoType.DWORD, new UnsignedIntegerProtoFieldSerializer());
-        serializerMap.put(ProtoType.BYTE, new ByteProtoFieldSerializer());
-        serializerMap.put(ProtoType.BCD, new BCDSerializer());
-        serializerMap.put(ProtoType.OBJECT, new ObjectProtoFieldSerializer());
-
-        deserializerMap.put(ProtoType.WORD, new UnsignedShortProtoFieldDeserializer());
-        deserializerMap.put(ProtoType.DWORD, new UnsignedIntegerProtoFieldDeserializer());
-        deserializerMap.put(ProtoType.BYTE, new ByteProtoFieldDeserializer());
-        deserializerMap.put(ProtoType.BCD, new BCDDeserializer());
-        deserializerMap.put(ProtoType.OBJECT, new ObjectProtoFieldDeserializer());
+    public void setSerializerRegistry(SerializerRegistry serializerRegistry) {
+        this.serializerRegistry = serializerRegistry;
     }
 
     public static <T> ObjectField<T> valueOf(T value) {
@@ -61,8 +47,8 @@ public class ObjectField<T> implements ProtoField<T> {
     }
 
     @Override
-    public void read(Object object) {
-        this.data = (T) object;
+    public void read(T object) {
+        this.data = object;
     }
 
     @Override
@@ -80,7 +66,7 @@ public class ObjectField<T> implements ProtoField<T> {
         for (Field field : fields) {
             ProtoProperty property = field.getAnnotation(ProtoProperty.class);
             String type = property.type();
-            Deserializer deserializer = deserializerMap.get(type);
+            Deserializer deserializer = this.serializerRegistry.getDeserializer(type);
             Object value;
             if (property.length() < 0) {
                 value = deserializer.read(in, field.getType());
@@ -122,7 +108,7 @@ public class ObjectField<T> implements ProtoField<T> {
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
-            Serializer serializer = serializerMap.get(type);
+            Serializer serializer = this.serializerRegistry.getSerializer(type);
             if (property.length() < 0) {
                 serializer.writeTo(value, out);
             } else {

@@ -24,12 +24,18 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
 public class ObjectProtoFieldSerializer implements Serializer {
+    private final SerializerRegistry serializerRegistry;
+
+    public ObjectProtoFieldSerializer(SerializerRegistry serializerRegistry) {
+        this.serializerRegistry = serializerRegistry;
+    }
 
     @Override
     public void writeTo(Object value, OutputStream outputStream) throws IOException {
         ByteObject byteObject = value.getClass().getAnnotation(ByteObject.class);
         if (byteObject == null) {
             ObjectField<?> objectField = ObjectField.valueOf(value);
+            objectField.setSerializerRegistry(this.serializerRegistry);
             objectField.write(outputStream);
         } else {
             ByteObjectField<?> objectField = ByteObjectField.valueOf(value, byteObject.length());
