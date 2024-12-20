@@ -20,6 +20,6 @@ import java.lang.annotation.*;
 @Target(value = ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface ByteObject {
+public @interface ByteArrayObject {
     int length();
 }
