@@ -17,7 +17,6 @@ package org.eulerframework.proto.serializer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 public interface Deserializer {
     <T> T read(InputStream in, Class<T> clazz) throws IOException;

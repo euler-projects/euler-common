@@ -70,7 +70,8 @@ public class ByteArrayObjectField<T> extends AbstractFixedLengthProtoField<T>
             }
 
             try {
-                FieldUtils.writeField(field, this.data, value, true);
+                Object typedValue = NumberUtils.toUnsignedValue(value, field.getType());
+                FieldUtils.writeField(field, this.data, typedValue, true);
             } catch (IllegalAccessException e) {
                 throw ExceptionUtils.asRuntimeException(e);
             }
