@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
-public class ObjectProtoFieldDeserializer implements Deserializer {
+public class ObjectProtoFieldDeserializer extends AbstractDeserializer implements Deserializer {
     private final SerializerRegistry serializerRegistry;
 
     public ObjectProtoFieldDeserializer(SerializerRegistry serializerRegistry) {

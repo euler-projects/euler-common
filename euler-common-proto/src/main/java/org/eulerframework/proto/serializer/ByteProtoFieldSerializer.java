@@ -21,7 +21,7 @@ import org.eulerframework.common.util.NumberUtils;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class ByteProtoFieldSerializer implements Serializer {
+public class ByteProtoFieldSerializer extends AbstractSerializer implements Serializer {
     @Override
     public void writeTo(Object value, OutputStream outputStream) throws IOException {
         ByteProtoField field = new ByteProtoField(NumberUtils.toByte(value));

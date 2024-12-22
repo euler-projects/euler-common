@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
-public class UnsignedShortProtoFieldDeserializer implements Deserializer {
+public class UnsignedShortProtoFieldDeserializer extends AbstractDeserializer implements Deserializer {
     @Override
     public <T> T read(InputStream in, Class<T> clazz) throws IOException {
         UnsignedShortProtoField field = new UnsignedShortProtoField();

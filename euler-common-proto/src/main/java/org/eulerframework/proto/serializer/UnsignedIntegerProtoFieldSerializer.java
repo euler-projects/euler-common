@@ -21,7 +21,7 @@ import org.eulerframework.common.util.NumberUtils;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class UnsignedIntegerProtoFieldSerializer implements Serializer {
+public class UnsignedIntegerProtoFieldSerializer extends AbstractSerializer implements Serializer {
     @Override
     public void writeTo(Object value, OutputStream outputStream) throws IOException {
         UnsignedIntegerProtoField field = new UnsignedIntegerProtoField(NumberUtils.toUnsignedInt(value));

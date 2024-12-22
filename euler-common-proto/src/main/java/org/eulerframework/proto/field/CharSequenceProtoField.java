@@ -15,6 +15,6 @@
  */
 package org.eulerframework.proto.field;
 
-public interface StringProtoField extends ProtoField<CharSequence> {
+public interface CharSequenceProtoField extends ProtoField<CharSequence> {
     void read(CharSequence cs);
 }

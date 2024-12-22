@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
-public class ObjectProtoFieldSerializer implements Serializer {
+public class ObjectProtoFieldSerializer extends AbstractSerializer implements Serializer {
     private final SerializerRegistry serializerRegistry;
 
     public ObjectProtoFieldSerializer(SerializerRegistry serializerRegistry) {

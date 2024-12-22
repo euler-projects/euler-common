@@ -15,14 +15,12 @@
  */
 package org.eulerframework.proto.field;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eulerframework.proto.annotation.ProtoProperty;
 import org.eulerframework.proto.serializer.*;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -48,11 +46,19 @@ public class ObjectField<T> implements ProtoField<T> {
 
     @Override
     public void read(T object) {
+        if(object == null) {
+            throw new NullPointerException("object is null");
+        }
         this.data = object;
     }
 
     @Override
     public void read(byte[] bytes) {
+        try (ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
+            this.read(in);
+        } catch (IOException e) {
+            throw ExceptionUtils.asRuntimeException(e);
+        }
     }
 
     @Override
@@ -69,14 +75,14 @@ public class ObjectField<T> implements ProtoField<T> {
             Deserializer deserializer = this.serializerRegistry.getDeserializer(type);
             Object value;
             if (property.length() < 0) {
-                value = deserializer.read(in, field.getType());
+                value = deserializer.read(in, field);
             } else {
-                value = deserializer.read(in, property.length(), field.getType());
+                value = deserializer.read(in, property.length(), field);
             }
             try {
                 FieldUtils.writeField(field, this.data, value, true);
             } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+                throw ExceptionUtils.asRuntimeException(e);
             }
         }
     }
@@ -87,7 +93,7 @@ public class ObjectField<T> implements ProtoField<T> {
             this.write(out);
             return out.toByteArray();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw ExceptionUtils.asRuntimeException(e);
         }
     }
 
@@ -102,17 +108,18 @@ public class ObjectField<T> implements ProtoField<T> {
         for (Field field : fields) {
             ProtoProperty property = field.getAnnotation(ProtoProperty.class);
             String type = property.type();
-            Object value = null;
+            Object value;
             try {
                 value = FieldUtils.readField(field, this.data, true);
             } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+                throw ExceptionUtils.asRuntimeException(e);
             }
             Serializer serializer = this.serializerRegistry.getSerializer(type);
+
             if (property.length() < 0) {
-                serializer.writeTo(value, out);
+                serializer.writeTo(field, value, out);
             } else {
-                serializer.writeTo(value, property.length(), out);
+                serializer.writeTo(field, value, property.length(), out);
             }
         }
     }

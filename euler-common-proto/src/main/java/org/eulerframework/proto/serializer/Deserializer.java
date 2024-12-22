@@ -17,9 +17,14 @@ package org.eulerframework.proto.serializer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 
 public interface Deserializer {
     <T> T read(InputStream in, Class<T> clazz) throws IOException;
 
     <T> T read(InputStream in, int length, Class<T> clazz) throws IOException;
+
+    <T> T read(InputStream in, Field propertyField) throws IOException;
+
+    <T> T read(InputStream in, int length, Field propertyField) throws IOException;
 }
