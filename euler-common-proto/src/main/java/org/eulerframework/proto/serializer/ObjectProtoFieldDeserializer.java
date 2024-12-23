@@ -23,7 +23,6 @@ import org.eulerframework.proto.node.ProtoNode;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 public class ObjectProtoFieldDeserializer extends AbstractDeserializer implements Deserializer {
@@ -35,34 +34,24 @@ public class ObjectProtoFieldDeserializer extends AbstractDeserializer implement
 
     @Override
     public <T> T read(InputStream in, Class<T> clazz, ProtoNode propertyNode) throws IOException {
-        return this.readInner(in, clazz, propertyNode);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T read(InputStream in, Field propertyField, ProtoNode propertyNode) throws IOException {
-        return (T) this.readInner(in, propertyField.getType(), propertyNode);
-    }
-
-    @Override
-    public ProtoNode newProtoNode(ProtoNode parent) {
-        return ProtoNode.newObjectNode(parent);
-    }
-
-    private <T> T readInner(InputStream in, Class<T> clazz, ProtoNode objectNode) throws IOException {
         ByteArrayObject byteArrayObject = clazz.getAnnotation(ByteArrayObject.class);
         if (byteArrayObject == null) {
-            ObjectField<T> field = ObjectField.newInstance((ObjectProtoNode) objectNode);
+            ObjectField<T> field = ObjectField.newInstance((ObjectProtoNode) propertyNode);
             field.setSerializerRegistry(this.serializerRegistry);
             field.read(this.newInstance(clazz));
             field.read(in);
             return field.value();
         } else {
-            ByteArrayObjectField<T> field = ByteArrayObjectField.newInstance(byteArrayObject.length(), (ObjectProtoNode) objectNode);
+            ByteArrayObjectField<T> field = ByteArrayObjectField.newInstance(byteArrayObject.length(), (ObjectProtoNode) propertyNode);
             field.read(this.newInstance(clazz));
             field.read(in);
             return field.value();
         }
+    }
+
+    @Override
+    public ProtoNode newProtoNode(ProtoNode parent) {
+        return ProtoNode.newObjectNode(parent);
     }
 
     private <T> T newInstance(Class<T> clazz) {
