@@ -19,6 +19,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.eulerframework.common.util.NumberUtils;
 import org.eulerframework.proto.annotation.BitProperty;
+import org.eulerframework.proto.node.ObjectProtoNode;
+import org.eulerframework.proto.node.ProtoNode;
+import org.eulerframework.proto.node.ValueProtoNode;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -27,16 +30,22 @@ public class ByteArrayObjectField<T> extends AbstractFixedLengthProtoField<T>
         implements FixedLengthProtoField<T> {
     private final static int MAX_FIELD_BITS = Integer.bitCount(-1);
 
+    public static <T> ByteArrayObjectField<T> newInstance(int length, ObjectProtoNode objectNode) {
+        return new ByteArrayObjectField<>(length, objectNode);
+    }
+
     public static <T> ByteArrayObjectField<T> valueOf(T value, int length) {
-        ByteArrayObjectField<T> field = new ByteArrayObjectField<>(length);
+        ByteArrayObjectField<T> field = new ByteArrayObjectField<>(length, null);
         field.read(value);
         return field;
     }
 
     private T data;
+    private final ObjectProtoNode objectNode;
 
-    public ByteArrayObjectField(int length) {
+    public ByteArrayObjectField(int length, ObjectProtoNode objectNode) {
         super(length);
+        this.objectNode = objectNode;
     }
 
     @Override
@@ -69,8 +78,9 @@ public class ByteArrayObjectField<T> extends AbstractFixedLengthProtoField<T>
                 value = value | (bytes[bitIndex / 8] >> bitIndex % 8 & 0x01) << bit;
             }
 
+            Object typedValue = NumberUtils.toUnsignedValue(value, field.getType());
+            this.objectNode.addProperty(field.getName(), ProtoNode::newValueNode).setValue(typedValue);
             try {
-                Object typedValue = NumberUtils.toUnsignedValue(value, field.getType());
                 FieldUtils.writeField(field, this.data, typedValue, true);
             } catch (IllegalAccessException e) {
                 throw ExceptionUtils.asRuntimeException(e);

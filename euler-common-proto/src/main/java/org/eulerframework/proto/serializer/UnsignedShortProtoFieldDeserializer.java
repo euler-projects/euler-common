@@ -20,7 +20,6 @@ import org.eulerframework.common.util.NumberUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 
 public class UnsignedShortProtoFieldDeserializer extends AbstractDeserializer implements Deserializer {
     @Override
@@ -28,10 +27,5 @@ public class UnsignedShortProtoFieldDeserializer extends AbstractDeserializer im
         UnsignedShortProtoField field = new UnsignedShortProtoField();
         field.read(in);
         return NumberUtils.toUnsignedValue(field.shorValue(), clazz);
-    }
-
-    @Override
-    public <T> T read(InputStream in, int length, Class<T> clazz) throws IOException {
-        throw new UnsupportedEncodingException();
     }
 }
