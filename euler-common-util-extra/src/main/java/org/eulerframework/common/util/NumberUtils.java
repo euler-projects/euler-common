@@ -3,70 +3,137 @@ package org.eulerframework.common.util;
 public class NumberUtils {
     @SuppressWarnings("unchecked")
     public static <T> T toUnsignedValue(Object value, Class<T> clazz) {
+        if (clazz == Integer.class || clazz == int.class) {
+            return (T) Integer.valueOf(toUnsignedInt(value));
+        }
+        if (clazz == Boolean.class || clazz == boolean.class) {
+            return (T) Boolean.valueOf(toBoolean(value));
+        }
+        if (clazz == Long.class || clazz == long.class) {
+            return (T) Long.valueOf(toUnsignedLong(value));
+        }
         if (clazz == Byte.class || clazz == byte.class) {
             return (T) Byte.valueOf(toByte(value));
         }
         if (clazz == Short.class || clazz == short.class) {
             return (T) Short.valueOf(toUnsignedShort(value));
         }
-        if (clazz == Integer.class || clazz == int.class) {
-            return (T) Integer.valueOf(toUnsignedInt(value));
-        }
-        if (clazz == Long.class || clazz == long.class) {
-            return (T) Long.valueOf(toUnsignedLong(value));
-        }
         throw new IllegalArgumentException("Unsupported type: " + clazz);
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T toUnsignedValue(byte b, Class<T> clazz) {
+        if (clazz == Integer.class || clazz == int.class) {
+            return (T) Integer.valueOf(toUnsignedInt(b));
+        }
+        if (clazz == Boolean.class || clazz == boolean.class) {
+            return (T) Boolean.valueOf(toBoolean(b));
+        }
+        if (clazz == Long.class || clazz == long.class) {
+            return (T) Long.valueOf(toUnsignedLong(b));
+        }
         if (clazz == Byte.class || clazz == byte.class) {
             return (T) Byte.valueOf(toByte(b));
         }
         if (clazz == Short.class || clazz == short.class) {
             return (T) Short.valueOf(toUnsignedShort(b));
         }
-        if (clazz == Integer.class || clazz == int.class) {
-            return (T) Integer.valueOf(toUnsignedInt(b));
-        }
-        if (clazz == Long.class || clazz == long.class) {
-            return (T) Long.valueOf(toUnsignedLong(b));
-        }
         throw new IllegalArgumentException("Unsupported type: " + clazz);
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T toUnsignedValue(short s, Class<T> clazz) {
+        if (clazz == Integer.class || clazz == int.class) {
+            return (T) Integer.valueOf(toUnsignedInt(s));
+        }
+        if (clazz == Boolean.class || clazz == boolean.class) {
+            return (T) Boolean.valueOf(toBoolean(s));
+        }
+        if (clazz == Long.class || clazz == long.class) {
+            return (T) Long.valueOf(toUnsignedLong(s));
+        }
         if (clazz == Byte.class || clazz == byte.class) {
             return (T) Byte.valueOf(toByte(s));
         }
         if (clazz == Short.class || clazz == short.class) {
             return (T) Short.valueOf(toUnsignedShort(s));
         }
-        if (clazz == Integer.class || clazz == int.class) {
-            return (T) Integer.valueOf(toUnsignedInt(s));
-        }
-        if (clazz == Long.class || clazz == long.class) {
-            return (T) Long.valueOf(toUnsignedLong(s));
-        }
         throw new IllegalArgumentException("Unsupported type: " + clazz);
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T toUnsignedValue(int i, Class<T> clazz) {
+        if (clazz == Integer.class || clazz == int.class) {
+            return (T) Integer.valueOf(toUnsignedInt(i));
+        }
+        if (clazz == Boolean.class || clazz == boolean.class) {
+            return (T) Boolean.valueOf(toBoolean(i));
+        }
+        if (clazz == Long.class || clazz == long.class) {
+            return (T) Long.valueOf(toUnsignedLong(i));
+        }
         if (clazz == Byte.class || clazz == byte.class) {
             return (T) Byte.valueOf(toByte(i));
         }
         if (clazz == Short.class || clazz == short.class) {
             return (T) Short.valueOf(toUnsignedShort(i));
         }
-        if (clazz == Integer.class || clazz == int.class) {
-            return (T) Integer.valueOf(toUnsignedInt(i));
-        }
-        if (clazz == Long.class || clazz == long.class) {
-            return (T) Long.valueOf(toUnsignedLong(i));
-        }
         throw new IllegalArgumentException("Unsupported type: " + clazz);
+    }
+
+    public static boolean toBoolean(Object v) {
+        if (v == null) {
+            return false;
+        }
+
+        if (v instanceof Number) {
+            if (v instanceof Byte) {
+                return toBoolean(((Byte) v).byteValue());
+            }
+            if (v instanceof Short) {
+                return toBoolean(((Short) v).shortValue());
+            }
+            if (v instanceof Integer) {
+                return toBoolean(((Integer) v).intValue());
+            }
+            if (v instanceof Long) {
+                return toBoolean(((Long) v).longValue());
+            }
+        }
+
+        if (v instanceof Boolean) {
+            return toBoolean(((Boolean) v).booleanValue());
+        }
+
+        if (v instanceof Character) {
+            return toBoolean(((Character) v).charValue());
+        }
+
+        throw new IllegalArgumentException("Unsupported type: " + v.getClass());
+    }
+
+    public static boolean toBoolean(boolean b) {
+        return b;
+    }
+
+    public static boolean toBoolean(char c) {
+        return toBoolean((short) c);
+    }
+
+    public static boolean toBoolean(byte b) {
+        return b != 0;
+    }
+
+    public static boolean toBoolean(short s) {
+        return s != 0;
+    }
+
+    public static boolean toBoolean(int i) {
+        return i != 0;
+    }
+
+    public static boolean toBoolean(long l) {
+        return l != 0;
     }
 
     public static byte toByte(Object v) {
@@ -89,11 +156,19 @@ public class NumberUtils {
             }
         }
 
+        if (v instanceof Boolean) {
+            return toByte(((Boolean) v).booleanValue());
+        }
+
         if (v instanceof Character) {
             return toByte(((Character) v).charValue());
         }
 
         throw new IllegalArgumentException("Unsupported type: " + v.getClass());
+    }
+
+    public static byte toByte(boolean b) {
+        return toByte(b ? 1 : 0);
     }
 
     public static byte toByte(char c) {
@@ -136,11 +211,19 @@ public class NumberUtils {
             }
         }
 
+        if (v instanceof Boolean) {
+            return toUnsignedShort(((Boolean) v).booleanValue());
+        }
+
         if (v instanceof Character) {
             return toUnsignedShort(((Character) v).charValue());
         }
 
         throw new IllegalArgumentException("Unsupported type: " + v.getClass());
+    }
+
+    public static short toUnsignedShort(boolean b) {
+        return (short) (b ? 1 : 0);
     }
 
     public static short toUnsignedShort(char c) {
@@ -183,11 +266,19 @@ public class NumberUtils {
             }
         }
 
+        if (v instanceof Boolean) {
+            return toUnsignedInt(((Boolean) v).booleanValue());
+        }
+
         if (v instanceof Character) {
             return toUnsignedInt(((Character) v).charValue());
         }
 
         throw new IllegalArgumentException("Unsupported type: " + v.getClass());
+    }
+
+    public static int toUnsignedInt(boolean b) {
+        return b ? 1 : 0;
     }
 
     public static int toUnsignedInt(char c) {
@@ -230,11 +321,19 @@ public class NumberUtils {
             }
         }
 
+        if (v instanceof Boolean) {
+            return toUnsignedLong(((Boolean) v).booleanValue());
+        }
+
         if (v instanceof Character) {
             return toUnsignedLong(((Character) v).charValue());
         }
 
         throw new IllegalArgumentException("Unsupported type: " + v.getClass());
+    }
+
+    public static long toUnsignedLong(boolean b) {
+        return b ? 1L : 0L;
     }
 
     public static long toUnsignedLong(char c) {

@@ -4,10 +4,23 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class NumberUtilsTest {
-
     @Test
-    public void cast() {
-        byte v = NumberUtils.toUnsignedValue(0xFF, Byte.class);
+    public void toBoolean() {
+        Assert.assertTrue(NumberUtils.toBoolean(true));
+        Assert.assertTrue(NumberUtils.toBoolean((byte)0xFF));
+        Assert.assertTrue(NumberUtils.toBoolean((short) -1));
+        Assert.assertTrue(NumberUtils.toBoolean(-1));
+        Assert.assertTrue(NumberUtils.toBoolean(-1L));
+        Assert.assertTrue(NumberUtils.toBoolean(true));
+        Assert.assertTrue(NumberUtils.toBoolean((byte)0x01));
+        Assert.assertTrue(NumberUtils.toBoolean((short) 1));
+        Assert.assertTrue(NumberUtils.toBoolean(1));
+        Assert.assertTrue(NumberUtils.toBoolean(1L));
+        Assert.assertFalse(NumberUtils.toBoolean(false));
+        Assert.assertFalse(NumberUtils.toBoolean((byte)0x00));
+        Assert.assertFalse(NumberUtils.toBoolean((short) 0));
+        Assert.assertFalse(NumberUtils.toBoolean(0));
+        Assert.assertFalse(NumberUtils.toBoolean(0L));
     }
 
     @Test
@@ -20,6 +33,8 @@ public class NumberUtilsTest {
         System.out.printf("0x%x\n", NumberUtils.toByte(-1));
         System.out.printf("0x%x\n", NumberUtils.toByte(-1L));
 
+        Assert.assertEquals(0x01, 0xFFL & NumberUtils.toByte(true));
+        Assert.assertEquals(0x00, 0xFFL & NumberUtils.toByte(false));
         Assert.assertEquals(0xFF, 0xFFL & NumberUtils.toByte(c));
         Assert.assertEquals(0xFF, 0xFFL & NumberUtils.toByte(Character.valueOf(c)));
         Assert.assertEquals(0xFF, 0xFFL & NumberUtils.toByte((byte) 0xFF));
@@ -32,6 +47,8 @@ public class NumberUtilsTest {
     public void toUnsignedShort() {
         short r = 0x00F9;
         char c = '\u00f9';
+        Assert.assertEquals(1, NumberUtils.toUnsignedShort(true));
+        Assert.assertEquals(0, NumberUtils.toUnsignedShort(false));
         Assert.assertEquals(r, NumberUtils.toUnsignedShort(c));
         Assert.assertEquals(r, NumberUtils.toUnsignedShort((byte) 0xF9));
         Assert.assertEquals(r, NumberUtils.toUnsignedShort(r));
@@ -56,6 +73,8 @@ public class NumberUtilsTest {
     @Test
     public void toUnsignedInt() {
         char c = '\uffff';
+        Assert.assertEquals(1, NumberUtils.toUnsignedInt(true));
+        Assert.assertEquals(0, NumberUtils.toUnsignedInt(false));
         Assert.assertEquals(0x0000FFFF, NumberUtils.toUnsignedInt(c));
         Assert.assertEquals(0x0000FFFF, NumberUtils.toUnsignedInt(Character.valueOf(c)));
         Assert.assertEquals(0x000000FF, NumberUtils.toUnsignedInt((byte) 0xFF));
@@ -72,6 +91,8 @@ public class NumberUtilsTest {
     @Test
     public void toUnsignedLong() {
         char c = '\uffff';
+        Assert.assertEquals(1, NumberUtils.toUnsignedLong(true));
+        Assert.assertEquals(0, NumberUtils.toUnsignedLong(false));
         Assert.assertEquals(0x000000000000FFFF, NumberUtils.toUnsignedLong(c));
         Assert.assertEquals(0x000000000000FFFF, NumberUtils.toUnsignedLong(Character.valueOf(c)));
         Assert.assertEquals(0x00000000000000FF, NumberUtils.toUnsignedLong((byte) 0xFF));
