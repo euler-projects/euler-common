@@ -15,15 +15,14 @@
  */
 package org.eulerframework.proto.serializer;
 
+import org.eulerframework.common.util.JavaObjectUtils;
 import org.eulerframework.proto.annotation.ByteArrayObject;
 import org.eulerframework.proto.field.*;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eulerframework.proto.node.ObjectProtoNode;
 import org.eulerframework.proto.node.ProtoNode;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 
 public class ObjectProtoFieldDeserializer extends AbstractDeserializer implements Deserializer {
     private final SerializerRegistry serializerRegistry;
@@ -38,12 +37,12 @@ public class ObjectProtoFieldDeserializer extends AbstractDeserializer implement
         if (byteArrayObject == null) {
             ObjectField<T> field = ObjectField.newInstance((ObjectProtoNode) propertyNode);
             field.setSerializerRegistry(this.serializerRegistry);
-            field.read(this.newInstance(clazz));
+            field.read(JavaObjectUtils.newInstance(clazz));
             field.read(in);
             return field.value();
         } else {
             ByteArrayObjectField<T> field = ByteArrayObjectField.newInstance(byteArrayObject.length(), (ObjectProtoNode) propertyNode);
-            field.read(this.newInstance(clazz));
+            field.read(JavaObjectUtils.newInstance(clazz));
             field.read(in);
             return field.value();
         }
@@ -52,14 +51,5 @@ public class ObjectProtoFieldDeserializer extends AbstractDeserializer implement
     @Override
     public ProtoNode newProtoNode(ProtoNode parent) {
         return ProtoNode.newObjectNode(parent);
-    }
-
-    private <T> T newInstance(Class<T> clazz) {
-        try {
-            return clazz.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                 NoSuchMethodException e) {
-            throw ExceptionUtils.asRuntimeException(e);
-        }
     }
 }

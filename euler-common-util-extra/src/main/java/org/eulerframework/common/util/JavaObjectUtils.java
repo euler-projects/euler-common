@@ -15,10 +15,7 @@
  */
 package org.eulerframework.common.util;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Date;
@@ -28,6 +25,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -327,5 +326,14 @@ public abstract class JavaObjectUtils {
         }
 
         throw new IllegalArgumentException("Unsupport type: " + clazz);
+    }
+
+    public static <T> T newInstance(Class<T> clazz) {
+        try {
+            return ConstructorUtils.invokeConstructor(clazz);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException |
+                 InstantiationException e) {
+            throw ExceptionUtils.asRuntimeException(e);
+        }
     }
 }
