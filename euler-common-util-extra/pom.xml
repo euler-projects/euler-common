@@ -20,7 +20,7 @@
         <!-- <jyaml.version>1.3</jyaml.version> -->
         <snakeyaml.version>2.2</snakeyaml.version>
         <log4j2.version>2.23.1</log4j2.version>
-
+        <jctools.version>4.0.5</jctools.version>
         <junit.version>4.13.2</junit.version>
     </properties>
 
@@ -77,6 +77,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jctools</groupId>
+            <artifactId>jctools-core</artifactId>
+            <version>${jctools.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
@@ -112,6 +118,12 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>euler-common-util</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.1.0-jre</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
