@@ -17,7 +17,7 @@ package org.eulerframework.proto.annotation;
 
 import java.lang.annotation.*;
 
-@Target(value = ElementType.TYPE)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ByteArrayObject {
