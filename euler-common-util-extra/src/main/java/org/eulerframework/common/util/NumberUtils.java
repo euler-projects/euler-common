@@ -371,4 +371,12 @@ public class NumberUtils {
     public static long toUnsignedLong(long l) {
         return l;
     }
+
+    public static int toUnsignedShortLE(byte lo, byte hi) {
+        return lo & 0xFF | ((hi & 0xFF) << 8);
+    }
+
+    public static boolean getBit(int i, int pos) {
+        return (i >>> pos & 1) != 0;
+    }
 }

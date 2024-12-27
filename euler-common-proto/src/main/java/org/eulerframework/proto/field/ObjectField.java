@@ -82,6 +82,9 @@ public class ObjectField<T> implements ProtoField<T> {
             return Integer.compare(o1Order, o2Order);
         });
         for (Field field : fields) {
+            if(in.available() == 0) {
+                break;
+            }
             ProtoProperty property = field.getAnnotation(ProtoProperty.class);
             String type = property.type();
             Deserializer deserializer = this.serializerRegistry.getDeserializer(type);

@@ -122,4 +122,33 @@ public class NumberUtilsTest {
         Assert.assertEquals(-1L, NumberUtils.toUnsignedLong(Long.valueOf(-1)));
         Assert.assertEquals(-1L, NumberUtils.toUnsignedLong(Long.valueOf(-1L)));
     }
+
+    @Test
+    public void toUnsignedShortLE() {
+        Assert.assertEquals(0x0000FFFF, NumberUtils.toUnsignedShortLE((byte) 0xFF, (byte)0xFF));
+        Assert.assertEquals(0x0000FEFF, NumberUtils.toUnsignedShortLE((byte) 0xFF, (byte)0xFE));
+        Assert.assertEquals(0x00000001, NumberUtils.toUnsignedShortLE((byte) 0x01, (byte)0x00));
+        Assert.assertEquals(0x0000FF01, NumberUtils.toUnsignedShortLE((byte) 0x01, (byte)0xFF));
+        Assert.assertEquals(0x0000F001, NumberUtils.toUnsignedShortLE((byte) 0x01, (byte)0xF0));
+    }
+
+    @Test
+    public void getBit() {
+        Assert.assertTrue(NumberUtils.getBit(0x00001111, 0));
+        Assert.assertFalse(NumberUtils.getBit(0x00001111, 1));
+        Assert.assertFalse(NumberUtils.getBit(0x00001111, 2));
+        Assert.assertFalse(NumberUtils.getBit(0x00001111, 3));
+        Assert.assertTrue(NumberUtils.getBit(0x00001111, 4));
+        Assert.assertFalse(NumberUtils.getBit(0x00001111, 5));
+        Assert.assertFalse(NumberUtils.getBit(0x00001111, 6));
+        Assert.assertFalse(NumberUtils.getBit(0x00001111, 7));
+        Assert.assertTrue(NumberUtils.getBit(0x00001111, 8));
+        Assert.assertFalse(NumberUtils.getBit(0x00001111, 9));
+        Assert.assertFalse(NumberUtils.getBit(0x00001111, 10));
+        Assert.assertFalse(NumberUtils.getBit(0x00001111, 11));
+        Assert.assertTrue(NumberUtils.getBit(0x00001111, 12));
+        Assert.assertFalse(NumberUtils.getBit(0x00001111, 13));
+        Assert.assertFalse(NumberUtils.getBit(0x00001111, 14));
+        Assert.assertFalse(NumberUtils.getBit(0x00001111, 15));
+    }
 }
