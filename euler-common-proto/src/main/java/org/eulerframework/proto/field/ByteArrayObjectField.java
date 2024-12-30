@@ -21,7 +21,6 @@ import org.eulerframework.common.util.NumberUtils;
 import org.eulerframework.proto.annotation.BitProperty;
 import org.eulerframework.proto.node.ObjectProtoNode;
 import org.eulerframework.proto.node.ProtoNode;
-import org.eulerframework.proto.node.ValueProtoNode;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -75,7 +74,9 @@ public class ByteArrayObjectField<T> extends AbstractFixedLengthProtoField<T>
             int value = 0;
             for (int bit = 0; bit < length; bit++) {
                 int bitIndex = offset + bit;
-                value = value | (bytes[bitIndex / 8] >> bitIndex % 8 & 0x01) << bit;
+                // Big-Endian
+                int byteIndex = bytes.length - bitIndex / 8 - 1;
+                value = value | (bytes[byteIndex] >>> bitIndex % 8 & 0x01) << bit;
             }
 
             Object typedValue = NumberUtils.toUnsignedValue(value, field.getType());
@@ -114,14 +115,16 @@ public class ByteArrayObjectField<T> extends AbstractFixedLengthProtoField<T>
                 throw new IllegalArgumentException("The max bit length of a field is " + MAX_FIELD_BITS + ", but " + length);
             }
 
-            if (value >> length != 0) {
+            if (value >>> length != 0) {
                 throw new IllegalArgumentException(String.format("value 0x%04x(%d) is too large for a %d bit value", value, value, length));
             }
 
             for (int bit = 0; bit < length; bit++) {
                 int bitIndex = offset + bit;
-                result[bitIndex / 8] = (byte) (result[bitIndex / 8] |
-                        (value >> bit & 0x01) << bitIndex % 8);
+                // Big-Endian
+                int byteIndex = result.length - bitIndex / 8 - 1;
+                result[byteIndex] = (byte) (result[byteIndex] |
+                        (value >>> bit & 0x01) << bitIndex % 8);
             }
         }
 

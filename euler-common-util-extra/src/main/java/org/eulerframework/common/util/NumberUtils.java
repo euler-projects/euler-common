@@ -372,6 +372,10 @@ public class NumberUtils {
         return l;
     }
 
+    public static int toUnsignedShort(byte lo, byte hi) {
+        return ((lo & 0xFF) << 8) | hi & 0xFF;
+    }
+
     public static int toUnsignedShortLE(byte lo, byte hi) {
         return lo & 0xFF | ((hi & 0xFF) << 8);
     }
