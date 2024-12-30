@@ -16,6 +16,8 @@
 
 package org.eulerframework.common.util;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 public class NumberUtils {
     @SuppressWarnings("unchecked")
     public static <T> T toUnsignedValue(Object value, Class<T> clazz) {
@@ -25,74 +27,14 @@ public class NumberUtils {
         if (clazz == Boolean.class || clazz == boolean.class) {
             return (T) Boolean.valueOf(toBoolean(value));
         }
-        if (clazz == Long.class || clazz == long.class) {
-            return (T) Long.valueOf(toUnsignedLong(value));
-        }
         if (clazz == Byte.class || clazz == byte.class) {
             return (T) Byte.valueOf(toByte(value));
         }
+        if (clazz == Long.class || clazz == long.class) {
+            return (T) Long.valueOf(toUnsignedLong(value));
+        }
         if (clazz == Short.class || clazz == short.class) {
             return (T) Short.valueOf(toUnsignedShort(value));
-        }
-        throw new IllegalArgumentException("Unsupported type: " + clazz);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T toUnsignedValue(byte b, Class<T> clazz) {
-        if (clazz == Integer.class || clazz == int.class) {
-            return (T) Integer.valueOf(toUnsignedInt(b));
-        }
-        if (clazz == Boolean.class || clazz == boolean.class) {
-            return (T) Boolean.valueOf(toBoolean(b));
-        }
-        if (clazz == Long.class || clazz == long.class) {
-            return (T) Long.valueOf(toUnsignedLong(b));
-        }
-        if (clazz == Byte.class || clazz == byte.class) {
-            return (T) Byte.valueOf(toByte(b));
-        }
-        if (clazz == Short.class || clazz == short.class) {
-            return (T) Short.valueOf(toUnsignedShort(b));
-        }
-        throw new IllegalArgumentException("Unsupported type: " + clazz);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T toUnsignedValue(short s, Class<T> clazz) {
-        if (clazz == Integer.class || clazz == int.class) {
-            return (T) Integer.valueOf(toUnsignedInt(s));
-        }
-        if (clazz == Boolean.class || clazz == boolean.class) {
-            return (T) Boolean.valueOf(toBoolean(s));
-        }
-        if (clazz == Long.class || clazz == long.class) {
-            return (T) Long.valueOf(toUnsignedLong(s));
-        }
-        if (clazz == Byte.class || clazz == byte.class) {
-            return (T) Byte.valueOf(toByte(s));
-        }
-        if (clazz == Short.class || clazz == short.class) {
-            return (T) Short.valueOf(toUnsignedShort(s));
-        }
-        throw new IllegalArgumentException("Unsupported type: " + clazz);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T toUnsignedValue(int i, Class<T> clazz) {
-        if (clazz == Integer.class || clazz == int.class) {
-            return (T) Integer.valueOf(toUnsignedInt(i));
-        }
-        if (clazz == Boolean.class || clazz == boolean.class) {
-            return (T) Boolean.valueOf(toBoolean(i));
-        }
-        if (clazz == Long.class || clazz == long.class) {
-            return (T) Long.valueOf(toUnsignedLong(i));
-        }
-        if (clazz == Byte.class || clazz == byte.class) {
-            return (T) Byte.valueOf(toByte(i));
-        }
-        if (clazz == Short.class || clazz == short.class) {
-            return (T) Short.valueOf(toUnsignedShort(i));
         }
         throw new IllegalArgumentException("Unsupported type: " + clazz);
     }
@@ -207,6 +149,22 @@ public class NumberUtils {
         return (byte) l;
     }
 
+    public static byte toByte(Byte[] bytes) {
+        return toByte(ArrayUtils.toPrimitive(bytes));
+    }
+
+    public static byte toByte(byte[] bytes) {
+        if (bytes == null) {
+            throw new NullPointerException();
+        }
+
+        if (bytes.length != 1) {
+            throw new IllegalArgumentException("data must be 1 bytes in length");
+        }
+
+        return bytes[0];
+    }
+
     public static short toUnsignedShort(Object v) {
         if (v == null) {
             return 0;
@@ -235,6 +193,14 @@ public class NumberUtils {
             return toUnsignedShort(((Character) v).charValue());
         }
 
+        if (v instanceof byte[]) {
+            return toUnsignedShort((byte[]) v);
+        }
+
+        if (v instanceof Byte[]) {
+            return toUnsignedShort((Byte[]) v);
+        }
+
         throw new IllegalArgumentException("Unsupported type: " + v.getClass());
     }
 
@@ -260,6 +226,30 @@ public class NumberUtils {
 
     public static short toUnsignedShort(long l) {
         return (short) l;
+    }
+
+    public static short toUnsignedShort(Byte[] bytes) {
+        return toUnsignedShort(ArrayUtils.toPrimitive(bytes));
+    }
+
+    public static short toUnsignedShort(byte[] bytes) {
+        if (bytes == null) {
+            throw new NullPointerException();
+        }
+
+        if (bytes.length != 2) {
+            throw new IllegalArgumentException("data must be 2 bytes in length");
+        }
+
+        int result = 0;
+        for (byte b : bytes) {
+            result = (result << 8) | (b & 0xFF);
+        }
+        return (short) result;
+    }
+
+    public static short toUnsignedShort(byte hi, byte lo) {
+        return (short) (((hi & 0xFF) << 8) | lo & 0xFF);
     }
 
     public static int toUnsignedInt(Object v) {
@@ -290,6 +280,14 @@ public class NumberUtils {
             return toUnsignedInt(((Character) v).charValue());
         }
 
+        if (v instanceof byte[]) {
+            return toUnsignedInt((byte[]) v);
+        }
+
+        if (v instanceof Byte[]) {
+            return toUnsignedInt((Byte[]) v);
+        }
+
         throw new IllegalArgumentException("Unsupported type: " + v.getClass());
     }
 
@@ -315,6 +313,26 @@ public class NumberUtils {
 
     public static int toUnsignedInt(long l) {
         return (int) l;
+    }
+
+    public static int toUnsignedInt(Byte[] bytes) {
+        return toUnsignedInt(ArrayUtils.toPrimitive(bytes));
+    }
+
+    public static int toUnsignedInt(byte[] bytes) {
+        if (bytes == null) {
+            throw new NullPointerException();
+        }
+
+        if (bytes.length != 4) {
+            throw new IllegalArgumentException("data must be 4 bytes in length");
+        }
+
+        int result = 0;
+        for (byte b : bytes) {
+            result = (result << 8) | (b & 0xFF);
+        }
+        return result;
     }
 
     public static long toUnsignedLong(Object v) {
@@ -345,6 +363,14 @@ public class NumberUtils {
             return toUnsignedLong(((Character) v).charValue());
         }
 
+        if (v instanceof byte[]) {
+            return toUnsignedLong((byte[]) v);
+        }
+
+        if (v instanceof Byte[]) {
+            return toUnsignedLong((Byte[]) v);
+        }
+
         throw new IllegalArgumentException("Unsupported type: " + v.getClass());
     }
 
@@ -372,15 +398,51 @@ public class NumberUtils {
         return l;
     }
 
-    public static int toUnsignedShort(byte lo, byte hi) {
-        return ((lo & 0xFF) << 8) | hi & 0xFF;
+    public static long toUnsignedLong(Byte[] bytes) {
+        return toUnsignedLong(ArrayUtils.toPrimitive(bytes));
     }
 
-    public static int toUnsignedShortLE(byte lo, byte hi) {
-        return lo & 0xFF | ((hi & 0xFF) << 8);
+    public static long toUnsignedLong(byte[] bytes) {
+        if (bytes == null) {
+            throw new NullPointerException();
+        }
+
+        if (bytes.length != 8) {
+            throw new IllegalArgumentException("data must be 8 bytes in length");
+        }
+
+        long result = 0;
+        for (byte b : bytes) {
+            result = (result << 8) | (b & 0xFF);
+        }
+        return result;
+    }
+
+    public static boolean getBit(byte b, int pos) {
+        if (pos > 7) {
+            throw new IndexOutOfBoundsException();
+        }
+        return (b >>> pos & 1) != 0;
+    }
+
+    public static boolean getBit(short s, int pos) {
+        if (pos > 15) {
+            throw new IndexOutOfBoundsException();
+        }
+        return (s >>> pos & 1) != 0;
     }
 
     public static boolean getBit(int i, int pos) {
+        if (pos > 31) {
+            throw new IndexOutOfBoundsException();
+        }
         return (i >>> pos & 1) != 0;
+    }
+
+    public static boolean getBit(long l, int pos) {
+        if (pos > 63) {
+            throw new IndexOutOfBoundsException();
+        }
+        return (l >>> pos & 1) != 0;
     }
 }
