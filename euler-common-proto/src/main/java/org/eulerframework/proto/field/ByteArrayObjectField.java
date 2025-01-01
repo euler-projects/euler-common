@@ -65,22 +65,7 @@ public class ByteArrayObjectField<T> extends AbstractFixedLengthProtoField<T>
         for (ProtoUtils.BitPropertyField bitPropertyField : bitPropertyFields) {
             Field field = bitPropertyField.getField();
             BitProperty property = bitPropertyField.getAnnotation();
-
-            int offset = property.offset();
-            int length = property.length();
-
-            if (length > MAX_FIELD_BITS) {
-                throw new IllegalArgumentException("The max bit length of a field is " + MAX_FIELD_BITS + ", but " + length);
-            }
-
-            int value = 0;
-            for (int bit = 0; bit < length; bit++) {
-                int bitIndex = offset + bit;
-                // Big-Endian
-                int byteIndex = bytes.length - bitIndex / 8 - 1;
-                value = value | (bytes[byteIndex] >>> bitIndex % 8 & 0x01) << bit;
-            }
-
+            int value = readUnsignedValue(bytes, property);
             Object typedValue = NumberUtils.toUnsignedValue(value, field.getType());
             this.objectNode.addProperty(field.getName(), ProtoNode::newValueNode).setValue(typedValue);
             try {
@@ -132,5 +117,23 @@ public class ByteArrayObjectField<T> extends AbstractFixedLengthProtoField<T>
         }
 
         return result;
+    }
+
+    private static int readUnsignedValue(byte[] bytes, BitProperty property) {
+        int offset = property.offset();
+        int length = property.length();
+
+        if (length > MAX_FIELD_BITS) {
+            throw new IllegalArgumentException("The max bit length of a field is " + MAX_FIELD_BITS + ", but " + length);
+        }
+
+        int value = 0;
+        for (int bit = 0; bit < length; bit++) {
+            int bitIndex = offset + bit;
+            // Big-Endian
+            int byteIndex = bytes.length - bitIndex / 8 - 1;
+            value = value | (bytes[byteIndex] >>> bitIndex % 8 & 0x01) << bit;
+        }
+        return value;
     }
 }
