@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public interface Deserializer {
-    <T> T read(InputStream in, Class<T> clazz) throws IOException;
+    <T> T read(ProtoContext ctx, InputStream in, Class<T> clazz) throws IOException;
 
-    <T> T read(InputStream in, int length, Class<T> clazz) throws IOException;
+    <T> T read(ProtoContext ctx, InputStream in, int length, Class<T> clazz) throws IOException;
 
     <T> T read(ProtoContext ctx, InputStream in, Class<T> clazz, ProtoNode propertyNode) throws IOException;
 

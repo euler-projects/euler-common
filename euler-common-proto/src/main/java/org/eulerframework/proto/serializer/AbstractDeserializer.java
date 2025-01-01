@@ -26,23 +26,23 @@ import java.io.UnsupportedEncodingException;
 
 public abstract class AbstractDeserializer implements Deserializer {
     @Override
-    public <T> T read(InputStream in, Class<T> clazz) throws IOException {
+    public <T> T read(ProtoContext ctx, InputStream in, Class<T> clazz) throws IOException {
         throw new UnsupportedEncodingException();
     }
 
     @Override
-    public <T> T read(InputStream in, int length, Class<T> clazz) throws IOException {
+    public <T> T read(ProtoContext ctx, InputStream in, int length, Class<T> clazz) throws IOException {
         throw new UnsupportedEncodingException();
     }
 
     @Override
     public <T> T read(ProtoContext ctx, InputStream in, Class<T> clazz, ProtoNode propertyNode) throws IOException {
-        return this.read(in, clazz);
+        return this.read(ctx, in, clazz);
     }
 
     @Override
     public <T> T read(ProtoContext ctx, InputStream in, int length, Class<T> clazz, ProtoNode propertyNode) throws IOException {
-        return this.read(in, length, clazz);
+        return this.read(ctx, in, length, clazz);
     }
 
     @Override

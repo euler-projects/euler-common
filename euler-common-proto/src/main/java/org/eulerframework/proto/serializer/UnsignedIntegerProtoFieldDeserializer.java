@@ -17,13 +17,14 @@ package org.eulerframework.proto.serializer;
 
 import org.eulerframework.proto.field.UnsignedIntegerProtoField;
 import org.eulerframework.common.util.NumberUtils;
+import org.eulerframework.proto.util.ProtoContext;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public class UnsignedIntegerProtoFieldDeserializer extends AbstractDeserializer implements Deserializer {
     @Override
-    public <T> T read(InputStream in, Class<T> clazz) throws IOException {
+    public <T> T read(ProtoContext ctx, InputStream in, Class<T> clazz) throws IOException {
         UnsignedIntegerProtoField field = new UnsignedIntegerProtoField();
         field.read(in);
         return NumberUtils.toUnsignedValue(field.intValue(), clazz);
