@@ -21,6 +21,7 @@ import org.eulerframework.common.util.NumberUtils;
 import org.eulerframework.proto.annotation.BitProperty;
 import org.eulerframework.proto.node.ObjectProtoNode;
 import org.eulerframework.proto.node.ProtoNode;
+import org.eulerframework.proto.util.ProtoUtils;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -59,10 +60,11 @@ public class ByteArrayObjectField<T> extends AbstractFixedLengthProtoField<T>
 
     @Override
     public void read(byte[] bytes) {
-        List<Field> fields = getBitPropertyFields();
+        List<ProtoUtils.BitPropertyField> bitPropertyFields = ProtoUtils.getSortedBitPropertyFields(this.data.getClass(), 1);
 
-        for (Field field : fields) {
-            BitProperty property = field.getAnnotation(BitProperty.class);
+        for (ProtoUtils.BitPropertyField bitPropertyField : bitPropertyFields) {
+            Field field = bitPropertyField.getField();
+            BitProperty property = bitPropertyField.getAnnotation();
 
             int offset = property.offset();
             int length = property.length();
@@ -91,12 +93,13 @@ public class ByteArrayObjectField<T> extends AbstractFixedLengthProtoField<T>
 
     @Override
     public byte[] writeAsBytes() {
-        List<Field> fields = getBitPropertyFields();
-
         byte[] result = new byte[this.length()];
 
-        for (Field field : fields) {
-            BitProperty property = field.getAnnotation(BitProperty.class);
+        List<ProtoUtils.BitPropertyField> bitPropertyFields = ProtoUtils.getSortedBitPropertyFields(this.data.getClass(), 1);
+
+        for (ProtoUtils.BitPropertyField bitPropertyField : bitPropertyFields) {
+            Field field = bitPropertyField.getField();
+            BitProperty property = bitPropertyField.getAnnotation();
             int value;
             try {
                 value = NumberUtils.toUnsignedInt(FieldUtils.readField(field, this.data, true));
@@ -129,15 +132,5 @@ public class ByteArrayObjectField<T> extends AbstractFixedLengthProtoField<T>
         }
 
         return result;
-    }
-
-    private List<Field> getBitPropertyFields() {
-        List<Field> fields = FieldUtils.getFieldsListWithAnnotation(this.data.getClass(), BitProperty.class);
-        fields.sort((o1, o2) -> {
-            int o1Order = o1.getAnnotation(BitProperty.class).offset();
-            int o2Order = o2.getAnnotation(BitProperty.class).offset();
-            return Integer.compare(o1Order, o2Order);
-        });
-        return fields;
     }
 }

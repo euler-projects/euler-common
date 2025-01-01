@@ -21,7 +21,10 @@ import java.lang.reflect.Field;
 
 public interface Serializer {
     void writeTo(Object value, OutputStream outputStream) throws IOException;
+
     void writeTo(Object value, int length, OutputStream outputStream) throws IOException;
+
     void writeTo(Field valueField, Object value, OutputStream outputStream) throws IOException;
+
     void writeTo(Field valueField, Object value, int length, OutputStream outputStream) throws IOException;
 }

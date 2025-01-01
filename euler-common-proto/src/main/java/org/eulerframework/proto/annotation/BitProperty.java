@@ -20,8 +20,18 @@ import java.lang.annotation.*;
 @Target(value = ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Repeatable(BitProperty.MultiVersion.class)
 public @interface BitProperty {
     int length() default 0;
 
     int offset() default 0;
+
+    int[] versions() default {};
+
+    @Target({ElementType.FIELD})
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface MultiVersion {
+        BitProperty[] value();
+    }
 }

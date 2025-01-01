@@ -20,6 +20,7 @@ import org.eulerframework.proto.annotation.ProtoProperty;
 import org.eulerframework.proto.node.ObjectProtoNode;
 import org.eulerframework.proto.serializer.*;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.eulerframework.proto.util.ProtoUtils;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -75,17 +76,13 @@ public class ObjectField<T> implements ProtoField<T> {
 
     @Override
     public void read(InputStream in) throws IOException {
-        List<Field> fields = FieldUtils.getFieldsListWithAnnotation(this.data.getClass(), ProtoProperty.class);
-        fields.sort((o1, o2) -> {
-            int o1Order = o1.getAnnotation(ProtoProperty.class).order();
-            int o2Order = o2.getAnnotation(ProtoProperty.class).order();
-            return Integer.compare(o1Order, o2Order);
-        });
-        for (Field field : fields) {
-            if(in.available() == 0) {
+        List<ProtoUtils.PropertyField> propertyFields = ProtoUtils.getSortedPropertyFields(this.value().getClass(), 1);
+        for (ProtoUtils.PropertyField propertyField : propertyFields) {
+            if (in.available() == 0) {
                 break;
             }
-            ProtoProperty property = field.getAnnotation(ProtoProperty.class);
+            Field field = propertyField.getField();
+            ProtoProperty property = propertyField.getAnnotation();
             String type = property.type();
             Deserializer deserializer = this.serializerRegistry.getDeserializer(type);
             Object value;
@@ -116,14 +113,10 @@ public class ObjectField<T> implements ProtoField<T> {
 
     @Override
     public void write(OutputStream out) throws IOException {
-        List<Field> fields = FieldUtils.getFieldsListWithAnnotation(this.data.getClass(), ProtoProperty.class);
-        fields.sort((o1, o2) -> {
-            int o1Order = o1.getAnnotation(ProtoProperty.class).order();
-            int o2Order = o2.getAnnotation(ProtoProperty.class).order();
-            return Integer.compare(o1Order, o2Order);
-        });
-        for (Field field : fields) {
-            ProtoProperty property = field.getAnnotation(ProtoProperty.class);
+        List<ProtoUtils.PropertyField> propertyFields = ProtoUtils.getSortedPropertyFields(this.value().getClass(), 1);
+        for (ProtoUtils.PropertyField propertyField : propertyFields) {
+            Field field = propertyField.getField();
+            ProtoProperty property = propertyField.getAnnotation();
             String type = property.type();
             Object value;
             try {

@@ -20,10 +20,20 @@ import java.lang.annotation.*;
 @Target(value = ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Repeatable(ProtoProperty.MultiVersion.class)
 public @interface ProtoProperty {
     String type();
 
     int length() default -1;
 
     int order();
+
+    int[] versions() default {};
+
+    @Target({ElementType.FIELD})
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface MultiVersion {
+        ProtoProperty[] value();
+    }
 }
