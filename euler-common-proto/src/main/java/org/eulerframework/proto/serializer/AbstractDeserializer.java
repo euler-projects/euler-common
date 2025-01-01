@@ -17,11 +17,11 @@
 package org.eulerframework.proto.serializer;
 
 import org.eulerframework.proto.node.ProtoNode;
+import org.eulerframework.proto.util.ProtoUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
 
 public abstract class AbstractDeserializer implements Deserializer {
     @Override
@@ -46,14 +46,14 @@ public abstract class AbstractDeserializer implements Deserializer {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T read(InputStream in, Field propertyField, ProtoNode propertyNode) throws IOException {
-        return (T) this.read(in, propertyField.getType(), propertyNode);
+    public <T> T read(InputStream in, ProtoUtils.PropertyField propertyField, ProtoNode propertyNode) throws IOException {
+        return (T) this.read(in, propertyField.getField().getType(), propertyNode);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T read(InputStream in, int length, Field propertyField, ProtoNode propertyNode) throws IOException {
-        return (T) this.read(in, length, propertyField.getType(), propertyNode);
+    public <T> T read(InputStream in, int length, ProtoUtils.PropertyField propertyField, ProtoNode propertyNode) throws IOException {
+        return (T) this.read(in, length, propertyField.getField().getType(), propertyNode);
     }
 
     @Override

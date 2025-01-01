@@ -88,9 +88,9 @@ public class ObjectField<T> implements ProtoField<T> {
             Object value;
             ObjectProtoNode.PropertyNodeFuture propertyNodeFuture = this.objectNode.addProperty(field.getName(), deserializer::newProtoNode);
             if (property.length() < 0) {
-                value = deserializer.read(in, field, propertyNodeFuture.get());
+                value = deserializer.read(in, propertyField, propertyNodeFuture.get());
             } else {
-                value = deserializer.read(in, property.length(), field, propertyNodeFuture.get());
+                value = deserializer.read(in, property.length(), propertyField, propertyNodeFuture.get());
             }
             propertyNodeFuture.setValue(value);
             try {
@@ -127,9 +127,9 @@ public class ObjectField<T> implements ProtoField<T> {
             Serializer serializer = this.serializerRegistry.getSerializer(type);
 
             if (property.length() < 0) {
-                serializer.writeTo(field, value, out);
+                serializer.writeTo(propertyField, value, out);
             } else {
-                serializer.writeTo(field, value, property.length(), out);
+                serializer.writeTo(propertyField, value, property.length(), out);
             }
         }
     }
