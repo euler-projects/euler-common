@@ -20,6 +20,7 @@ import org.eulerframework.proto.annotation.ProtoProperty;
 import org.eulerframework.proto.node.ObjectProtoNode;
 import org.eulerframework.proto.serializer.*;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.eulerframework.proto.util.ProtoContext;
 import org.eulerframework.proto.util.ProtoUtils;
 
 import java.io.*;
@@ -28,19 +29,20 @@ import java.util.List;
 
 public class ObjectField<T> implements ProtoField<T> {
 
-    public static <T> ObjectField<T> newInstance(ObjectProtoNode objectNode) {
-        return new ObjectField<>(objectNode);
+    public static <T> ObjectField<T> newInstance(ProtoContext ctx, ObjectProtoNode objectNode) {
+        return new ObjectField<>(ctx, objectNode);
     }
 
-    public static <T> ObjectField<T> valueOf(T value) {
-        ObjectField<T> field = new ObjectField<>(null);
+    public static <T> ObjectField<T> valueOf(ProtoContext ctx, T value) {
+        ObjectField<T> field = new ObjectField<>(ctx, null);
         field.read(value);
         return field;
     }
 
     private SerializerRegistry serializerRegistry;
 
-    public ObjectField(ObjectProtoNode objectNode) {
+    public ObjectField(ProtoContext ctx, ObjectProtoNode objectNode) {
+        this.ctx = ctx;
         this.objectNode = objectNode;
     }
 
@@ -49,6 +51,7 @@ public class ObjectField<T> implements ProtoField<T> {
     }
 
     private T data;
+    private final ProtoContext ctx;
     private final ObjectProtoNode objectNode;
 
     @Override
@@ -76,7 +79,7 @@ public class ObjectField<T> implements ProtoField<T> {
 
     @Override
     public void read(InputStream in) throws IOException {
-        List<ProtoUtils.PropertyField> propertyFields = ProtoUtils.getSortedPropertyFields(this.value().getClass(), 1);
+        List<ProtoUtils.PropertyField> propertyFields = ProtoUtils.getSortedPropertyFields(this.value().getClass(), ctx.getVersion());
         for (ProtoUtils.PropertyField propertyField : propertyFields) {
             if (in.available() == 0) {
                 break;
@@ -88,9 +91,9 @@ public class ObjectField<T> implements ProtoField<T> {
             Object value;
             ObjectProtoNode.PropertyNodeFuture propertyNodeFuture = this.objectNode.addProperty(field.getName(), deserializer::newProtoNode);
             if (property.length() < 0) {
-                value = deserializer.read(in, propertyField, propertyNodeFuture.get());
+                value = deserializer.read(ctx, in, propertyField, propertyNodeFuture.get());
             } else {
-                value = deserializer.read(in, property.length(), propertyField, propertyNodeFuture.get());
+                value = deserializer.read(ctx, in, property.length(), propertyField, propertyNodeFuture.get());
             }
             propertyNodeFuture.setValue(value);
             try {
@@ -113,7 +116,7 @@ public class ObjectField<T> implements ProtoField<T> {
 
     @Override
     public void write(OutputStream out) throws IOException {
-        List<ProtoUtils.PropertyField> propertyFields = ProtoUtils.getSortedPropertyFields(this.value().getClass(), 1);
+        List<ProtoUtils.PropertyField> propertyFields = ProtoUtils.getSortedPropertyFields(this.value().getClass(), ctx.getVersion());
         for (ProtoUtils.PropertyField propertyField : propertyFields) {
             Field field = propertyField.getField();
             ProtoProperty property = propertyField.getAnnotation();
@@ -127,9 +130,9 @@ public class ObjectField<T> implements ProtoField<T> {
             Serializer serializer = this.serializerRegistry.getSerializer(type);
 
             if (property.length() < 0) {
-                serializer.writeTo(propertyField, value, out);
+                serializer.writeTo(ctx, propertyField, value, out);
             } else {
-                serializer.writeTo(propertyField, value, property.length(), out);
+                serializer.writeTo(ctx, propertyField, value, property.length(), out);
             }
         }
     }

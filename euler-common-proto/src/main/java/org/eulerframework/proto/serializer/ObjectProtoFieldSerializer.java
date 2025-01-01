@@ -18,6 +18,7 @@ package org.eulerframework.proto.serializer;
 import org.eulerframework.proto.annotation.ByteArrayObject;
 import org.eulerframework.proto.field.ByteArrayObjectField;
 import org.eulerframework.proto.field.ObjectField;
+import org.eulerframework.proto.util.ProtoContext;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,20 +32,20 @@ public class ObjectProtoFieldSerializer extends AbstractSerializer implements Se
     }
 
     @Override
-    public void writeTo(Object value, OutputStream outputStream) throws IOException {
+    public void writeTo(ProtoContext ctx, Object value, OutputStream outputStream) throws IOException {
         ByteArrayObject byteArrayObject = value.getClass().getAnnotation(ByteArrayObject.class);
         if (byteArrayObject == null) {
-            ObjectField<?> objectField = ObjectField.valueOf(value);
+            ObjectField<?> objectField = ObjectField.valueOf(ctx, value);
             objectField.setSerializerRegistry(this.serializerRegistry);
             objectField.write(outputStream);
         } else {
-            ByteArrayObjectField<?> objectField = ByteArrayObjectField.valueOf(value, byteArrayObject.length());
+            ByteArrayObjectField<?> objectField = ByteArrayObjectField.valueOf(ctx, value, byteArrayObject.length());
             objectField.write(outputStream);
         }
     }
 
     @Override
-    public void writeTo(Object value, int length, OutputStream outputStream) throws IOException {
+    public void writeTo(ProtoContext ctx, Object value, int length, OutputStream outputStream) throws IOException {
         throw new UnsupportedEncodingException();
     }
 }

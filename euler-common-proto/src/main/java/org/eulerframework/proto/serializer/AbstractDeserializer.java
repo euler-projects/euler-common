@@ -17,6 +17,7 @@
 package org.eulerframework.proto.serializer;
 
 import org.eulerframework.proto.node.ProtoNode;
+import org.eulerframework.proto.util.ProtoContext;
 import org.eulerframework.proto.util.ProtoUtils;
 
 import java.io.IOException;
@@ -35,25 +36,25 @@ public abstract class AbstractDeserializer implements Deserializer {
     }
 
     @Override
-    public <T> T read(InputStream in, Class<T> clazz, ProtoNode propertyNode) throws IOException {
+    public <T> T read(ProtoContext ctx, InputStream in, Class<T> clazz, ProtoNode propertyNode) throws IOException {
         return this.read(in, clazz);
     }
 
     @Override
-    public <T> T read(InputStream in, int length, Class<T> clazz, ProtoNode propertyNode) throws IOException {
+    public <T> T read(ProtoContext ctx, InputStream in, int length, Class<T> clazz, ProtoNode propertyNode) throws IOException {
         return this.read(in, length, clazz);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T read(InputStream in, ProtoUtils.PropertyField propertyField, ProtoNode propertyNode) throws IOException {
-        return (T) this.read(in, propertyField.getField().getType(), propertyNode);
+    public <T> T read(ProtoContext ctx, InputStream in, ProtoUtils.PropertyField propertyField, ProtoNode propertyNode) throws IOException {
+        return (T) this.read(ctx, in, propertyField.getField().getType(), propertyNode);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T read(InputStream in, int length, ProtoUtils.PropertyField propertyField, ProtoNode propertyNode) throws IOException {
-        return (T) this.read(in, length, propertyField.getField().getType(), propertyNode);
+    public <T> T read(ProtoContext ctx, InputStream in, int length, ProtoUtils.PropertyField propertyField, ProtoNode propertyNode) throws IOException {
+        return (T) this.read(ctx, in, length, propertyField.getField().getType(), propertyNode);
     }
 
     @Override

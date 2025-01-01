@@ -20,6 +20,7 @@ import org.eulerframework.proto.annotation.ByteArrayObject;
 import org.eulerframework.proto.field.*;
 import org.eulerframework.proto.node.ObjectProtoNode;
 import org.eulerframework.proto.node.ProtoNode;
+import org.eulerframework.proto.util.ProtoContext;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,16 +33,16 @@ public class ObjectProtoFieldDeserializer extends AbstractDeserializer implement
     }
 
     @Override
-    public <T> T read(InputStream in, Class<T> clazz, ProtoNode propertyNode) throws IOException {
+    public <T> T read(ProtoContext ctx, InputStream in, Class<T> clazz, ProtoNode propertyNode) throws IOException {
         ByteArrayObject byteArrayObject = clazz.getAnnotation(ByteArrayObject.class);
         if (byteArrayObject == null) {
-            ObjectField<T> field = ObjectField.newInstance((ObjectProtoNode) propertyNode);
+            ObjectField<T> field = ObjectField.newInstance(ctx, (ObjectProtoNode) propertyNode);
             field.setSerializerRegistry(this.serializerRegistry);
             field.read(JavaObjectUtils.newInstance(clazz));
             field.read(in);
             return field.value();
         } else {
-            ByteArrayObjectField<T> field = ByteArrayObjectField.newInstance(byteArrayObject.length(), (ObjectProtoNode) propertyNode);
+            ByteArrayObjectField<T> field = ByteArrayObjectField.newInstance(ctx, byteArrayObject.length(), (ObjectProtoNode) propertyNode);
             field.read(JavaObjectUtils.newInstance(clazz));
             field.read(in);
             return field.value();

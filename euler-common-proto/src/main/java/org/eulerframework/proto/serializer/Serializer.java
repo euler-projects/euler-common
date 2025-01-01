@@ -15,18 +15,18 @@
  */
 package org.eulerframework.proto.serializer;
 
+import org.eulerframework.proto.util.ProtoContext;
 import org.eulerframework.proto.util.ProtoUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.Field;
 
 public interface Serializer {
-    void writeTo(Object value, OutputStream outputStream) throws IOException;
+    void writeTo(ProtoContext ctx, Object value, OutputStream outputStream) throws IOException;
 
-    void writeTo(Object value, int length, OutputStream outputStream) throws IOException;
+    void writeTo(ProtoContext ctx, Object value, int length, OutputStream outputStream) throws IOException;
 
-    void writeTo(ProtoUtils.PropertyField valueField, Object value, OutputStream outputStream) throws IOException;
+    void writeTo(ProtoContext ctx, ProtoUtils.PropertyField valueField, Object value, OutputStream outputStream) throws IOException;
 
-    void writeTo(ProtoUtils.PropertyField valueField, Object value, int length, OutputStream outputStream) throws IOException;
+    void writeTo(ProtoContext ctx, ProtoUtils.PropertyField valueField, Object value, int length, OutputStream outputStream) throws IOException;
 }

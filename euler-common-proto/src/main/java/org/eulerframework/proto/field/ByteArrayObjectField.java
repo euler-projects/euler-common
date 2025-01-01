@@ -21,6 +21,7 @@ import org.eulerframework.common.util.NumberUtils;
 import org.eulerframework.proto.annotation.BitProperty;
 import org.eulerframework.proto.node.ObjectProtoNode;
 import org.eulerframework.proto.node.ProtoNode;
+import org.eulerframework.proto.util.ProtoContext;
 import org.eulerframework.proto.util.ProtoUtils;
 
 import java.lang.reflect.Field;
@@ -30,21 +31,23 @@ public class ByteArrayObjectField<T> extends AbstractFixedLengthProtoField<T>
         implements FixedLengthProtoField<T> {
     private final static int MAX_FIELD_BITS = Integer.bitCount(-1);
 
-    public static <T> ByteArrayObjectField<T> newInstance(int length, ObjectProtoNode objectNode) {
-        return new ByteArrayObjectField<>(length, objectNode);
+    public static <T> ByteArrayObjectField<T> newInstance(ProtoContext ctx, int length, ObjectProtoNode objectNode) {
+        return new ByteArrayObjectField<>(ctx, length, objectNode);
     }
 
-    public static <T> ByteArrayObjectField<T> valueOf(T value, int length) {
-        ByteArrayObjectField<T> field = new ByteArrayObjectField<>(length, null);
+    public static <T> ByteArrayObjectField<T> valueOf(ProtoContext ctx, T value, int length) {
+        ByteArrayObjectField<T> field = new ByteArrayObjectField<>(ctx, length, null);
         field.read(value);
         return field;
     }
 
     private T data;
+    private final ProtoContext ctx;
     private final ObjectProtoNode objectNode;
 
-    public ByteArrayObjectField(int length, ObjectProtoNode objectNode) {
+    public ByteArrayObjectField(ProtoContext ctx, int length, ObjectProtoNode objectNode) {
         super(length);
+        this.ctx = ctx;
         this.objectNode = objectNode;
     }
 
@@ -60,7 +63,7 @@ public class ByteArrayObjectField<T> extends AbstractFixedLengthProtoField<T>
 
     @Override
     public void read(byte[] bytes) {
-        List<ProtoUtils.BitPropertyField> bitPropertyFields = ProtoUtils.getSortedBitPropertyFields(this.data.getClass(), 1);
+        List<ProtoUtils.BitPropertyField> bitPropertyFields = ProtoUtils.getSortedBitPropertyFields(this.data.getClass(), ctx.getVersion());
 
         for (ProtoUtils.BitPropertyField bitPropertyField : bitPropertyFields) {
             Field field = bitPropertyField.getField();
@@ -80,7 +83,7 @@ public class ByteArrayObjectField<T> extends AbstractFixedLengthProtoField<T>
     public byte[] writeAsBytes() {
         byte[] result = new byte[this.length()];
 
-        List<ProtoUtils.BitPropertyField> bitPropertyFields = ProtoUtils.getSortedBitPropertyFields(this.data.getClass(), 1);
+        List<ProtoUtils.BitPropertyField> bitPropertyFields = ProtoUtils.getSortedBitPropertyFields(this.data.getClass(), ctx.getVersion());
 
         for (ProtoUtils.BitPropertyField bitPropertyField : bitPropertyFields) {
             Field field = bitPropertyField.getField();

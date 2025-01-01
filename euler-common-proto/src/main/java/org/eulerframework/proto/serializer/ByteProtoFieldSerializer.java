@@ -17,19 +17,20 @@ package org.eulerframework.proto.serializer;
 
 import org.eulerframework.proto.field.ByteProtoField;
 import org.eulerframework.common.util.NumberUtils;
+import org.eulerframework.proto.util.ProtoContext;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
 public class ByteProtoFieldSerializer extends AbstractSerializer implements Serializer {
     @Override
-    public void writeTo(Object value, OutputStream outputStream) throws IOException {
+    public void writeTo(ProtoContext ctx, Object value, OutputStream outputStream) throws IOException {
         ByteProtoField field = new ByteProtoField(NumberUtils.toByte(value));
         field.write(outputStream);
     }
 
     @Override
-    public void writeTo(Object value, int length, OutputStream outputStream) throws IOException {
+    public void writeTo(ProtoContext ctx, Object value, int length, OutputStream outputStream) throws IOException {
         throw new UnsupportedOperationException();
     }
 }

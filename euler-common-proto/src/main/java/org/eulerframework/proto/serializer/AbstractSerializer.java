@@ -16,6 +16,7 @@
 
 package org.eulerframework.proto.serializer;
 
+import org.eulerframework.proto.util.ProtoContext;
 import org.eulerframework.proto.util.ProtoUtils;
 
 import java.io.IOException;
@@ -23,12 +24,12 @@ import java.io.OutputStream;
 
 public abstract class AbstractSerializer implements Serializer {
     @Override
-    public void writeTo(ProtoUtils.PropertyField valueField, Object value, OutputStream outputStream) throws IOException {
-        this.writeTo(value, outputStream);
+    public void writeTo(ProtoContext ctx, ProtoUtils.PropertyField valueField, Object value, OutputStream outputStream) throws IOException {
+        this.writeTo(ctx, value, outputStream);
     }
 
     @Override
-    public void writeTo(ProtoUtils.PropertyField valueField, Object value, int length, OutputStream outputStream) throws IOException {
-        this.writeTo(value, length, outputStream);
+    public void writeTo(ProtoContext ctx, ProtoUtils.PropertyField valueField, Object value, int length, OutputStream outputStream) throws IOException {
+        this.writeTo(ctx, value, length, outputStream);
     }
 }
