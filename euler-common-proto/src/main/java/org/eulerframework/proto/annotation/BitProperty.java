@@ -26,7 +26,7 @@ public @interface BitProperty {
 
     int offset() default 0;
 
-    int[] versions() default {};
+    int[] version() default {};
 
     @Target({ElementType.FIELD})
     @Documented

@@ -15,6 +15,8 @@
  */
 package org.eulerframework.proto.annotation;
 
+import org.eulerframework.proto.util.ProtoCharset;
+
 import java.lang.annotation.*;
 
 @Target(value = ElementType.FIELD)
@@ -28,7 +30,16 @@ public @interface ProtoProperty {
 
     int order();
 
-    int[] versions() default {};
+    int[] version() default {};
+
+    /**
+     * The charset for a {@link CharSequence} field.
+     * <p>
+     * If the field type is not a {@link CharSequence}, this attribute will be ignored.
+     */
+    String charset() default ProtoCharset.UTF_8;
+
+    StringProperty string() default @StringProperty();
 
     @Target({ElementType.FIELD})
     @Documented
@@ -36,4 +47,5 @@ public @interface ProtoProperty {
     @interface MultiVersion {
         ProtoProperty[] value();
     }
+
 }
