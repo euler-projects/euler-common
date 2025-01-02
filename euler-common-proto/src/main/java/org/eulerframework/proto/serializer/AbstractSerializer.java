@@ -27,9 +27,4 @@ public abstract class AbstractSerializer implements Serializer {
     public void writeTo(ProtoContext ctx, PropertyField valueField, Object value, OutputStream outputStream) throws IOException {
         this.writeTo(ctx, value, outputStream);
     }
-
-    @Override
-    public void writeTo(ProtoContext ctx, PropertyField valueField, Object value, int length, OutputStream outputStream) throws IOException {
-        this.writeTo(ctx, value, length, outputStream);
-    }
 }

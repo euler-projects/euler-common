@@ -31,30 +31,9 @@ public abstract class AbstractDeserializer implements Deserializer {
     }
 
     @Override
-    public <T> T read(ProtoContext ctx, InputStream in, int length, Class<T> clazz) throws IOException {
-        throw new UnsupportedEncodingException();
-    }
-
-    @Override
-    public <T> T read(ProtoContext ctx, InputStream in, Class<T> clazz, ProtoNode propertyNode) throws IOException {
-        return this.read(ctx, in, clazz);
-    }
-
-    @Override
-    public <T> T read(ProtoContext ctx, InputStream in, int length, Class<T> clazz, ProtoNode propertyNode) throws IOException {
-        return this.read(ctx, in, length, clazz);
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
-    public <T> T read(ProtoContext ctx, InputStream in, PropertyField propertyField, ProtoNode propertyNode) throws IOException {
-        return (T) this.read(ctx, in, propertyField.getField().getType(), propertyNode);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T read(ProtoContext ctx, InputStream in, int length, PropertyField propertyField, ProtoNode propertyNode) throws IOException {
-        return (T) this.read(ctx, in, length, propertyField.getField().getType(), propertyNode);
+    public <T> T read(ProtoContext ctx, InputStream in, PropertyField propertyField) throws IOException {
+        return (T) this.read(ctx, in, propertyField.getField().getType());
     }
 
     @Override

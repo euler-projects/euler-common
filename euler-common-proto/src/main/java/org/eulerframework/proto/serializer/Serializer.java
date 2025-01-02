@@ -24,9 +24,5 @@ import java.io.OutputStream;
 public interface Serializer {
     void writeTo(ProtoContext ctx, Object value, OutputStream outputStream) throws IOException;
 
-    void writeTo(ProtoContext ctx, Object value, int length, OutputStream outputStream) throws IOException;
-
     void writeTo(ProtoContext ctx, PropertyField valueField, Object value, OutputStream outputStream) throws IOException;
-
-    void writeTo(ProtoContext ctx, PropertyField valueField, Object value, int length, OutputStream outputStream) throws IOException;
 }

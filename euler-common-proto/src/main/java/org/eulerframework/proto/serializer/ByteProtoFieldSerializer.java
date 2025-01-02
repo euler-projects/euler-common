@@ -28,9 +28,4 @@ public class ByteProtoFieldSerializer extends AbstractSerializer implements Seri
         ByteProtoField field = new ByteProtoField(NumberUtils.toByte(value));
         field.write(outputStream);
     }
-
-    @Override
-    public void writeTo(ProtoContext ctx, Object value, int length, OutputStream outputStream) throws IOException {
-        throw new UnsupportedOperationException();
-    }
 }

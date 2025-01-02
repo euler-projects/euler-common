@@ -91,11 +91,7 @@ public class ObjectField<T> implements ProtoField<T> {
             Deserializer deserializer = this.serializerRegistry.getDeserializer(type);
             Object value;
             ObjectProtoNode.PropertyNodeFuture propertyNodeFuture = this.objectNode.addProperty(field.getName(), deserializer::newProtoNode);
-            if (property.length() < 0) {
-                value = deserializer.read(ctx, in, propertyField, propertyNodeFuture.get());
-            } else {
-                value = deserializer.read(ctx, in, property.length(), propertyField, propertyNodeFuture.get());
-            }
+            value = deserializer.read(ctx, in, propertyField);
             propertyNodeFuture.setValue(value);
             try {
                 FieldUtils.writeField(field, this.data, value, true);
@@ -129,12 +125,7 @@ public class ObjectField<T> implements ProtoField<T> {
                 throw ExceptionUtils.asRuntimeException(e);
             }
             Serializer serializer = this.serializerRegistry.getSerializer(type);
-
-            if (property.length() < 0) {
-                serializer.writeTo(ctx, propertyField, value, out);
-            } else {
-                serializer.writeTo(ctx, propertyField, value, property.length(), out);
-            }
+            serializer.writeTo(ctx, propertyField, value, out);
         }
     }
 }

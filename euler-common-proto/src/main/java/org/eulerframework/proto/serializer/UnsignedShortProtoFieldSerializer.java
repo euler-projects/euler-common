@@ -28,9 +28,4 @@ public class UnsignedShortProtoFieldSerializer extends AbstractSerializer implem
         UnsignedShortProtoField field = new UnsignedShortProtoField(NumberUtils.toUnsignedShort(value));
         field.write(outputStream);
     }
-
-    @Override
-    public void writeTo(ProtoContext ctx, Object value, int length, OutputStream outputStream) throws IOException {
-        throw new UnsupportedOperationException();
-    }
 }

@@ -22,7 +22,6 @@ import org.eulerframework.proto.util.ProtoContext;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 
 public class ObjectProtoFieldSerializer extends AbstractSerializer implements Serializer {
     private final SerializerRegistry serializerRegistry;
@@ -42,10 +41,5 @@ public class ObjectProtoFieldSerializer extends AbstractSerializer implements Se
             ByteArrayObjectField<?> objectField = ByteArrayObjectField.valueOf(ctx, value, byteArrayObject.length());
             objectField.write(outputStream);
         }
-    }
-
-    @Override
-    public void writeTo(ProtoContext ctx, Object value, int length, OutputStream outputStream) throws IOException {
-        throw new UnsupportedEncodingException();
     }
 }

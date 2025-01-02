@@ -33,16 +33,16 @@ public class ObjectProtoFieldDeserializer extends AbstractDeserializer implement
     }
 
     @Override
-    public <T> T read(ProtoContext ctx, InputStream in, Class<T> clazz, ProtoNode propertyNode) throws IOException {
+    public <T> T read(ProtoContext ctx, InputStream in, Class<T> clazz) throws IOException {
         ByteArrayObject byteArrayObject = clazz.getAnnotation(ByteArrayObject.class);
         if (byteArrayObject == null) {
-            ObjectField<T> field = ObjectField.newInstance(ctx, (ObjectProtoNode) propertyNode);
+            ObjectField<T> field = ObjectField.newInstance(ctx, (ObjectProtoNode) ctx.getPropertyNode());
             field.setSerializerRegistry(this.serializerRegistry);
             field.read(JavaObjectUtils.newInstance(clazz));
             field.read(in);
             return field.value();
         } else {
-            ByteArrayObjectField<T> field = ByteArrayObjectField.newInstance(ctx, byteArrayObject.length(), (ObjectProtoNode) propertyNode);
+            ByteArrayObjectField<T> field = ByteArrayObjectField.newInstance(ctx, byteArrayObject.length(), (ObjectProtoNode) ctx.getPropertyNode());
             field.read(JavaObjectUtils.newInstance(clazz));
             field.read(in);
             return field.value();
