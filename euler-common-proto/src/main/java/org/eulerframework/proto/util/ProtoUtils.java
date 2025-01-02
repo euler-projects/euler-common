@@ -6,7 +6,6 @@ import org.eulerframework.proto.annotation.BitProperty;
 import org.eulerframework.proto.annotation.ProtoProperty;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -83,7 +82,7 @@ public class ProtoUtils {
                 .collect(Collectors.toList());
     }
 
-    public static <A extends Annotation> A getMatchedAnnotation(AnnotationWithVersion<A>[] annotations, int exceptedVersion) throws DuplicatedVersionException {
+    private static <A extends Annotation> A getMatchedAnnotation(AnnotationWithVersion<A>[] annotations, int exceptedVersion) throws DuplicatedVersionException {
         if (annotations.length == 0) {
             return null;
         }
@@ -143,7 +142,7 @@ public class ProtoUtils {
         return matchedProperty == null ? null : matchedProperty.getAnnotation();
     }
 
-    public static class AnnotationWithVersion<A extends Annotation> {
+    private static class AnnotationWithVersion<A extends Annotation> {
         private final A annotation;
         private final int[] version;
 
@@ -158,54 +157,6 @@ public class ProtoUtils {
 
         public int[] getVersion() {
             return version;
-        }
-    }
-
-    public static class PropertyField {
-        private final Field field;
-        private final ProtoProperty annotation;
-        private final int order;
-
-        public PropertyField(Field field, ProtoProperty annotation) {
-            this.field = field;
-            this.annotation = annotation;
-            this.order = annotation.order();
-        }
-
-        public Field getField() {
-            return field;
-        }
-
-        public ProtoProperty getAnnotation() {
-            return annotation;
-        }
-
-        public int getOrder() {
-            return order;
-        }
-    }
-
-    public static class BitPropertyField {
-        private final Field field;
-        private final BitProperty annotation;
-        private final int offset;
-
-        public BitPropertyField(Field field, BitProperty annotation) {
-            this.field = field;
-            this.annotation = annotation;
-            this.offset = annotation.offset();
-        }
-
-        public Field getField() {
-            return field;
-        }
-
-        public BitProperty getAnnotation() {
-            return annotation;
-        }
-
-        public int getOffset() {
-            return offset;
         }
     }
 }

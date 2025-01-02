@@ -20,6 +20,7 @@ import org.eulerframework.proto.annotation.ProtoProperty;
 import org.eulerframework.proto.node.ObjectProtoNode;
 import org.eulerframework.proto.serializer.*;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.eulerframework.proto.util.PropertyField;
 import org.eulerframework.proto.util.ProtoContext;
 import org.eulerframework.proto.util.ProtoUtils;
 
@@ -79,8 +80,8 @@ public class ObjectField<T> implements ProtoField<T> {
 
     @Override
     public void read(InputStream in) throws IOException {
-        List<ProtoUtils.PropertyField> propertyFields = ProtoUtils.getSortedPropertyFields(this.value().getClass(), ctx.getVersion());
-        for (ProtoUtils.PropertyField propertyField : propertyFields) {
+        List<PropertyField> propertyFields = ProtoUtils.getSortedPropertyFields(this.value().getClass(), ctx.getVersion());
+        for (PropertyField propertyField : propertyFields) {
             if (in.available() == 0) {
                 break;
             }
@@ -116,8 +117,8 @@ public class ObjectField<T> implements ProtoField<T> {
 
     @Override
     public void write(OutputStream out) throws IOException {
-        List<ProtoUtils.PropertyField> propertyFields = ProtoUtils.getSortedPropertyFields(this.value().getClass(), ctx.getVersion());
-        for (ProtoUtils.PropertyField propertyField : propertyFields) {
+        List<PropertyField> propertyFields = ProtoUtils.getSortedPropertyFields(this.value().getClass(), ctx.getVersion());
+        for (PropertyField propertyField : propertyFields) {
             Field field = propertyField.getField();
             ProtoProperty property = propertyField.getAnnotation();
             String type = property.type();

@@ -16,20 +16,20 @@
 
 package org.eulerframework.proto.serializer;
 
+import org.eulerframework.proto.util.PropertyField;
 import org.eulerframework.proto.util.ProtoContext;
-import org.eulerframework.proto.util.ProtoUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
 public abstract class AbstractSerializer implements Serializer {
     @Override
-    public void writeTo(ProtoContext ctx, ProtoUtils.PropertyField valueField, Object value, OutputStream outputStream) throws IOException {
+    public void writeTo(ProtoContext ctx, PropertyField valueField, Object value, OutputStream outputStream) throws IOException {
         this.writeTo(ctx, value, outputStream);
     }
 
     @Override
-    public void writeTo(ProtoContext ctx, ProtoUtils.PropertyField valueField, Object value, int length, OutputStream outputStream) throws IOException {
+    public void writeTo(ProtoContext ctx, PropertyField valueField, Object value, int length, OutputStream outputStream) throws IOException {
         this.writeTo(ctx, value, length, outputStream);
     }
 }

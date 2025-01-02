@@ -17,8 +17,8 @@
 package org.eulerframework.proto.serializer;
 
 import org.eulerframework.proto.node.ProtoNode;
+import org.eulerframework.proto.util.PropertyField;
 import org.eulerframework.proto.util.ProtoContext;
-import org.eulerframework.proto.util.ProtoUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,13 +47,13 @@ public abstract class AbstractDeserializer implements Deserializer {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T read(ProtoContext ctx, InputStream in, ProtoUtils.PropertyField propertyField, ProtoNode propertyNode) throws IOException {
+    public <T> T read(ProtoContext ctx, InputStream in, PropertyField propertyField, ProtoNode propertyNode) throws IOException {
         return (T) this.read(ctx, in, propertyField.getField().getType(), propertyNode);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T read(ProtoContext ctx, InputStream in, int length, ProtoUtils.PropertyField propertyField, ProtoNode propertyNode) throws IOException {
+    public <T> T read(ProtoContext ctx, InputStream in, int length, PropertyField propertyField, ProtoNode propertyNode) throws IOException {
         return (T) this.read(ctx, in, length, propertyField.getField().getType(), propertyNode);
     }
 

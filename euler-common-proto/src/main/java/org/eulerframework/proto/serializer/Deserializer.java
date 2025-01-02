@@ -16,8 +16,8 @@
 package org.eulerframework.proto.serializer;
 
 import org.eulerframework.proto.node.ProtoNode;
+import org.eulerframework.proto.util.PropertyField;
 import org.eulerframework.proto.util.ProtoContext;
-import org.eulerframework.proto.util.ProtoUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,9 +31,9 @@ public interface Deserializer {
 
     <T> T read(ProtoContext ctx, InputStream in, int length, Class<T> clazz, ProtoNode propertyNode) throws IOException;
 
-    <T> T read(ProtoContext ctx, InputStream in, ProtoUtils.PropertyField propertyField, ProtoNode propertyNode) throws IOException;
+    <T> T read(ProtoContext ctx, InputStream in, PropertyField propertyField, ProtoNode propertyNode) throws IOException;
 
-    <T> T read(ProtoContext ctx, InputStream in, int length, ProtoUtils.PropertyField propertyField, ProtoNode propertyNode) throws IOException;
+    <T> T read(ProtoContext ctx, InputStream in, int length, PropertyField propertyField, ProtoNode propertyNode) throws IOException;
 
     ProtoNode newProtoNode(ProtoNode parent);
 }

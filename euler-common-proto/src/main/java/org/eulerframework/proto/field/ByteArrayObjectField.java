@@ -21,6 +21,7 @@ import org.eulerframework.common.util.NumberUtils;
 import org.eulerframework.proto.annotation.BitProperty;
 import org.eulerframework.proto.node.ObjectProtoNode;
 import org.eulerframework.proto.node.ProtoNode;
+import org.eulerframework.proto.util.BitPropertyField;
 import org.eulerframework.proto.util.ProtoContext;
 import org.eulerframework.proto.util.ProtoUtils;
 
@@ -63,9 +64,9 @@ public class ByteArrayObjectField<T> extends AbstractFixedLengthProtoField<T>
 
     @Override
     public void read(byte[] bytes) {
-        List<ProtoUtils.BitPropertyField> bitPropertyFields = ProtoUtils.getSortedBitPropertyFields(this.data.getClass(), ctx.getVersion());
+        List<BitPropertyField> bitPropertyFields = ProtoUtils.getSortedBitPropertyFields(this.data.getClass(), ctx.getVersion());
 
-        for (ProtoUtils.BitPropertyField bitPropertyField : bitPropertyFields) {
+        for (BitPropertyField bitPropertyField : bitPropertyFields) {
             Field field = bitPropertyField.getField();
             BitProperty property = bitPropertyField.getAnnotation();
             int value = readUnsignedValue(bytes, property);
@@ -83,9 +84,9 @@ public class ByteArrayObjectField<T> extends AbstractFixedLengthProtoField<T>
     public byte[] writeAsBytes() {
         byte[] result = new byte[this.length()];
 
-        List<ProtoUtils.BitPropertyField> bitPropertyFields = ProtoUtils.getSortedBitPropertyFields(this.data.getClass(), ctx.getVersion());
+        List<BitPropertyField> bitPropertyFields = ProtoUtils.getSortedBitPropertyFields(this.data.getClass(), ctx.getVersion());
 
-        for (ProtoUtils.BitPropertyField bitPropertyField : bitPropertyFields) {
+        for (BitPropertyField bitPropertyField : bitPropertyFields) {
             Field field = bitPropertyField.getField();
             BitProperty property = bitPropertyField.getAnnotation();
             int value;

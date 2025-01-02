@@ -15,8 +15,8 @@
  */
 package org.eulerframework.proto.serializer;
 
+import org.eulerframework.proto.util.PropertyField;
 import org.eulerframework.proto.util.ProtoContext;
-import org.eulerframework.proto.util.ProtoUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,7 +26,7 @@ public interface Serializer {
 
     void writeTo(ProtoContext ctx, Object value, int length, OutputStream outputStream) throws IOException;
 
-    void writeTo(ProtoContext ctx, ProtoUtils.PropertyField valueField, Object value, OutputStream outputStream) throws IOException;
+    void writeTo(ProtoContext ctx, PropertyField valueField, Object value, OutputStream outputStream) throws IOException;
 
-    void writeTo(ProtoContext ctx, ProtoUtils.PropertyField valueField, Object value, int length, OutputStream outputStream) throws IOException;
+    void writeTo(ProtoContext ctx, PropertyField valueField, Object value, int length, OutputStream outputStream) throws IOException;
 }
