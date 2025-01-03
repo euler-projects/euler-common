@@ -36,6 +36,9 @@ public class NumberUtils {
         if (clazz == Short.class || clazz == short.class) {
             return (T) Short.valueOf(toUnsignedShort(value));
         }
+        if (clazz == Character.class || clazz == char.class) {
+            return (T) Character.valueOf((char) toUnsignedShort(value));
+        }
         throw new IllegalArgumentException("Unsupported type: " + clazz);
     }
 
@@ -415,6 +418,100 @@ public class NumberUtils {
         for (byte b : bytes) {
             result = (result << 8) | (b & 0xFF);
         }
+        return result;
+    }
+
+    public static byte[] toByteArray(Object v) {
+        if (v == null) {
+            return new byte[0];
+        }
+
+        if (v instanceof Number) {
+            if (v instanceof Byte) {
+                return toByteArray(((Byte) v).byteValue());
+            }
+            if (v instanceof Short) {
+                return toByteArray(((Short) v).shortValue());
+            }
+            if (v instanceof Integer) {
+                return toByteArray(((Integer) v).intValue());
+            }
+            if (v instanceof Long) {
+                return toByteArray(((Long) v).longValue());
+            }
+        }
+
+        if (v instanceof Boolean) {
+            return toByteArray(((Boolean) v).booleanValue());
+        }
+
+        if (v instanceof Character) {
+            return toByteArray(((Character) v).charValue());
+        }
+
+        if (v instanceof byte[]) {
+            return toByteArray((byte[]) v);
+        }
+
+        if (v instanceof Byte[]) {
+            return toByteArray((Byte[]) v);
+        }
+
+        throw new IllegalArgumentException("Unsupported type: " + v.getClass());
+    }
+
+    public static byte[] toByteArray(boolean b) {
+        return b ? new byte[]{0x01} : new byte[]{0x00};
+    }
+
+    public static byte[] toByteArray(char c) {
+        return toByteArray((short) c);
+    }
+
+    public static byte[] toByteArray(byte b) {
+        return new byte[]{b};
+    }
+
+    public static byte[] toByteArray(short s) {
+        byte[] bytes = new byte[2];
+        bytes[0] = (byte) (s >>> 8);
+        bytes[1] = (byte) s;
+        return bytes;
+    }
+
+    public static byte[] toByteArray(int i) {
+        byte[] bytes = new byte[4];
+        bytes[0] = (byte) (i >>> 24);
+        bytes[1] = (byte) (i >>> 16);
+        bytes[2] = (byte) (i >>> 8);
+        bytes[3] = (byte) i;
+        return bytes;
+    }
+
+    public static byte[] toByteArray(long l) {
+        byte[] bytes = new byte[8];
+        bytes[0] = (byte) (l >>> 56);
+        bytes[1] = (byte) (l >>> 48);
+        bytes[2] = (byte) (l >>> 40);
+        bytes[3] = (byte) (l >>> 32);
+        bytes[4] = (byte) (l >>> 24);
+        bytes[5] = (byte) (l >>> 16);
+        bytes[6] = (byte) (l >>> 8);
+        bytes[7] = (byte) l;
+        return bytes;
+    }
+
+    public static byte[] toByteArray(Byte[] bytes) {
+        byte[] result = new byte[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            result[i] = bytes[i];
+        }
+        return result;
+    }
+
+    public static byte[] toByteArray(byte[] bytes) {
+        byte[] result = new byte[bytes.length];
+        System.arraycopy(bytes, 0, result, 0, result.length);
         return result;
     }
 

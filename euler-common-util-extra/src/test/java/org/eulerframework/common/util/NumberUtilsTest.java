@@ -180,9 +180,26 @@ public class NumberUtilsTest {
         Assert.assertEquals(0x0000FFFF, intNum0);
         int intNum1 = NumberUtils.toUnsignedValue((short) -1, int.class);
         Assert.assertEquals(0x0000FFFF, intNum1);
-        int intNum2 = NumberUtils.toUnsignedValue(new byte[]{(byte) 0xFf, (byte)0xee,(byte) 0xdd, 0x11}, int.class);
+        int intNum2 = NumberUtils.toUnsignedValue(new byte[]{(byte) 0xFf, (byte) 0xee, (byte) 0xdd, 0x11}, int.class);
         Assert.assertEquals(0xFFEEDD11, intNum2);
-        short shortNum0 = NumberUtils.toUnsignedValue(new byte[]{(byte) 0xFf, (byte)0xee}, short.class);
-        Assert.assertEquals((short)0x0000FFEE, shortNum0);
+        short shortNum0 = NumberUtils.toUnsignedValue(new byte[]{(byte) 0xFf, (byte) 0xee}, short.class);
+        Assert.assertEquals((short) 0x0000FFEE, shortNum0);
+
+        char a = 'a';
+        char charValue = NumberUtils.toUnsignedValue(97, char.class);
+        Assert.assertEquals(a, charValue);
+        Character characterValue = NumberUtils.toUnsignedValue(97, Character.class);
+        Assert.assertEquals(Character.valueOf(a), characterValue);
+    }
+
+    @Test
+    public void toByteArray() {
+        Assert.assertArrayEquals(new byte[]{(byte) 0x01}, NumberUtils.toByteArray(true));
+        Assert.assertArrayEquals(new byte[]{(byte) 0x00}, NumberUtils.toByteArray(false));
+        Assert.assertArrayEquals(new byte[]{(byte) 0x00}, NumberUtils.toByteArray((byte)0x00));
+        Assert.assertArrayEquals(new byte[]{(byte) 0xFF, (byte) 0xFF}, NumberUtils.toByteArray((short) -1));
+        Assert.assertArrayEquals(new byte[]{(byte) 0xFF, (byte) 0xEE, (byte) 0xDD, (byte) 0xAA}, NumberUtils.toByteArray(0xFFEEDDAA));
+        Assert.assertArrayEquals(new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF}, NumberUtils.toByteArray(-1));
+        Assert.assertArrayEquals(new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF}, NumberUtils.toByteArray(-1L));
     }
 }
