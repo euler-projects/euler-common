@@ -13,7 +13,8 @@ public class ByteConvertorRegistryFactory {
             DEFAULT.addConvertor(Integer.class, new IntegerBytesConvertor())
                     .addConvertor(Short.class, new ShortBytesConvertor())
                     .addConvertor(Long.class, new LongBytesConvertor())
-                    .addConvertor(String.class, new StringBytesConvertor());
+                    .addConvertor(String.class, new StringBytesConvertor())
+                    .addConvertor(byte[].class, new BytesBytesConvertor());
         }
     }
 }

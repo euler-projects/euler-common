@@ -1,6 +1,6 @@
 package org.eulerframework.proto.annotation;
 
-public @interface StringProperty {
+public @interface ProtoPropertyOption {
 
     String lengthMode() default LENGTH_MODE_FIXED;
 

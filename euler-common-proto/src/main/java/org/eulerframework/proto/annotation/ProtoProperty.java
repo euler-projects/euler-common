@@ -39,7 +39,7 @@ public @interface ProtoProperty {
      */
     String charset() default ProtoCharset.UTF_8;
 
-    StringProperty string() default @StringProperty();
+    ProtoPropertyOption option() default @ProtoPropertyOption();
 
     @Target({ElementType.FIELD})
     @Documented
