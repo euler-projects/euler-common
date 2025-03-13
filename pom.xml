@@ -18,7 +18,7 @@
     <description>A useful code collection</description>
 
     <properties>
-        <revision>1.0.0.M7-SNAPSHOT</revision>
+        <revision>1.0.0.M7.JDK11-SNAPSHOT</revision>
         <main.basedir>${basedir}</main.basedir>
         <java.version>11</java.version>
         <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
