@@ -21,6 +21,7 @@
         <revision>1.0.0.M7-SNAPSHOT</revision>
         <main.basedir>${basedir}</main.basedir>
         <java.version>11</java.version>
+        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
     </properties>
 
     <modules>
