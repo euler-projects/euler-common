@@ -15,6 +15,7 @@
  */
 package org.eulerframework.common.util.json;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
@@ -47,10 +48,18 @@ public abstract class JacksonUtils {
         return OM;
     }
 
-    public static <T> T readValue(String jsonStr, Class<T> valueClass) {
+    public static <T> T readValue(String value, Class<T> valueClass) {
         try {
-            return OM.readValue(jsonStr, valueClass);
+            return OM.readValue(value, valueClass);
         } catch (JsonProcessingException e) {
+            throw ExceptionUtils.<RuntimeException>rethrow(e);
+        }
+    }
+
+    public static <T> T readValue(byte[] value, Class<T> valueClass) {
+        try {
+            return OM.readValue(value, valueClass);
+        } catch (IOException e) {
             throw ExceptionUtils.<RuntimeException>rethrow(e);
         }
     }
