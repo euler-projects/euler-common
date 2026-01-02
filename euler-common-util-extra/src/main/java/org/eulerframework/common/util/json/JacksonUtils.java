@@ -63,6 +63,14 @@ public abstract class JacksonUtils {
         }
     }
 
+    public static byte[] writeValueAsBytes(Object object) {
+        try {
+            return OM.writeValueAsBytes(object);
+        } catch (JsonProcessingException e) {
+            throw ExceptionUtils.<RuntimeException>rethrow(e);
+        }
+    }
+
     public static <T> T readKeyValue(String jsonStr, String key, Class<T> keyValueClass) {
 
         try {
