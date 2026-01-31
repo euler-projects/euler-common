@@ -26,6 +26,8 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.*;
 
 public class JdkHttpClientTemplate implements HttpTemplate {
+    public static final JdkHttpClientTemplate INSTANCE = new JdkHttpClientTemplate();
+
     @Override
     public HttpResponse execute(HttpRequest httpRequest) throws IOException {
         HttpMethod httpMethod = httpRequest.getHttpMethod();
