@@ -26,6 +26,12 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.*;
 
 public class JdkHttpClientTemplate implements HttpTemplate {
+    public static final JdkHttpClientTemplate INSTANCE = new JdkHttpClientTemplate();
+
+    private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_1_1)
+            .build();
+
     @Override
     public HttpResponse execute(HttpRequest httpRequest) throws IOException {
         HttpMethod httpMethod = httpRequest.getHttpMethod();
@@ -68,10 +74,9 @@ public class JdkHttpClientTemplate implements HttpTemplate {
         }
 
         java.net.http.HttpRequest jdkHttpRequest = builder.build();
-        HttpClient client = HttpClient.newHttpClient();
         java.net.http.HttpResponse<InputStream> response;
         try {
-            response = client.send(jdkHttpRequest, BodyHandlers.ofInputStream());
+            response = HTTP_CLIENT.send(jdkHttpRequest, BodyHandlers.ofInputStream());
         } catch (InterruptedException e) {
             throw ExceptionEraser.asRuntimeException(e);
         }

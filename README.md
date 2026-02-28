@@ -1,8 +1,14 @@
-[![Build Status](https://ci.eulerproject.io/job/euler-common-latest-jdk8/badge/icon)](https://ci.eulerproject.io/job/euler-common-latest-jdk8)
+# Euler Common Utils Collection [![Build Status](https://ci.eulerproject.io/buildStatus/icon?job=euler-common)](https://ci.eulerproject.io/job/euler-common/)
+
 [![GitHub issues](https://img.shields.io/github/issues/euler-projects/euler-common.svg)](https://github.com/euler-projects/euler-common/issues)
 [![GitHub release](https://img.shields.io/github/release/euler-projects/euler-common.svg)](https://github.com/euler-projects/euler-common/releases)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.eulerframework/euler-common/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eulerframework/euler-common)
 [![GitHub license](https://img.shields.io/github/license/euler-projects/euler-common.svg)](https://raw.githubusercontent.com/euler-projects/euler-common/master/LICENSE)
+
+## Requirements
+
+- Java 17 or later
+
 ## About
 A useful code collection
 

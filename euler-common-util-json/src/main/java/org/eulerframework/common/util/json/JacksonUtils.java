@@ -15,22 +15,29 @@
  */
 package org.eulerframework.common.util.json;
 
-import java.util.Iterator;
-import java.util.Map.Entry;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import java.io.IOException;
+
+/**
+ * @deprecated This class has been superseded by
+ * {@link org.eulerframework.common.util.json.jackson3.JacksonUtils} as part of the migration
+ * from Jackson 2.x ({@code com.fasterxml.jackson}) to Jackson 3.x ({@code tools.jackson}).
+ */
+@Deprecated(since = "2.0.0")
 public abstract class JacksonUtils {
 
     private final static ObjectMapper OM;
 
     static {
         OM = new ObjectMapper();
-        OM.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        OM.setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
 
         OM.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         OM.configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, true);
@@ -47,11 +54,19 @@ public abstract class JacksonUtils {
         return OM;
     }
 
-    public static <T> T readValue(String jsonStr, Class<T> valueClass) {
+    public static <T> T readValue(String value, Class<T> valueClass) {
         try {
-            return OM.readValue(jsonStr, valueClass);
+            return OM.readValue(value, valueClass);
         } catch (JsonProcessingException e) {
-            throw ExceptionUtils.<RuntimeException>rethrow(e);
+            throw ExceptionUtils.asRuntimeException(e);
+        }
+    }
+
+    public static <T> T readValue(byte[] value, Class<T> valueClass) {
+        try {
+            return OM.readValue(value, valueClass);
+        } catch (IOException e) {
+            throw ExceptionUtils.asRuntimeException(e);
         }
     }
 
@@ -63,20 +78,9 @@ public abstract class JacksonUtils {
         }
     }
 
-    public static <T> T readKeyValue(String jsonStr, String key, Class<T> keyValueClass) {
-
+    public static byte[] writeValueAsBytes(Object object) {
         try {
-            JsonNode root = OM.readTree(jsonStr);
-            Iterator<Entry<String, JsonNode>> elements = root.fields();
-
-            while (elements.hasNext()) {
-                Entry<String, JsonNode> node = elements.next();
-
-                if (node.getKey().equals(key))
-                    return OM.readValue(node.getValue().toString(), keyValueClass);
-            }
-
-            return null;
+            return OM.writeValueAsBytes(object);
         } catch (JsonProcessingException e) {
             throw ExceptionUtils.<RuntimeException>rethrow(e);
         }

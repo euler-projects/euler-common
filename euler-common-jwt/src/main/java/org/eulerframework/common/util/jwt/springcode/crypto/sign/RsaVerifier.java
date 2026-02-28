@@ -23,7 +23,7 @@ import java.security.interfaces.RSAPublicKey;
  * Verifies signatures using an RSA public key.
  *
  * The key can be supplied directly, or as an SSH public or private key string (in
- * the standard format produced by <tt>ssh-keygen</tt>).
+ * the standard format produced by <code>ssh-keygen</code>).
  *
  * @author Luke Taylor
  */

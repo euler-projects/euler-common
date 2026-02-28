@@ -12,8 +12,8 @@
 
     <properties>
         <slf4j.version>1.7.25</slf4j.version>
-        <commons-lang3.version>3.14.0</commons-lang3.version>
-        <log4j2.version>2.23.1</log4j2.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
+        <log4j2.version>2.25.3</log4j2.version>
     </properties>
 
     <dependencies>
@@ -23,6 +23,7 @@
             <version>${commons-lang3.version}</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>

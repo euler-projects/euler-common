@@ -24,7 +24,7 @@ import java.security.spec.RSAPrivateKeySpec;
  * A signer for signing using an RSA private key.
  *
  * The key can be supplied directly, or as an SSH private key string (in
- * the standard format produced by <tt>ssh-keygen</tt>)
+ * the standard format produced by <code>ssh-keygen</code>)
  *
  * @author Luke Taylor
  */
