@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2024 the original author or authors.
+ * Copyright 2013-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,73 +16,47 @@
 package org.eulerframework.common.util.json;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.json.JsonMapper;
 
-import java.io.IOException;
-
-/**
- * @deprecated This class has been superseded by
- * {@link org.eulerframework.common.util.json.jackson3.JacksonUtils} as part of the migration
- * from Jackson 2.x ({@code com.fasterxml.jackson}) to Jackson 3.x ({@code tools.jackson}).
- */
-@Deprecated(since = "2.0.0")
 public abstract class JacksonUtils {
 
-    private final static ObjectMapper OM;
+    private final static JsonMapper OM;
 
     static {
-        OM = new ObjectMapper();
-        OM.setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
-
-        OM.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        OM.configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, true);
-        OM.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
-
-        OM.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        OM.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
-
-        OM.registerModule(new JavaTimeModule());
-        OM.registerModule(new JsSafeModule());
+        OM = JsonMapper.builder()
+                .changeDefaultPropertyInclusion(value -> value
+                        .withValueInclusion(JsonInclude.Include.NON_NULL)
+                        .withContentInclusion(JsonInclude.Include.NON_NULL))
+                .enable(
+                        DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS,
+                        DateTimeFeature.WRITE_DURATIONS_AS_TIMESTAMPS
+                )
+                .disable(
+                        DateTimeFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS,
+                        DateTimeFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS
+                )
+                .addModule(new JsSafeModule())
+                .build();
     }
 
-    public static ObjectMapper getDefaultObjectMapper() {
+    public static JsonMapper getDefaultObjectMapper() {
         return OM;
     }
 
     public static <T> T readValue(String value, Class<T> valueClass) {
-        try {
-            return OM.readValue(value, valueClass);
-        } catch (JsonProcessingException e) {
-            throw ExceptionUtils.asRuntimeException(e);
-        }
+        return OM.readValue(value, valueClass);
     }
 
     public static <T> T readValue(byte[] value, Class<T> valueClass) {
-        try {
-            return OM.readValue(value, valueClass);
-        } catch (IOException e) {
-            throw ExceptionUtils.asRuntimeException(e);
-        }
+        return OM.readValue(value, valueClass);
     }
 
     public static String writeValueAsString(Object object) {
-        try {
-            return OM.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            throw ExceptionUtils.<RuntimeException>rethrow(e);
-        }
+        return OM.writeValueAsString(object);
     }
 
     public static byte[] writeValueAsBytes(Object object) {
-        try {
-            return OM.writeValueAsBytes(object);
-        } catch (JsonProcessingException e) {
-            throw ExceptionUtils.<RuntimeException>rethrow(e);
-        }
+        return OM.writeValueAsBytes(object);
     }
 }
