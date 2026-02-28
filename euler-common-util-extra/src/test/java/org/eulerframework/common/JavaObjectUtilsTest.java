@@ -24,13 +24,12 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import junit.framework.Assert;
 import org.eulerframework.common.util.JavaObjectUtils;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * @author cFrost
@@ -100,9 +99,9 @@ public class JavaObjectUtilsTest {
     }
 
     @Test
-    public void test() throws JsonParseException, JsonMappingException, IOException, InstantiationException,
+    public void test() throws IOException, InstantiationException,
             IllegalAccessException {
-        ObjectMapper om = new ObjectMapper();
+        JsonMapper om = new JsonMapper();
         String json = "{" 
                     + "    \"string\":\"abc\"," 
                     + "    \"date\":\"123123123\"," 
@@ -113,7 +112,7 @@ public class JavaObjectUtilsTest {
                     + "        \"string\":\"abc\"" 
                     + "    }" 
                     + "}";
-        Map<String, Object> map = om.readValue(json, new TypeReference<Map<String, Object>>() {
+        Map<String, Object> map = om.readValue(json, new TypeReference<>() {
         });
         
         LinkedHashMap<Date, Date> lm = new LinkedHashMap<>();
@@ -150,7 +149,7 @@ public class JavaObjectUtilsTest {
         Assert.assertEquals(true, JavaObjectUtils.isSafeToString(boolean.class));
         Assert.assertEquals(true, JavaObjectUtils.isSafeToString(char.class));
         Assert.assertEquals(true, JavaObjectUtils.isSafeToString(EnumTest.class));
-        Assert.assertEquals(false, JavaObjectUtils.isSafeToString(JsonParseException.class));
+        Assert.assertEquals(false, JavaObjectUtils.isSafeToString(JacksonException.class));
 
         // Class<?>[] parameterTypes = { Class.class }; // 声明调用的方法只有一个参数,
         // 类型为String
