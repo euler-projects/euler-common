@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.eulerframework.common.util.json;
+package org.eulerframework.common.util.jackson;
 
 import tools.jackson.databind.module.SimpleModule;
 import tools.jackson.databind.ser.std.ToStringSerializer;

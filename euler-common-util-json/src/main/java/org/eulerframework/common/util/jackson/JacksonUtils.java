@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eulerframework.common.util.json;
+package org.eulerframework.common.util.jackson;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import tools.jackson.databind.cfg.DateTimeFeature;

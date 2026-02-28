@@ -27,7 +27,7 @@ import org.eulerframework.common.util.jwt.springcode.crypto.sign.Signer;
 import org.eulerframework.common.base.log.LogSupport;
 import org.eulerframework.common.util.Assert;
 import org.eulerframework.common.util.DateUtils;
-import org.eulerframework.common.util.json.JacksonUtils;
+import org.eulerframework.common.util.jackson.JacksonUtils;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 
