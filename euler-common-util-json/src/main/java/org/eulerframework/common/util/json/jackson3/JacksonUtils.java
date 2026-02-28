@@ -16,6 +16,8 @@
 package org.eulerframework.common.util.json.jackson3;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.cfg.DateTimeFeature;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -28,9 +30,10 @@ public abstract class JacksonUtils {
                 .changeDefaultPropertyInclusion(value -> value
                         .withValueInclusion(JsonInclude.Include.NON_NULL)
                         .withContentInclusion(JsonInclude.Include.NON_NULL))
-                .enable(DateTimeFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
-                //.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-                //.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .enable(
+                        DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS,
+                        DateTimeFeature.WRITE_DURATIONS_AS_TIMESTAMPS
+                )
                 .disable(
                         DateTimeFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS,
                         DateTimeFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS
