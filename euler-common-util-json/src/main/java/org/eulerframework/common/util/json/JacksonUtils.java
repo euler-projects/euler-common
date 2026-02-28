@@ -15,17 +15,24 @@
  */
 package org.eulerframework.common.util.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
-public abstract class Jackson2Utils {
+/**
+ * @deprecated use {@link org.eulerframework.common.util.json.jackson3.JacksonUtils} instead.
+ */
+@Deprecated
+public abstract class JacksonUtils {
 
     private final static ObjectMapper OM;
 

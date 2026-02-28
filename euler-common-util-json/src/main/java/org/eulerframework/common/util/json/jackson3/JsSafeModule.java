@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package org.eulerframework.common.util.json;
+package org.eulerframework.common.util.json.jackson3;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.ser.std.ToStringSerializer;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-/**
- * use {@link org.eulerframework.common.util.json.jackson3.JsSafeModule} instead.
- */
-@Deprecated
 public final class JsSafeModule extends SimpleModule {
 
     public JsSafeModule() {
