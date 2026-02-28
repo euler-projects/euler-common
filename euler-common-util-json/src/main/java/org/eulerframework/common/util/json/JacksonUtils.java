@@ -18,20 +18,19 @@ package org.eulerframework.common.util.json;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map.Entry;
 
 /**
- * @deprecated use {@link org.eulerframework.common.util.json.jackson3.JacksonUtils} instead.
+ * @deprecated This class has been superseded by
+ * {@link org.eulerframework.common.util.json.jackson3.JacksonUtils} as part of the migration
+ * from Jackson 2.x ({@code com.fasterxml.jackson}) to Jackson 3.x ({@code tools.jackson}).
  */
-@Deprecated
+@Deprecated(since = "2.0.0")
 public abstract class JacksonUtils {
 
     private final static ObjectMapper OM;
@@ -82,25 +81,6 @@ public abstract class JacksonUtils {
     public static byte[] writeValueAsBytes(Object object) {
         try {
             return OM.writeValueAsBytes(object);
-        } catch (JsonProcessingException e) {
-            throw ExceptionUtils.<RuntimeException>rethrow(e);
-        }
-    }
-
-    public static <T> T readKeyValue(String jsonStr, String key, Class<T> keyValueClass) {
-
-        try {
-            JsonNode root = OM.readTree(jsonStr);
-            Iterator<Entry<String, JsonNode>> elements = root.fields();
-
-            while (elements.hasNext()) {
-                Entry<String, JsonNode> node = elements.next();
-
-                if (node.getKey().equals(key))
-                    return OM.readValue(node.getValue().toString(), keyValueClass);
-            }
-
-            return null;
         } catch (JsonProcessingException e) {
             throw ExceptionUtils.<RuntimeException>rethrow(e);
         }

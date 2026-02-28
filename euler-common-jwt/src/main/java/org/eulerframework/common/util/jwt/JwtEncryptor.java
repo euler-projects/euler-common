@@ -16,7 +16,9 @@
 package org.eulerframework.common.util.jwt;
 
 import java.util.Date;
+import java.util.Optional;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eulerframework.common.util.jwt.springcode.JwtHelper;
 import org.eulerframework.common.util.jwt.springcode.crypto.sign.RsaSigner;
 import org.eulerframework.common.util.jwt.springcode.crypto.sign.RsaVerifier;
@@ -25,7 +27,9 @@ import org.eulerframework.common.util.jwt.springcode.crypto.sign.Signer;
 import org.eulerframework.common.base.log.LogSupport;
 import org.eulerframework.common.util.Assert;
 import org.eulerframework.common.util.DateUtils;
-import org.eulerframework.common.util.json.JacksonUtils;
+import org.eulerframework.common.util.json.jackson3.JacksonUtils;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
 
 /**
  * Json Web Token 加密器/验证器
@@ -104,20 +108,32 @@ public class JwtEncryptor extends LogSupport {
 
             String claims = jwt.getClaims();
 
-            Long exp = JacksonUtils.readKeyValue(claims, "exp", Long.class);
-            Long nbf = JacksonUtils.readKeyValue(claims, "nbf", Long.class);
+            JsonNode claimsNode;
+            try {
+                claimsNode = JacksonUtils.getDefaultObjectMapper().readTree(claims);
+            } catch (JacksonException e) {
+                throw ExceptionUtils.asRuntimeException(e);
+            }
+            Long exp = Optional.ofNullable(claimsNode)
+                    .map(node -> node.get("exp"))
+                    .map(JsonNode::longValue)
+                    .orElse(null);
+            Long nbf = Optional.ofNullable(claimsNode)
+                    .map(node -> node.get("nbf"))
+                    .map(JsonNode::longValue)
+                    .orElse(null);
 
             Date now = new Date();
 
             if (exp != null) {
                 Date expireTime = DateUtils.parseDateFromUnixTimestamp(exp);
-                if (expireTime != null && expireTime.compareTo(now) <= 0)
+                if (expireTime.compareTo(now) <= 0)
                     throw new InvalidJwtException("token has expired");
             }
 
             if (nbf != null) {
                 Date effectiveTime = DateUtils.parseDateFromUnixTimestamp(nbf);
-                if (effectiveTime != null && effectiveTime.compareTo(now) > 0)
+                if (effectiveTime.compareTo(now) > 0)
                     throw new InvalidJwtException("token has not effective yet");
             }
 

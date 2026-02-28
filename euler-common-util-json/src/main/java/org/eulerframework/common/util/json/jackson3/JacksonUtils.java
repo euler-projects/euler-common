@@ -16,7 +16,6 @@
 package org.eulerframework.common.util.json.jackson3;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.cfg.DateTimeFeature;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -40,7 +39,7 @@ public abstract class JacksonUtils {
                 .build();
     }
 
-    public static ObjectMapper getDefaultObjectMapper() {
+    public static JsonMapper getDefaultObjectMapper() {
         return OM;
     }
 
