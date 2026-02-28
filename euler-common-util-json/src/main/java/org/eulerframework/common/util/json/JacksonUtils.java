@@ -31,7 +31,7 @@ public abstract class JacksonUtils {
 
     static {
         OM = new ObjectMapper();
-        OM.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        OM.setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
 
         OM.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         OM.configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, true);
@@ -52,7 +52,7 @@ public abstract class JacksonUtils {
         try {
             return OM.readValue(value, valueClass);
         } catch (JsonProcessingException e) {
-            throw ExceptionUtils.<RuntimeException>rethrow(e);
+            throw ExceptionUtils.asRuntimeException(e);
         }
     }
 
@@ -60,7 +60,7 @@ public abstract class JacksonUtils {
         try {
             return OM.readValue(value, valueClass);
         } catch (IOException e) {
-            throw ExceptionUtils.<RuntimeException>rethrow(e);
+            throw ExceptionUtils.asRuntimeException(e);
         }
     }
 

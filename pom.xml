@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -9,7 +9,7 @@
         <version>6-SNAPSHOT</version>
         <relativePath/>
     </parent>
-    
+
     <artifactId>euler-common</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
@@ -18,14 +18,19 @@
     <description>A useful code collection</description>
 
     <properties>
-        <revision>1.0.0.M7.JDK11-SNAPSHOT</revision>
+        <revision>2.0.0-SNAPSHOT</revision>
         <main.basedir>${basedir}</main.basedir>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
+
+        <commoms-lang3.version>3.20.0</commoms-lang3.version>
+        <jackson2.version>2.21.1</jackson2.version>
+        <jackson3.version>3.1.0</jackson3.version>
     </properties>
 
     <modules>
         <module>euler-common-logging</module>
         <module>euler-common-util</module>
+        <module>euler-common-util-json</module>
         <module>euler-common-util-extra</module>
         <module>euler-common-jwt</module>
         <module>euler-common-ssh</module>
@@ -33,6 +38,30 @@
         <module>euler-common-http</module>
         <module>euler-common-proto</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commoms-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson2.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>tools.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson3.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
