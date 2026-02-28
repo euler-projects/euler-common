@@ -4,6 +4,11 @@
 [![GitHub release](https://img.shields.io/github/release/euler-projects/euler-common.svg)](https://github.com/euler-projects/euler-common/releases)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.eulerframework/euler-common/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eulerframework/euler-common)
 [![GitHub license](https://img.shields.io/github/license/euler-projects/euler-common.svg)](https://raw.githubusercontent.com/euler-projects/euler-common/master/LICENSE)
+
+## Requirements
+
+- Java 17 or later
+
 ## About
 A useful code collection
 
