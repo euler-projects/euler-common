@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-public abstract class JacksonUtils {
+public abstract class Jackson2Utils {
 
     private final static ObjectMapper OM;
 
