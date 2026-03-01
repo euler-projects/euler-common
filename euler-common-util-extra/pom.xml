@@ -73,7 +73,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>euler-common-util-json</artifactId>
+            <artifactId>euler-common-json</artifactId>
             <version>${project.version}</version>
         </dependency>
 

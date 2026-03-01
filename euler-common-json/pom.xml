@@ -6,8 +6,8 @@
         <artifactId>euler-common</artifactId>
         <version>${revision}</version>
     </parent>
-    <artifactId>euler-common-util-json</artifactId>
-    <name>euler-common-util-json</name>
+    <artifactId>euler-common-json</artifactId>
+    <name>euler-common-json</name>
     <url>https://eulerproject.io</url>
     <description>A useful json util collection</description>
     <dependencies>
