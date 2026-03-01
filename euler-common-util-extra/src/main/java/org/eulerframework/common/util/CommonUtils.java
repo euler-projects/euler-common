@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2024 the original author or authors.
+ * Copyright 2013-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ public abstract class CommonUtils {
      * @return Locale对象
      */
     public static Locale parseLocale(String localeString) {
-        Assert.hasText(localeString);
+        AssertUtils.hasText(localeString, "localeString is required");
         
         localeString = localeString.toLowerCase();
         
@@ -84,7 +84,7 @@ public abstract class CommonUtils {
     }
     
     public static String formatLocal(Locale locale, char split) {
-        Assert.notNull(locale);
+        AssertUtils.notNull(locale, "locale is required");
 
         String language = locale.getLanguage();
         String country = locale.getCountry();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2024 the original author or authors.
+ * Copyright 2013-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.eulerframework.common.util.Assert;
+import org.eulerframework.common.util.AssertUtils;
 import org.eulerframework.common.util.StringUtils;
 
 /**
@@ -68,7 +68,7 @@ public abstract class FileUtils {
     private final static String PATH_PREFIX_ROOT = "/";
     
     public static InputStream getInputStreamFromUri(String uri) throws URISyntaxException, FileNotFoundException, IOException {
-        Assert.hasText(uri);
+        AssertUtils.hasText(uri, "uri is required");
         
         if(uri.startsWith(PATH_PREFIX_FILE)) {
             return new URI(uri).toURL().openStream();

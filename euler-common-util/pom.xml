@@ -11,9 +11,11 @@
     <url>https://eulerproject.io</url>
     <description>A useful code collection</description>
 
-    <properties>
-    </properties>
-
     <dependencies>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

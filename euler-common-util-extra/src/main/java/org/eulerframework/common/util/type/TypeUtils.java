@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2024 the original author or authors.
+ * Copyright 2013-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package org.eulerframework.common.util.type;
 
-import org.eulerframework.common.util.Assert;
+import org.eulerframework.common.util.AssertUtils;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -50,7 +50,7 @@ public class TypeUtils {
 
     @SuppressWarnings("unchecked")
     public static <T> T convert(Object raw, Class<T> requireType) {
-        Assert.notNull(requireType, "requireType is required");
+        AssertUtils.notNull(requireType, "requireType is required");
 
         if(raw == null || requireType.isAssignableFrom(raw.getClass())) {
             return (T) raw;
@@ -78,7 +78,7 @@ public class TypeUtils {
     }
 
     public static int convertToInt(Object raw) {
-        Assert.notNull(raw, "value is null");
+        AssertUtils.notNull(raw, "value is null");
 
         if(Number.class.isAssignableFrom(raw.getClass())) {
             return ((Number) raw).intValue();
@@ -88,7 +88,7 @@ public class TypeUtils {
     }
 
     public static long convertToLong(Object raw) {
-        Assert.notNull(raw, "value is null");
+        AssertUtils.notNull(raw, "value is null");
 
         if(Number.class.isAssignableFrom(raw.getClass())) {
             return ((Number) raw).longValue();
@@ -98,7 +98,7 @@ public class TypeUtils {
     }
 
     public static byte convertToByte(Object raw) {
-        Assert.notNull(raw, "value is null");
+        AssertUtils.notNull(raw, "value is null");
 
         if(Number.class.isAssignableFrom(raw.getClass())) {
             return ((Number) raw).byteValue();
@@ -108,7 +108,7 @@ public class TypeUtils {
     }
 
     public static short convertToShort(Object raw) {
-        Assert.notNull(raw, "value is null");
+        AssertUtils.notNull(raw, "value is null");
 
         if(Number.class.isAssignableFrom(raw.getClass())) {
             return ((Number) raw).shortValue();
@@ -118,7 +118,7 @@ public class TypeUtils {
     }
 
     public static float convertToFloat(Object raw) {
-        Assert.notNull(raw, "value is null");
+        AssertUtils.notNull(raw, "value is null");
 
         if(Number.class.isAssignableFrom(raw.getClass())) {
             return ((Number) raw).floatValue();
@@ -128,7 +128,7 @@ public class TypeUtils {
     }
 
     public static double convertToDouble(Object raw) {
-        Assert.notNull(raw, "value is null");
+        AssertUtils.notNull(raw, "value is null");
 
         if(Number.class.isAssignableFrom(raw.getClass())) {
             return ((Number) raw).doubleValue();
@@ -138,7 +138,7 @@ public class TypeUtils {
     }
 
     public static boolean convertToBoolean(Object raw) {
-        Assert.notNull(raw, "value is null");
+        AssertUtils.notNull(raw, "value is null");
 
         if(Boolean.class.isAssignableFrom(raw.getClass())) {
             return (Boolean) raw;
@@ -148,7 +148,7 @@ public class TypeUtils {
     }
 
     public static int[] convertToIntArray(Object raw) {
-        Assert.notNull(raw, "value is null");
+        AssertUtils.notNull(raw, "value is null");
 
         if(int[].class.equals(raw.getClass())) {
             return (int[]) raw;
@@ -172,7 +172,7 @@ public class TypeUtils {
     }
 
     public static long[] convertToLongArray(Object raw) {
-        Assert.notNull(raw, "value is null");
+        AssertUtils.notNull(raw, "value is null");
 
         if(long[].class.equals(raw.getClass())) {
             return (long[]) raw;

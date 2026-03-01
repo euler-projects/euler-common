@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2024 the original author or authors.
+ * Copyright 2013-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package org.eulerframework.common.util.property;
 
 import org.eulerframework.common.base.log.LogSupport;
-import org.eulerframework.common.util.Assert;
+import org.eulerframework.common.util.AssertUtils;
 import org.eulerframework.common.util.type.TypeUtils;
 
 public class PropertyReader extends LogSupport {
@@ -63,7 +63,7 @@ public class PropertyReader extends LogSupport {
 
     @SuppressWarnings("unchecked")
     public <T> T get(String property, T defaultValue) {
-        Assert.notNull(defaultValue, "defaultValue can not be null");
+        AssertUtils.notNull(defaultValue, "defaultValue can not be null");
         return this.get(property, (Class<T>) defaultValue.getClass(), defaultValue);
     }
 
