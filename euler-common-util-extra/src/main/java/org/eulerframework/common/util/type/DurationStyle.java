@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2024 the original author or authors.
+ * Copyright 2013-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.eulerframework.common.util.type;
 
-import org.eulerframework.common.util.Assert;
+import org.eulerframework.common.util.AssertUtils;
 import org.eulerframework.common.util.StringUtils;
 
 import java.time.Duration;
@@ -42,7 +42,7 @@ public enum DurationStyle {
 		public Duration parse(String value, ChronoUnit unit) {
 			try {
 				Matcher matcher = matcher(value);
-				Assert.state(matcher.matches(), "Does not match simple duration pattern");
+				AssertUtils.isTrue(matcher.matches(), "Does not match simple duration pattern");
 				String suffix = matcher.group(2);
 				return (StringUtils.hasLength(suffix) ? Unit.fromSuffix(suffix) : Unit.fromChronoUnit(unit))
 						.parse(matcher.group(1));
@@ -159,7 +159,7 @@ public enum DurationStyle {
 	 * @throws IllegalStateException if the value is not a known style
 	 */
 	public static DurationStyle detect(String value) {
-		Assert.notNull(value, "Value must not be null");
+		AssertUtils.notNull(value, "Value must not be null");
 		for (DurationStyle candidate : values()) {
 			if (candidate.matches(value)) {
 				return candidate;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2024 the original author or authors.
+ * Copyright 2013-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import java.nio.channels.FileChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.eulerframework.common.util.Assert;
+import org.eulerframework.common.util.AssertUtils;
 
 /**
  * 基于内存的文件读写器,适用小文件的读写
@@ -46,7 +46,7 @@ public abstract class SimpleFileIOUtils {
      * @param bytes 最大文件大小
      */
     public static  void setSupportMaxFileBytes(int bytes) {
-        Assert.isTrue(bytes < 1024 * 1024 * 1024 *2, "最大支持2GB文件的读取");
+        AssertUtils.isTrue(bytes < 1024 * 1024 * 1024 *2, "最大支持2GB文件的读取");
         supportMaxFileBytes = bytes;
     }
 
@@ -58,7 +58,7 @@ public abstract class SimpleFileIOUtils {
      * @throws FileReadException 其他读取异常
      */
     public static byte[] readFileByByte(File file) throws FileNotFoundException, FileReadException {
-        Assert.notNull(file, "file is null");
+        AssertUtils.notNull(file, "file is null");
 
         LOGGER.info("Load file: " + file.getPath() + " Size: " + file.length());
         
@@ -101,7 +101,7 @@ public abstract class SimpleFileIOUtils {
      * @throws FileReadException 其他读取异常
      */
     public static byte[] readFileByMultiBytes(File file, int number) throws FileNotFoundException, FileReadException {
-        Assert.notNull(file, "file is null");
+        AssertUtils.notNull(file, "file is null");
 
         LOGGER.info("Load file: " + file.getPath() + " Size: " + file.length());
         
@@ -147,7 +147,7 @@ public abstract class SimpleFileIOUtils {
      * @throws IOException IO异常
      */
     public static void writeFile(String filePath, String str, boolean append) throws IOException {
-        Assert.notNull(filePath, "filePath is null");
+        AssertUtils.notNull(filePath, "filePath is null");
 
         LOGGER.info("Write File: " + filePath);
 
@@ -181,7 +181,7 @@ public abstract class SimpleFileIOUtils {
      * @throws IOException IO异常
      */
     public static void writeFile(String filePath, byte[] data, boolean append) throws IOException {
-        Assert.notNull(filePath, "filePath is null");
+        AssertUtils.notNull(filePath, "filePath is null");
 
         LOGGER.info("Write File: " + filePath);
 
@@ -252,7 +252,7 @@ public abstract class SimpleFileIOUtils {
      *         "false".
      */
     public static boolean deleteFile(File file) {
-        Assert.notNull(file, "file is null");
+        AssertUtils.notNull(file, "file is null");
         
         if (!file.exists())
             return true;
@@ -279,7 +279,7 @@ public abstract class SimpleFileIOUtils {
      * @throws IOException IO异常
      */
     public static void createFileIfNotExist(File file) throws IOException {
-        Assert.notNull(file, "file is null");
+        AssertUtils.notNull(file, "file is null");
         
         if (!file.getParentFile().exists()) {
             LOGGER.info("Create dir: " + file.getParentFile().getPath());

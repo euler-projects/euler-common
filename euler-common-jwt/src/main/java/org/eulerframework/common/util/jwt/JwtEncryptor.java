@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2024 the original author or authors.
+ * Copyright 2013-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.eulerframework.common.util.jwt.springcode.crypto.sign.RsaVerifier;
 import org.eulerframework.common.util.jwt.springcode.crypto.sign.SignatureVerifier;
 import org.eulerframework.common.util.jwt.springcode.crypto.sign.Signer;
 import org.eulerframework.common.base.log.LogSupport;
-import org.eulerframework.common.util.Assert;
+import org.eulerframework.common.util.AssertUtils;
 import org.eulerframework.common.util.DateUtils;
 import org.eulerframework.common.util.json.JacksonUtils;
 
@@ -43,7 +43,7 @@ public class JwtEncryptor extends LogSupport {
     private SignatureVerifier verifier;
 
     public void setSigningKey(String rsaPrivateKey) {
-        Assert.hasText(rsaPrivateKey);
+        AssertUtils.hasText(rsaPrivateKey, "rsaPrivateKey is required");
 
         this.signingKey = rsaPrivateKey.trim();
 
@@ -58,7 +58,7 @@ public class JwtEncryptor extends LogSupport {
     }
 
     public void setVerifierKey(String rsaPublicKey) {
-        Assert.hasText(rsaPublicKey);
+        AssertUtils.hasText(rsaPublicKey, "rsaPublicKey is required");
 
         this.verifierKey = rsaPublicKey.trim();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2024 the original author or authors.
+ * Copyright 2013-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.eulerframework.common.email;
 
 import javax.mail.MessagingException;
 
-import org.eulerframework.common.util.Assert;
+import org.eulerframework.common.util.AssertUtils;
 
 public class ThreadSimpleMailSender {
 
@@ -28,17 +28,17 @@ public class ThreadSimpleMailSender {
     }
 
     public void send(String subject, String content, String receiver) {
-        Assert.notNull(subject, "邮件主题不能为空");
-        Assert.notNull(content, "邮件内容不能为空");
-        Assert.notNull(receiver, "收信人不能为空");
+        AssertUtils.notNull(subject, "邮件主题不能为空");
+        AssertUtils.notNull(content, "邮件内容不能为空");
+        AssertUtils.notNull(receiver, "收信人不能为空");
         MailSendThread mailSendThread = new MailSendThread(subject, content, receiver);
         mailSendThread.start();
     }
 
     public void send(String subject, String content, String... receiver) {
-        Assert.notNull(subject, "邮件主题不能为空");
-        Assert.notNull(content, "邮件内容不能为空");
-        Assert.notNull(receiver, "收信人不能为空");
+        AssertUtils.notNull(subject, "邮件主题不能为空");
+        AssertUtils.notNull(content, "邮件内容不能为空");
+        AssertUtils.notNull(receiver, "收信人不能为空");
         MailSendThread mailSendThread = new MailSendThread(subject, content, receiver);
         mailSendThread.start();
     }
