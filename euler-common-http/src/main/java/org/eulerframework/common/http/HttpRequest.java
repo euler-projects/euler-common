@@ -20,21 +20,19 @@ import org.eulerframework.common.http.message.BasicHeader;
 import org.eulerframework.common.http.util.Args;
 import org.eulerframework.common.util.net.URIBuilder;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Consumer;
 
 public interface HttpRequest {
-
-    HttpMethod getHttpMethod();
+    HttpMethod getMethod();
 
     URI getUri();
 
     List<Header> getHeaders();
 
-    RequestBody getBody() throws IOException;
+    RequestBody getBody();
 
     static Builder of(HttpMethod httpMethod, URI uri) {
         return new UriSupportBuilder(httpMethod, uri);
@@ -223,7 +221,7 @@ public interface HttpRequest {
         }
 
         @Override
-        public HttpMethod getHttpMethod() {
+        public HttpMethod getMethod() {
             return httpMethod;
         }
 

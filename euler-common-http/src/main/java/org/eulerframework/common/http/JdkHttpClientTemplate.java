@@ -17,6 +17,9 @@
 package org.eulerframework.common.http;
 
 import org.eulerframework.common.http.request.StringRequestBody;
+import org.eulerframework.common.http.util.HttpRequestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +29,8 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.*;
 
 public class JdkHttpClientTemplate implements HttpTemplate {
+    private final static Logger logger = LoggerFactory.getLogger(JdkHttpClientTemplate.class.getName());
+
     public static final JdkHttpClientTemplate INSTANCE = new JdkHttpClientTemplate();
 
     private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
@@ -34,19 +39,12 @@ public class JdkHttpClientTemplate implements HttpTemplate {
 
     @Override
     public HttpResponse execute(HttpRequest httpRequest) throws IOException {
-        HttpMethod httpMethod = httpRequest.getHttpMethod();
+        this.logRequest(httpRequest);
+
+        HttpMethod httpMethod = httpRequest.getMethod();
         URI uri = httpRequest.getUri();
         List<Header> headers = httpRequest.getHeaders();
         RequestBody body = httpRequest.getBody();
-
-        System.out.println(uri.getScheme());
-        System.out.println(uri.getHost());
-        System.out.println(uri.getPath());
-        System.out.println(uri.getQuery());
-        System.out.println(uri.getRawQuery());
-        System.out.println(uri.getUserInfo());
-        System.out.println(uri.getAuthority());
-        System.out.println(uri);
 
         java.net.http.HttpRequest.Builder builder = java.net.http.HttpRequest.newBuilder().uri(uri);
 
@@ -93,4 +91,12 @@ public class JdkHttpClientTemplate implements HttpTemplate {
                 .map(java.net.http.HttpRequest.BodyPublishers::ofString).
                 orElse(java.net.http.HttpRequest.BodyPublishers.noBody());
     }
+
+    private void logRequest(HttpRequest httpRequest) {
+        if (logger.isTraceEnabled()) {
+            logger.trace(HttpRequestUtils.formatRfc7230Message(httpRequest));
+        }
+    }
+
+
 }
