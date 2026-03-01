@@ -91,6 +91,11 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>euler-common-json</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>euler-common-logging</artifactId>
             <version>${project.version}</version>
         </dependency>
