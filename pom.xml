@@ -22,6 +22,7 @@
         <main.basedir>${basedir}</main.basedir>
         <java.version>17</java.version>
 
+        <commons-io.version>2.21.0</commons-io.version>
         <commoms-lang3.version>3.20.0</commoms-lang3.version>
         <jakarta-annotation-api.version>3.0.0</jakarta-annotation-api.version>
         <log4j2.version>2.25.3</log4j2.version>
@@ -45,6 +46,23 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>jakarta.annotation</groupId>
+                <artifactId>jakarta.annotation-api</artifactId>
+                <version>${jakarta-annotation-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commoms-lang3.version}</version>
@@ -56,18 +74,6 @@
                 <version>${jackson.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>jakarta.annotation</groupId>
-                <artifactId>jakarta.annotation-api</artifactId>
-                <version>${jakarta-annotation-api.version}</version>
             </dependency>
 
             <dependency>

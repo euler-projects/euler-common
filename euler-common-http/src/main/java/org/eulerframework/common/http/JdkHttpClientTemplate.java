@@ -35,7 +35,7 @@ public class JdkHttpClientTemplate implements HttpTemplate {
     public static final JdkHttpClientTemplate INSTANCE = new JdkHttpClientTemplate();
 
     private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
-            .version(HttpClient.Version.HTTP_1_1)
+            .followRedirects(HttpClient.Redirect.NORMAL)
             .build();
 
     @Override
@@ -81,6 +81,7 @@ public class JdkHttpClientTemplate implements HttpTemplate {
         }
 
         return HttpResponse.newBuilder()
+                .version(toHttpVersion(response.version()))
                 .status(response.statusCode())
                 .headers(response.headers().map())
                 .content(response.body())
@@ -119,5 +120,15 @@ public class JdkHttpClientTemplate implements HttpTemplate {
         }
     }
 
+    private HttpVersion toHttpVersion(HttpClient.Version version) {
+        if (version == null) {
+            return null;
+        }
+
+        return switch (version) {
+            case HTTP_1_1 -> HttpVersion.HTTP_1_1;
+            case HTTP_2 -> HttpVersion.HTTP_2;
+        };
+    }
 
 }

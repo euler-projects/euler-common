@@ -16,12 +16,15 @@
 
 package org.eulerframework.common.http.response;
 
+import org.apache.commons.io.IOUtils;
 import org.eulerframework.common.http.ContentType;
 import org.eulerframework.common.http.ResponseBody;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.util.Optional;
 
 public class InputStreamResponseBody implements ResponseBody {
     private static final int OUTPUT_BUFFER_SIZE = 4096;
@@ -37,31 +40,23 @@ public class InputStreamResponseBody implements ResponseBody {
     }
 
     @Override
+    public String asText() throws IOException {
+        if (this.content == null) {
+            return null;
+        }
+
+        return IOUtils.toString(this.content, Optional.ofNullable(this.contentType)
+                .map(ContentType::getCharset)
+                .orElse(Charset.defaultCharset()));
+    }
+
+    @Override
     public void writeTo(OutputStream outputStream) throws IOException {
-        if (outputStream == null) {
-            throw new IllegalArgumentException("Output stream must not be null.");
+        if (this.content == null) {
+            return;
         }
-        try (final InputStream in = this.content) {
-            final byte[] buffer = new byte[OUTPUT_BUFFER_SIZE];
-            int l;
-            if (this.length < 0) {
-                // consume until EOF
-                while ((l = in.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, l);
-                }
-            } else {
-                // consume no more than length
-                long remaining = this.length;
-                while (remaining > 0) {
-                    l = in.read(buffer, 0, (int) Math.min(OUTPUT_BUFFER_SIZE, remaining));
-                    if (l == -1) {
-                        break;
-                    }
-                    outputStream.write(buffer, 0, l);
-                    remaining -= l;
-                }
-            }
-        }
+
+        IOUtils.copy(this.content, outputStream);
     }
 
     @Override

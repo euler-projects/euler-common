@@ -27,5 +27,7 @@ public interface ResponseBody extends Closeable {
 
     Object getContent();
 
+    String asText() throws IOException;
+
     void writeTo(OutputStream outputStream) throws IOException;
 }

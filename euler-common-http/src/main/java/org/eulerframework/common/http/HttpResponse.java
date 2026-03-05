@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface HttpResponse extends Closeable {
+    HttpVersion getVersion();
+
     int getStatus();
 
     List<Header> getHeaders();
@@ -39,11 +41,17 @@ public interface HttpResponse extends Closeable {
     }
 
     class Builder {
+        private HttpVersion version;
         private int status;
         private final List<Header> headers = new ArrayList<>();
         private final InputStreamResponseBody.InputStreamResponseBodyBuilder bodyBuilder = new InputStreamResponseBody.InputStreamResponseBodyBuilder();
 
         private Builder() {
+        }
+
+        public Builder version(HttpVersion version) {
+            this.version = version;
+            return this;
         }
 
         public Builder status(int status) {
@@ -72,22 +80,29 @@ public interface HttpResponse extends Closeable {
         }
 
         public HttpResponse build() {
-            return new BasicHttpResponse(this.status, this.headers, this.bodyBuilder);
+            return new BasicHttpResponse(this.version, this.status, this.headers, this.bodyBuilder);
         }
     }
 
     final class BasicHttpResponse implements HttpResponse {
+        private final HttpVersion version;
         private final int status;
         private final List<Header> headers = new ArrayList<>();
         private final ResponseBody responseBody;
 
-        public BasicHttpResponse(int status, List<Header> headers, InputStreamResponseBody.InputStreamResponseBodyBuilder bodyBuilder) {
+        public BasicHttpResponse(HttpVersion version, int status, List<Header> headers, InputStreamResponseBody.InputStreamResponseBodyBuilder bodyBuilder) {
+            this.version = version;
             this.status = status;
             this.headers.addAll(headers);
             this.responseBody = bodyBuilder
                     .contentType(HttpResponseUtils.firstHeader(this, "content-type").map(ContentType::parse).orElse(null))
                     .length(HttpResponseUtils.firstHeader(this, "content-length").map(Integer::parseInt).orElse(-1))
                     .build();
+        }
+
+        @Override
+        public HttpVersion getVersion() {
+            return version;
         }
 
         @Override
