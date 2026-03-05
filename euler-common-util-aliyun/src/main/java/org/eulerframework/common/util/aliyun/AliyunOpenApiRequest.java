@@ -410,13 +410,11 @@ public class AliyunOpenApiRequest {
                         .body(new StringRequestBody(request.getBody(), ContentType.APPLICATION_FORM_URLENCODED))
                         .build();
             } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
+                throw ExceptionUtils.asRuntimeException(e);
             }
 
             try (HttpResponse httpResponse = httpTemplate.execute(httpRequest)) {
-                InputStream in = (InputStream) httpResponse.getBody().getContent();
-                byte[] data = in.readAllBytes();
-                return new String(data, StandardCharsets.UTF_8);
+                return httpResponse.getBody().asText();
             }
         }
     }

@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -51,6 +52,14 @@ public abstract class JacksonUtils {
     public static <T> T readValue(String value, Class<T> valueClass) {
         try {
             return OM.readValue(value, valueClass);
+        } catch (JsonProcessingException e) {
+            throw ExceptionUtils.<RuntimeException>rethrow(e);
+        }
+    }
+
+    public static <T> T readValue(String value, TypeReference<T> typeReference) {
+        try {
+            return OM.readValue(value, typeReference);
         } catch (JsonProcessingException e) {
             throw ExceptionUtils.<RuntimeException>rethrow(e);
         }
