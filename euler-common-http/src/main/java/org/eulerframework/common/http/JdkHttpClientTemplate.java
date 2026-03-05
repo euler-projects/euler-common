@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2024 the original author or authors.
+ * Copyright 2013-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.eulerframework.common.http;
 
+import org.eulerframework.common.http.request.MultipartFormDataRequestBody;
 import org.eulerframework.common.http.request.StringRequestBody;
 import org.eulerframework.common.http.util.HttpRequestUtils;
 import org.slf4j.Logger;
@@ -59,10 +60,10 @@ public class JdkHttpClientTemplate implements HttpTemplate {
                 builder.GET();
                 break;
             case POST:
-                builder.POST(this.stringBodyPublisher(((StringRequestBody) body).getContent()));
+                builder.POST(this.bodyPublisher(body));
                 break;
             case PUT:
-                builder.PUT(this.stringBodyPublisher(((StringRequestBody) body).getContent()));
+                builder.PUT(this.bodyPublisher(body));
                 break;
             case DELETE:
                 builder.DELETE();
@@ -86,10 +87,30 @@ public class JdkHttpClientTemplate implements HttpTemplate {
                 .build();
     }
 
+    private java.net.http.HttpRequest.BodyPublisher bodyPublisher(RequestBody body) {
+        if (body == null) {
+            return java.net.http.HttpRequest.BodyPublishers.noBody();
+        }
+
+        if (body instanceof StringRequestBody) {
+            return this.stringBodyPublisher(((StringRequestBody) body).getContent());
+        }
+
+        if (body instanceof MultipartFormDataRequestBody) {
+            return this.multipartBodyPublisher((MultipartFormDataRequestBody) body);
+        }
+
+        throw new IllegalArgumentException("Unsupported request body type: " + body.getClass().getName());
+    }
+
     private java.net.http.HttpRequest.BodyPublisher stringBodyPublisher(String str) {
         return Optional.ofNullable(str)
                 .map(java.net.http.HttpRequest.BodyPublishers::ofString).
                 orElse(java.net.http.HttpRequest.BodyPublishers.noBody());
+    }
+
+    private java.net.http.HttpRequest.BodyPublisher multipartBodyPublisher(MultipartFormDataRequestBody body) {
+        return java.net.http.HttpRequest.BodyPublishers.ofInputStream(body::getContent);
     }
 
     private void logRequest(HttpRequest httpRequest) {
