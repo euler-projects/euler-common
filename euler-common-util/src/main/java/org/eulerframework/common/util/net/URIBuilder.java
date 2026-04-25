@@ -669,7 +669,10 @@ public class URIBuilder {
      *       set, any well-formed {@code %XX} triplet already present in
      *       {@code s} is copied verbatim and not double-escaped to
      *       {@code %25XX}; a standalone {@code '%'} not followed by two
-     *       ASCII hex digits is still escaped to {@code %25}.</li>
+     *       ASCII hex digits is still escaped to {@code %25}. When the bit
+     *       is clear, every {@code '%'} is re-escaped to {@code %25} so
+     *       that the output contains only characters explicitly allowed by
+     *       the mask plus freshly produced {@code %XX} triplets.</li>
      * </ul>
      *
      * <p>The original {@code s} is returned unchanged when no character
@@ -683,48 +686,10 @@ public class URIBuilder {
      * @return the encoded string, or {@code s} itself when nothing changed
      */
     private static String quote(String s, long loMask, long hiMask) {
-        return doQuote(s, loMask, hiMask, (loMask & L_PCT_ENCODED) != 0);
-    }
-
-    /**
-     * Strictly percent-encodes every character in {@code s} that is not
-     * explicitly permitted by the given ASCII mask pair.
-     *
-     * <p>Encoding rules:
-     * <ul>
-     *   <li>Permitted ASCII characters are emitted verbatim; every other
-     *       ASCII character — including {@code '%'}, whitespace and
-     *       control characters — is escaped as {@code %XX}.</li>
-     *   <li>Non-ASCII characters, including supplementary code points such
-     *       as emoji (reassembled from UTF-16 surrogate pairs), are always
-     *       escaped as the UTF-8 byte sequence of their code point.</li>
-     * </ul>
-     *
-     * <p>In contrast to {@link #quote(String, long, long)}, pre-existing
-     * {@code %XX} triplets in the input are <em>not</em> preserved: every
-     * {@code '%'} not permitted by the mask is re-escaped to {@code %25}.
-     * The returned string is therefore guaranteed to contain only
-     * characters explicitly allowed by the mask plus freshly produced
-     * {@code %XX} triplets.
-     *
-     * <p>The original {@code s} is returned unchanged when no character
-     * needs encoding, avoiding unnecessary allocations.
-     *
-     * @param s      the input string to encode
-     * @param loMask low-order bitmask for permitted ASCII characters
-     *               (bits 0..63)
-     * @param hiMask high-order bitmask for permitted ASCII characters
-     *               (bits 64..127)
-     * @return the encoded string, or {@code s} itself when nothing changed
-     */
-    private static String quoteStrict(String s, long loMask, long hiMask) {
-        return doQuote(s, loMask, hiMask, false);
-    }
-
-    // Shared implementation for quote() and quoteStrict(). Percent-encodes s
-    // using the ASCII mask pair; when preservePctEncoded is true, well-formed
-    // %XX triplets already present in s are copied verbatim.
-    private static String doQuote(String s, long loMask, long hiMask, boolean preservePctEncoded) {
+        // Preserve well-formed %XX triplets only when the mask explicitly
+        // permits pct-encoded octets (L_PCT_ENCODED bit set); otherwise
+        // every '%' is treated as a disallowed character and escaped to %25.
+        boolean preservePctEncoded = (loMask & L_PCT_ENCODED) != 0;
         StringBuilder sb = null;
         CharsetEncoder encoder = null;
         int n = s.length();
