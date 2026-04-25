@@ -649,4 +649,309 @@ class URIBuilderTest {
         assertEquals("https://example.com/a/b/c", uri.toString());
         assertEquals("/a/b/c", uri.getRawPath());
     }
+
+    // ====================================================================
+    // Build edge cases
+    // ====================================================================
+
+    @Test
+    @DisplayName("build() throws when scheme is set but path is relative (RFC 3986 §3.3)")
+    void buildSchemeWithRelativePathThrows() {
+        // RFC 3986 §3.3: when authority is absent, the path cannot begin with
+        // "//"; when scheme is present, an empty path or one starting with '/'
+        // is required. URIBuilder mirrors java.net.URI's contract.
+        assertThrows(URISyntaxException.class,
+                () -> URIBuilder.newBuilder()
+                        .schema("https").host("example.com")
+                        .path("relative")
+                        .build());
+    }
+
+    @Test
+    @DisplayName("build() is idempotent: repeated calls produce equal URIs")
+    void buildIsIdempotent() throws URISyntaxException {
+        URIBuilder b = URIBuilder.newBuilder()
+                .schema("https").host("example.com")
+                .path("/api/{id}", t -> t.param("id", "42"))
+                .query("q", "中文");
+        URI u1 = b.build();
+        URI u2 = b.build();
+        assertEquals(u1, u2);
+        assertEquals(u1.toString(), u2.toString());
+    }
+
+    @Test
+    @DisplayName("full URI toString combines scheme, host, port, path and query verbatim")
+    void buildFullUriToString() throws URISyntaxException {
+        URI uri = URIBuilder.newBuilder()
+                .schema("https").host("example.com").port(8443)
+                .path("/a/b")
+                .query("k", "v")
+                .build();
+        assertEquals("https://example.com:8443/a/b?k=v", uri.toString());
+    }
+
+    // ====================================================================
+    // Path encoding – reserved characters
+    // ====================================================================
+
+    @Test
+    @DisplayName("sub-delims (! $ & ' ( ) * + , ; =) in a path segment are percent-encoded")
+    void pathSubDelimsEncoded() throws URISyntaxException {
+        // URIBuilder is more conservative than RFC 3986 §3.3's pchar grammar:
+        // it permits only the unreserved set inside a segment, so every
+        // sub-delim is percent-encoded.
+        URI uri = URIBuilder.newBuilder().path("/!$&'()*+,;=").build();
+        assertEquals("/%21%24%26%27%28%29%2A%2B%2C%3B%3D", uri.getRawPath());
+        assertEquals("/!$&'()*+,;=", uri.getPath());
+    }
+
+    @Test
+    @DisplayName("':' and '@' in a path segment are percent-encoded")
+    void pathColonAndAtEncoded() throws URISyntaxException {
+        // Same rationale as sub-delims: RFC 3986 allows ':' and '@' inside a
+        // pchar, but URIBuilder restricts segments to unreserved characters.
+        URI uri = URIBuilder.newBuilder().path("/a:b@c").build();
+        assertEquals("/a%3Ab%40c", uri.getRawPath());
+        assertEquals("/a:b@c", uri.getPath());
+    }
+
+    // ====================================================================
+    // Path templates – escapes, unbound vars and edge cases
+    // ====================================================================
+
+    @Test
+    @DisplayName("escaped braces (\\{ and \\}) in a template are emitted as literal characters")
+    void pathTemplateEscapedBraces() throws URISyntaxException {
+        // The template engine treats a preceding backslash as an escape, so
+        // "\{" / "\}" produce literal '{' / '}' that are then percent-encoded
+        // by path() as non-unreserved ASCII.
+        URI uri = URIBuilder.newBuilder()
+                .path("/literal/\\{x\\}", t -> {
+                })
+                .build();
+        assertEquals("/literal/%7Bx%7D", uri.getRawPath());
+        assertEquals("/literal/{x}", uri.getPath());
+    }
+
+    @Test
+    @DisplayName("unbound template variable expands to the literal text 'null'")
+    void pathTemplateUnboundVariableYieldsLiteralNull() throws URISyntaxException {
+        // No call to param("id", ...) leaves the placeholder unbound; the
+        // current contract substitutes the bound value verbatim, which is
+        // null and renders as the four-character word "null".
+        URI uri = URIBuilder.newBuilder()
+                .path("/users/{id}", t -> {
+                })
+                .build();
+        assertEquals("/users/null", uri.getRawPath());
+    }
+
+    @Test
+    @DisplayName("dangling left brace truncates the template silently (no exception)")
+    void pathTemplateDanglingLeftBraceTruncated() throws URISyntaxException {
+        // Mirror of the dangling-right-brace test: the parser consumes
+        // characters into the variable buffer until end-of-input and never
+        // commits them, so only the prefix before '{' is kept.
+        URI uri = URIBuilder.newBuilder()
+                .path("/bad{name", t -> {
+                })
+                .build();
+        assertEquals("/bad", uri.getRawPath());
+    }
+
+    @Test
+    @DisplayName("null template is a no-op")
+    void pathTemplateNullTemplateNoOp() throws URISyntaxException {
+        URI uri = URIBuilder.newBuilder()
+                .path((String) null, t -> {
+                })
+                .path("/only")
+                .build();
+        assertEquals("/only", uri.getRawPath());
+    }
+
+    @Test
+    @DisplayName("empty template is a no-op")
+    void pathTemplateEmptyTemplateNoOp() throws URISyntaxException {
+        URI uri = URIBuilder.newBuilder()
+                .path("", t -> {
+                })
+                .path("/only")
+                .build();
+        assertEquals("/only", uri.getRawPath());
+    }
+
+    @Test
+    @DisplayName("binding a null value to a template variable throws NullPointerException")
+    void pathTemplateParamNullValueThrows() {
+        // PathTemplate.param() calls value.toString() so a null value
+        // surfaces as NPE; the contract is that callers must supply non-null
+        // replacements.
+        assertThrows(NullPointerException.class,
+                () -> URIBuilder.newBuilder()
+                        .path("/users/{id}", t -> t.param("id", null)));
+    }
+
+    @Test
+    @DisplayName("template variable accepts arbitrary Object via toString()")
+    void pathTemplateParamAcceptsArbitraryObject() throws URISyntaxException {
+        // param(String, Object) is documented to call toString(); verify with
+        // a Boolean and a custom Object whose toString() produces a known
+        // value.
+        Object custom = new Object() {
+            @Override
+            public String toString() {
+                return "hello";
+            }
+        };
+        URI uri = URIBuilder.newBuilder()
+                .path("/{flag}/{obj}", t -> t.param("flag", Boolean.TRUE).param("obj", custom))
+                .build();
+        assertEquals("/true/hello", uri.getRawPath());
+    }
+
+    // ====================================================================
+    // Query encoding – key with reserved / whitespace characters
+    // ====================================================================
+
+    @Test
+    @DisplayName("space in query key is encoded as %20")
+    void queryKeyWithSpaceEncoded() throws URISyntaxException {
+        URI uri = URIBuilder.newBuilder().query("a b", "v").build();
+        assertEquals("a%20b=v", uri.getRawQuery());
+        assertEquals("a b=v", uri.getQuery());
+    }
+
+    @Test
+    @DisplayName("reserved delimiters in query key are percent-encoded")
+    void queryKeyWithReservedCharsEncoded() throws URISyntaxException {
+        // & = # are all delimiters in a query context and must therefore be
+        // encoded inside a key (RFC 3986 §2.2).
+        URI uri = URIBuilder.newBuilder().query("a&b=c#d", "v").build();
+        assertEquals("a%26b%3Dc%23d=v", uri.getRawQuery());
+        assertEquals("a&b=c#d=v", uri.getQuery());
+    }
+
+    // ====================================================================
+    // Query string parsing – preservation, malformed input and edge cases
+    // ====================================================================
+
+    @Test
+    @DisplayName("existing well-formed %XX triplets in a parsed query are preserved")
+    void queryParsePreservesExistingPctEncoded() throws URISyntaxException {
+        // Equivalent to the round-trip path that of() takes for getRawQuery();
+        // the parser must not double-escape a pre-encoded value.
+        URI uri = URIBuilder.newBuilder().query("k=%E4%B8%AD%E6%96%87").build();
+        assertEquals("k=%E4%B8%AD%E6%96%87", uri.getRawQuery());
+        assertEquals("k=中文", uri.getQuery());
+    }
+
+    @Test
+    @DisplayName("a malformed '%' in a parsed query is re-escaped to %25")
+    void queryParseMalformedPercentEscaped() throws URISyntaxException {
+        // "%ZZ" is not a well-formed pct-encoded triplet, so the lone '%'
+        // is itself escaped and the following bytes are kept verbatim.
+        URI uri = URIBuilder.newBuilder().query("k=%ZZ").build();
+        assertEquals("k=%25ZZ", uri.getRawQuery());
+        assertEquals("k=%ZZ", uri.getQuery());
+    }
+
+    @Test
+    @DisplayName("a trailing '&' in a parsed query is ignored")
+    void queryParseTrailingAmpersandIgnored() throws URISyntaxException {
+        URI uri = URIBuilder.newBuilder().query("a=1&").build();
+        assertEquals("a=1", uri.getRawQuery());
+    }
+
+    @Test
+    @DisplayName("consecutive '&&' yields an empty key/empty value pair")
+    void queryParseConsecutiveAmpersandYieldsEmptyPair() throws URISyntaxException {
+        // RFC 3986 does not forbid empty pairs; the parser preserves them so
+        // that round-tripping an arbitrary getRawQuery() output is faithful.
+        URI uri = URIBuilder.newBuilder().query("a=1&&b=2").build();
+        assertEquals("a=1&=&b=2", uri.getRawQuery());
+    }
+
+    @Test
+    @DisplayName("key without '=' is parsed as 'key='")
+    void queryParseKeyOnlyNoEquals() throws URISyntaxException {
+        URI uri = URIBuilder.newBuilder().query("flag&a=1").build();
+        assertEquals("flag=&a=1", uri.getRawQuery());
+    }
+
+    @Test
+    @DisplayName("raw non-ASCII characters in a parsed query are encoded as UTF-8")
+    void queryParseRawNonAsciiEncoded() throws URISyntaxException {
+        // 关 -> E5 85 B3, 键 -> E9 94 AE, 值 -> E5 80 BC
+        URI uri = URIBuilder.newBuilder().query("关键=值").build();
+        assertEquals("%E5%85%B3%E9%94%AE=%E5%80%BC", uri.getRawQuery());
+        assertEquals("关键=值", uri.getQuery());
+    }
+
+    // ====================================================================
+    // URIBuilder.of(...) – authority, fragment, encoding round-trip and errors
+    // ====================================================================
+
+    @Test
+    @DisplayName("of() preserves user-info inside the authority")
+    void ofWithUserInfoPreserved() throws URISyntaxException {
+        URI uri = URIBuilder.of("https://alice:s3cr3t@example.com:8443/x").build();
+        assertEquals("alice:s3cr3t", uri.getUserInfo());
+        assertEquals("example.com", uri.getHost());
+        assertEquals(8443, uri.getPort());
+        assertEquals("/x", uri.getRawPath());
+    }
+
+    @Test
+    @DisplayName("of() preserves an IPv6 host together with userInfo and port")
+    void ofIpv6WithUserInfoAndPort() throws URISyntaxException {
+        URI uri = URIBuilder.of("http://alice@[::1]:8080/x").build();
+        assertEquals("http://alice@[::1]:8080/x", uri.toString());
+        assertEquals("alice", uri.getUserInfo());
+        assertEquals("[::1]", uri.getHost());
+        assertEquals(8080, uri.getPort());
+    }
+
+    @Test
+    @DisplayName("of() silently drops the fragment component (it is not copied)")
+    void ofDropsFragment() throws URISyntaxException {
+        // URIBuilder has no fragment() setter and of() does not copy the
+        // fragment from the source URL; document this so the behaviour is
+        // stable.
+        URI uri = URIBuilder.of("https://example.com/x?a=1#frag").build();
+        assertEquals("https://example.com/x?a=1", uri.toString());
+        assertNull(uri.getRawFragment());
+    }
+
+    @Test
+    @DisplayName("of() round-trips an already %XX-encoded path")
+    void ofRoundTripsAlreadyEncodedPath() throws URISyntaxException {
+        URI uri = URIBuilder.of("https://example.com/a%20b/%E4%B8%AD").build();
+        assertEquals("/a%20b/%E4%B8%AD", uri.getRawPath());
+        assertEquals("/a b/中", uri.getPath());
+    }
+
+    @Test
+    @DisplayName("of() round-trips an already %XX-encoded query")
+    void ofRoundTripsAlreadyEncodedQuery() throws URISyntaxException {
+        URI uri = URIBuilder.of("https://example.com/?k=%E4%B8%AD&t=a%20b").build();
+        assertEquals("k=%E4%B8%AD&t=a%20b", uri.getRawQuery());
+        assertEquals("k=中&t=a b", uri.getQuery());
+    }
+
+    @Test
+    @DisplayName("of(null) throws NullPointerException")
+    void ofNullThrows() {
+        assertThrows(NullPointerException.class, () -> URIBuilder.of(null));
+    }
+
+    @Test
+    @DisplayName("of() rejects a syntactically invalid URL")
+    void ofInvalidUrlThrows() {
+        // A literal space inside the authority is not allowed by RFC 3986;
+        // URI.create() — which of() delegates to — surfaces this as IAE.
+        assertThrows(IllegalArgumentException.class,
+                () -> URIBuilder.of("http://exa mple.com"));
+    }
 }
