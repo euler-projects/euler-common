@@ -116,7 +116,7 @@ public class JdkHttpClientTemplate implements HttpTemplate {
 
     private void logRequest(HttpRequest httpRequest) {
         if (logger.isTraceEnabled()) {
-            logger.trace(HttpRequestUtils.formatRfc7230Message(httpRequest));
+            logger.trace(HttpRequestUtils.formatRfc7230Message(httpRequest, true));
         }
     }
 
