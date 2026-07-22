@@ -34,6 +34,24 @@ public class AliyunOpenApiRequestTest {
                 .execute(new JdkHttpClientTemplate());
 
         System.out.println(resp);
+    }
+
+    public static void sendSms(String[] args) throws IOException, InterruptedException, URISyntaxException {
+        String resp = AliyunOpenApiRequest
+                .POST()
+                .endpoint("https://dysmsapi.aliyuncs.com")
+                .action("SendSms")
+                .version("2017-05-25")
+                .bodyParam("RegionId", "cn-shenzhen")
+                .bodyParam("PhoneNumbers", System.getenv("TEL"))
+                .bodyParam("SignName", System.getenv("SIGN_NAME"))
+                .bodyParam("TemplateCode", System.getenv("TEMPLATE_CODE"))
+                .bodyParam("TemplateParam", "{\"code\": \"012345\"}")
+                .accessKeyId(System.getenv("ACCESS_KEY_ID"))
+                .accessKeySecret(System.getenv("ACCESS_KEY_SECRET"))
+                .execute(new JdkHttpClientTemplate());
+
+        System.out.println(resp);
 
 
 //                AliyunOpenApiRequest openApiRequest = new AliyunOpenApiRequest(
